@@ -27,21 +27,30 @@ module.exports = {
         }
     },
 
-    async count(_, response) {
-        const strsql = `select count(*) as total from PRODUTOR where (deletado = 0 or deletado is null)`;
+    async count(request, response) {
+
+        const { cliente_id } = request.body;
+        
+        const strsql = `select count(*) as total from PRODUTOR where (deletado = 0 or deletado is null) and cliente_id = ${cliente_id}`;
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
     },
 
     async destroy(request, response) {
+
         const { produtor_id } = request.params;
-        const strsql = `update PRODUTOR set deletado = 1 where produtor_id = ${produtor_id}`;
+        const { cliente_id } = request.body;
+
+        const strsql = `update PRODUTOR set deletado = 1 where produtor_id = ${produtor_id} and cliente_id = ${cliente_id}`;
         await executeQuery(strsql);
         response.status(200).json([{ status: 'ok' }]);
     },
 
     async listaUm(request, response) {
+
         const { produtor_id } = request.params;
+        const { cliente_id } = request.body;
+
         const strsql = `select 
             PRODUTOR.produtor_id,
             PRODUTOR.cliente_id,
@@ -88,12 +97,16 @@ module.exports = {
             PRODUTOR.ad_usr,
             PRODUTOR.deletado
             from PRODUTOR
-            where (PRODUTOR.deletado = 0 or PRODUTOR.deletado is null) and produtor_id = ${produtor_id}`;
+            where (PRODUTOR.deletado = 0 or PRODUTOR.deletado is null) and produtor_id = ${produtor_id} and cliente_id = ${cliente_id}`;
+
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
     },
 
-    async listaTodos(_, response) {
+    async listaTodos(request, response) {
+
+        const { cliente_id } = request.body;
+
         const strsql = `select 
             PRODUTOR.produtor_id,
             PRODUTOR.cliente_id,
@@ -140,12 +153,14 @@ module.exports = {
             PRODUTOR.ad_usr,
             PRODUTOR.deletado
             from PRODUTOR
-            where (PRODUTOR.deletado = 0 or PRODUTOR.deletado is null)`;
+            where (PRODUTOR.deletado = 0 or PRODUTOR.deletado is null) and cliente_id = ${cliente_id}`;
+
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
     },
 
     async create(request, response) {
+        
         const {
             cliente_id,
             tipo,
@@ -285,7 +300,9 @@ module.exports = {
     },
 
     async update(request, response) {
+
         const { produtor_id } = request.params;
+
         const {
             cliente_id,
             tipo,
@@ -336,7 +353,6 @@ module.exports = {
         const ad_upd = moment().format('YYYY-MM-DD HH:MM:ss');
 
         const strsql = `update PRODUTOR set 
-            cliente_id = ${cliente_id},
             tipo = ${tipo},
             cpf = '${cpf}',
             cnpj = '${cnpj}',
@@ -377,7 +393,7 @@ module.exports = {
             bloqueado = ${bloqueado},
             ad_upd = '${ad_upd}',
             ad_usr = ${ad_usr}
-            where produtor_id = ${produtor_id}`;
+            where produtor_id = ${produtor_id} and cliente_id = ${cliente_id}`;
 
         await executeQuery(strsql);
         response.status(200).json([{ status: 'ok' }]);

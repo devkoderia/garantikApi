@@ -3,21 +3,30 @@ const { executeQuery } = require('../services/generalFunctions');
 
 module.exports = {
 
-    async count(_, response) {
-        const strsql = `select count(*) as total from FINANCEIRO where (deletado = 0 or deletado is null)`;
+    async count(request, response) {
+
+        const { cliente_id } = request.body;
+
+        const strsql = `select count(*) as total from FINANCEIRO where (deletado = 0 or deletado is null) and cliente_id = ${cliente_id}`;
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
     },
 
     async destroy(request, response) {
+
         const { financeiro_id } = request.params;
-        const strsql = `update FINANCEIRO set deletado = 1 where financeiro_id = ${financeiro_id}`;
+        const { cliente_id } = request.body;
+
+        const strsql = `update FINANCEIRO set deletado = 1 where financeiro_id = ${financeiro_id} and cliente_id = ${cliente_id}`;
         await executeQuery(strsql);
         response.status(200).json([{ status: 'ok' }]);
     },
 
     async listaUm(request, response) {
+
         const { financeiro_id } = request.params;
+        const { cliente_id } = request.body;
+
         const strsql = `select 
             FINANCEIRO.financeiro_id,
             FINANCEIRO.cliente_id,
@@ -42,12 +51,16 @@ module.exports = {
             FINANCEIRO.ad_usr,
             FINANCEIRO.deletado
             from FINANCEIRO
-            where (FINANCEIRO.deletado = 0 or FINANCEIRO.deletado is null) and financeiro_id = ${financeiro_id}`;
+            where (FINANCEIRO.deletado = 0 or FINANCEIRO.deletado is null) and financeiro_id = ${financeiro_id} and cliente_id = ${cliente_id}`;
+
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
     },
 
-    async listaTodos(_, response) {
+    async listaTodos(request, response) {
+
+        const { cliente_id } = request.body;
+
         const strsql = `select 
             FINANCEIRO.financeiro_id,
             FINANCEIRO.cliente_id,
@@ -72,12 +85,14 @@ module.exports = {
             FINANCEIRO.ad_usr,
             FINANCEIRO.deletado
             from FINANCEIRO
-            where (FINANCEIRO.deletado = 0 or FINANCEIRO.deletado is null)`;
+            where (FINANCEIRO.deletado = 0 or FINANCEIRO.deletado is null) and cliente_id = ${cliente_id}`;
+
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
     },
 
     async create(request, response) {
+
         const {
             cliente_id,
             formaPagamento_id,
@@ -154,7 +169,9 @@ module.exports = {
     },
 
     async update(request, response) {
+
         const { financeiro_id } = request.params;
+
         const {
             cliente_id,
             formaPagamento_id,
@@ -179,7 +196,6 @@ module.exports = {
         const ad_upd = moment().format('YYYY-MM-DD HH:MM:ss');
 
         const strsql = `update FINANCEIRO set 
-            cliente_id = ${cliente_id},
             formaPagamento_id = ${formaPagamento_id},
             corretor_id = ${corretor_id},
             produtor_id = ${produtor_id},
@@ -198,7 +214,7 @@ module.exports = {
             pixAleatorio = '${pixAleatorio}',
             ad_upd = '${ad_upd}',
             ad_usr = ${ad_usr}
-            where financeiro_id = ${financeiro_id}`;
+            where financeiro_id = ${financeiro_id} and cliente_id = ${cliente_id}`;
 
         await executeQuery(strsql);
         response.status(200).json([{ status: 'ok' }]);

@@ -3,21 +3,30 @@ const { executeQuery } = require('../services/generalFunctions');
 
 module.exports = {
 
-    async count(_, response) {
-        const strsql = `select count(*) as total from NP where (deletado = 0 or deletado is null)`;
+    async count(request, response) {
+
+        const { cliente_id } = request.body;
+
+        const strsql = `select count(*) as total from NP where (deletado = 0 or deletado is null) and cliente_id = ${cliente_id}`;
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
     },
 
     async destroy(request, response) {
+
         const { np_id } = request.params;
-        const strsql = `update NP set deletado = 1 where np_id = ${np_id}`;
+        const { cliente_id } = request.body;
+
+        const strsql = `update NP set deletado = 1 where np_id = ${np_id} and cliente_id = ${cliente_id}`;
         await executeQuery(strsql);
         response.status(200).json([{ status: 'ok' }]);
     },
 
     async listaUm(request, response) {
+
         const { np_id } = request.params;
+        const { cliente_id } = request.body;
+
         const strsql = `select 
             NP.np_id,
             NP.cliente_id,
@@ -30,11 +39,15 @@ module.exports = {
             NP.deletado
             from NP
             where (NP.deletado = 0 or NP.deletado is null) and np_id = ${np_id}`;
+
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
     },
 
-    async listaTodos(_, response) {
+    async listaTodos(request, response) {
+
+        const { cliente_id } = request.body;
+
         const strsql = `select 
             NP.np_id,
             NP.cliente_id,
@@ -47,11 +60,13 @@ module.exports = {
             NP.deletado
             from NP
             where (NP.deletado = 0 or NP.deletado is null)`;
+
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
     },
 
     async create(request, response) {
+
         const {
             cliente_id,
             emissao_id,
@@ -89,7 +104,9 @@ module.exports = {
     },
 
     async update(request, response) {
+
         const { np_id } = request.params;
+
         const {
             cliente_id,
             emissao_id,
@@ -101,13 +118,12 @@ module.exports = {
         const ad_upd = moment().format('YYYY-MM-DD HH:MM:ss');
 
         const strsql = `update NP set 
-            cliente_id = ${cliente_id},
             emissao_id = ${emissao_id},
             valor = ${valor},
             valorExtenso = '${valorExtenso}',
             ad_upd = '${ad_upd}',
             ad_usr = ${ad_usr}
-            where np_id = ${np_id}`;
+            where np_id = ${np_id} and cliente_id = ${cliente_id}`;
 
         await executeQuery(strsql);
         response.status(200).json([{ status: 'ok' }]);

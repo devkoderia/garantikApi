@@ -48,10 +48,6 @@ module.exports = {
             uf_descri
         } = request.body;
 
-        const ad_new = moment().format('YYYY-MM-DD HH:MM:ss');
-        const ad_upd = ad_new;
-        const deletado = 0;
-
         const strsql = `insert into IBGE (
             ibge_descri,
             uf_codigo,

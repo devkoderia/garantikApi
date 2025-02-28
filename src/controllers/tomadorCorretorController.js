@@ -3,21 +3,30 @@ const { executeQuery } = require('../services/generalFunctions');
 
 module.exports = {
 
-    async count(_, response) {
-        const strsql = `select count(*) as total from TOMADOR_CORRETOR where (deletado = 0 or deletado is null)`;
+    async count(request, response) {
+
+        const { cliente_id } = request.body;
+
+        const strsql = `select count(*) as total from TOMADOR_CORRETOR where (deletado = 0 or deletado is null) and cliente_id = ${cliente_id}`;
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
     },
 
     async destroy(request, response) {
+
         const { tomadorCorretor_id } = request.params;
-        const strsql = `update TOMADOR_CORRETOR set deletado = 1 where tomadorCorretor_id = ${tomadorCorretor_id}`;
+        const { cliente_id } = request.body;
+
+        const strsql = `update TOMADOR_CORRETOR set deletado = 1 where tomadorCorretor_id = ${tomadorCorretor_id} and cliente_id = ${cliente_id}`;
         await executeQuery(strsql);
         response.status(200).json([{ status: 'ok' }]);
     },
 
     async listaUm(request, response) {
+
         const { tomadorCorretor_id } = request.params;
+        const { cliente_id } = request.body;
+
         const strsql = `select 
             TOMADOR_CORRETOR.tomadorCorretor_id,
             TOMADOR_CORRETOR.cliente_id,
@@ -28,12 +37,15 @@ module.exports = {
             TOMADOR_CORRETOR.ad_usr,
             TOMADOR_CORRETOR.deletado
             from TOMADOR_CORRETOR
-            where (TOMADOR_CORRETOR.deletado = 0 or TOMADOR_CORRETOR.deletado is null) and tomadorCorretor_id = ${tomadorCorretor_id}`;
+            where (TOMADOR_CORRETOR.deletado = 0 or TOMADOR_CORRETOR.deletado is null) and tomadorCorretor_id = ${tomadorCorretor_id} and cliente_id = ${cliente_id}`;
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
     },
 
-    async listaTodos(_, response) {
+    async listaTodos(request, response) {
+
+        const { cliente_id } = request.body;
+
         const strsql = `select 
             TOMADOR_CORRETOR.tomadorCorretor_id,
             TOMADOR_CORRETOR.cliente_id,
@@ -44,12 +56,13 @@ module.exports = {
             TOMADOR_CORRETOR.ad_usr,
             TOMADOR_CORRETOR.deletado
             from TOMADOR_CORRETOR
-            where (TOMADOR_CORRETOR.deletado = 0 or TOMADOR_CORRETOR.deletado is null)`;
+            where (TOMADOR_CORRETOR.deletado = 0 or TOMADOR_CORRETOR.deletado is null) and cliente_id = ${cliente_id}`;
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
     },
 
     async create(request, response) {
+        
         const {
             cliente_id,
             tomador_id,
@@ -84,7 +97,9 @@ module.exports = {
     },
 
     async update(request, response) {
+
         const { tomadorCorretor_id } = request.params;
+
         const {
             cliente_id,
             tomador_id,
@@ -95,12 +110,11 @@ module.exports = {
         const ad_upd = moment().format('YYYY-MM-DD HH:MM:ss');
 
         const strsql = `update TOMADOR_CORRETOR set 
-            cliente_id = ${cliente_id},
             tomador_id = ${tomador_id},
             corretor_id = ${corretor_id},
             ad_upd = '${ad_upd}',
             ad_usr = ${ad_usr}
-            where tomadorCorretor_id = ${tomadorCorretor_id}`;
+            where tomadorCorretor_id = ${tomadorCorretor_id} and cliente_id = ${cliente_id}`;
 
         await executeQuery(strsql);
         response.status(200).json([{ status: 'ok' }]);

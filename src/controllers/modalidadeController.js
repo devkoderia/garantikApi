@@ -3,21 +3,32 @@ const { executeQuery } = require('../services/generalFunctions');
 
 module.exports = {
 
-    async count(_, response) {
-        const strsql = `select count(*) as total from MODALIDADE where (deletado = 0 or deletado is null)`;
+    async count(request, response) {
+
+        const { cliente_id } = request.body;
+
+        const strsql = `select count(*) as total from MODALIDADE where (deletado = 0 or deletado is null) and cliente_id = ${cliente_id}`;
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
+        
     },
 
     async destroy(request, response) {
+
         const { modalidade_id } = request.params;
-        const strsql = `update MODALIDADE set deletado = 1 where modalidade_id = ${modalidade_id}`;
+        const { cliente_id } = request.body;
+
+        const strsql = `update MODALIDADE set deletado = 1 where modalidade_id = ${modalidade_id} and cliente_id = ${cliente_id}`;
         await executeQuery(strsql);
         response.status(200).json([{ status: 'ok' }]);
+
     },
 
     async listaUm(request, response) {
+
         const { modalidade_id } = request.params;
+        const { cliente_id } = request.body;
+
         const strsql = `select 
             MODALIDADE.modalidade_id,
             MODALIDADE.cliente_id,
@@ -29,12 +40,17 @@ module.exports = {
             MODALIDADE.ad_usr,
             MODALIDADE.deletado
             from MODALIDADE
-            where (MODALIDADE.deletado = 0 or MODALIDADE.deletado is null) and modalidade_id = ${modalidade_id}`;
+            where (MODALIDADE.deletado = 0 or MODALIDADE.deletado is null) and modalidade_id = ${modalidade_id} and cliente_id = ${cliente_id}`;
+
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
+
     },
 
-    async listaTodos(_, response) {
+    async listaTodos(request, response) {
+
+        const { cliente_id } = request.body;
+
         const strsql = `select 
             MODALIDADE.modalidade_id,
             MODALIDADE.cliente_id,
@@ -46,12 +62,15 @@ module.exports = {
             MODALIDADE.ad_usr,
             MODALIDADE.deletado
             from MODALIDADE
-            where (MODALIDADE.deletado = 0 or MODALIDADE.deletado is null)`;
+            where (MODALIDADE.deletado = 0 or MODALIDADE.deletado is null) and cliente_id = ${cliente_id}`;
+
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
+
     },
 
     async create(request, response) {
+
         const {
             cliente_id,
             descricao,
@@ -86,10 +105,13 @@ module.exports = {
 
         await executeQuery(strsql);
         response.status(200).json([{ status: 'ok' }]);
+
     },
 
     async update(request, response) {
+
         const { modalidade_id } = request.params;
+
         const {
             cliente_id,
             descricao,
@@ -101,15 +123,15 @@ module.exports = {
         const ad_upd = moment().format('YYYY-MM-DD HH:MM:ss');
 
         const strsql = `update MODALIDADE set 
-            cliente_id = ${cliente_id},
             descricao = '${descricao}',
             textoPre = '${textoPre}',
             texto = '${texto}',
             ad_upd = '${ad_upd}',
             ad_usr = ${ad_usr}
-            where modalidade_id = ${modalidade_id}`;
+            where modalidade_id = ${modalidade_id} and cliente_id = ${cliente_id}`;
 
         await executeQuery(strsql);
         response.status(200).json([{ status: 'ok' }]);
+
     }
 };
