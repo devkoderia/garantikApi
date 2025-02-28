@@ -1,0 +1,2193 @@
+const express = require('express')
+const routes = express.Router()
+const { celebrate, Joi, Segments } = require('celebrate')
+
+
+function verificaToken(request, response, next) {
+
+    const key = process.env.KEY_GARANTI
+    var token = request.headers['x-access-token']
+
+    if (token != key) {
+
+        response.status(401).json([{ alerta: 'erro', mensagem: 'token inválido!' }])
+        return false
+
+    } else {
+
+        next()
+
+    }
+}
+
+routes.get('/', function (_, res) {
+    res.render('index', {
+        title: "API garantik",
+        version: "0.0.1"
+    })
+})
+
+
+//ACESSO
+//-------------------------------------------------------------------------------------------------------------
+const acessoController = require('./src/controllers/acessoController')
+
+routes.post('/acessoConta', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), acessoController.count)
+
+routes.post('/acessoListaTodos', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), acessoController.listaTodos)
+
+routes.post('/acessoListaUm/:acesso_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        acesso_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, acessoController.listaUm)
+
+routes.post('/acesso', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        usuario_id: Joi.number().integer().allow(null).allow(''),
+        tipo: Joi.string().required().max(50),
+        ip: Joi.string().allow(null).allow('').max(150),
+        usuario: Joi.string().allow(null).allow('').max(150),
+        senha: Joi.string().allow(null).allow('').max(150),
+    })
+}), verificaToken, acessoController.create)
+
+routes.delete('/acesso/:acesso_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        acesso_id: Joi.number().integer().required()
+    }),
+}), verificaToken, acessoController.destroy)
+
+
+//AVALISTA
+//-------------------------------------------------------------------------------------------------------------
+const avalistaController = require('./src/controllers/avalistaController')
+
+routes.post('/avalistaConta', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), avalistaController.count)
+
+routes.post('/avalistaListaTodos', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), avalistaController.listaTodos)
+
+routes.post('/avalistaListaUm/:avalista_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        avalista_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, avalistaController.listaUm)
+
+routes.post('/avalista', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        tipo: Joi.number().integer().required(),
+        cpf: Joi.string().allow(null).allow('').max(11),
+        cnpj: Joi.string().allow(null).allow('').max(14),
+        outroDocumento: Joi.string().allow(null).allow('').max(150),
+        nome: Joi.string().allow(null).allow('').max(250),
+        nomeFantasia: Joi.string().allow(null).allow('').max(250),
+        razaoSocial: Joi.string().allow(null).allow('').max(250),
+        cep: Joi.string().allow(null).allow('').max(50),
+        ibge_codigo: Joi.string().allow(null).allow('').max(7),
+        ibge_descri: Joi.string().allow(null).allow('').max(250),
+        uf: Joi.string().allow(null).allow('').max(2),
+        logradouro: Joi.string().allow(null).allow('').max(500),
+        numero: Joi.string().allow(null).allow('').max(150),
+        complemento: Joi.string().allow(null).allow('').max(100),
+        bairro: Joi.string().allow(null).allow('').max(150),
+        telefoneFixo: Joi.string().allow(null).allow('').max(100),
+        telefoneCelular: Joi.string().allow(null).allow('').max(100),
+        pessoaContato: Joi.string().allow(null).allow('').max(150),
+        email: Joi.string().allow(null).allow('').max(100),
+        observacao: Joi.string().allow(null).allow('').max(1000),
+        rg: Joi.string().allow(null).allow('').max(50),
+        nacionalidade: Joi.string().allow(null).allow('').max(150),
+        estadoCivil_id: Joi.number().integer().allow(null).allow(''),
+        expedicao_id: Joi.number().integer().allow(null).allow(''),
+        profissao: Joi.string().allow(null).allow('').max(150),
+        cnae: Joi.string().allow(null).allow('').max(50),
+        cnaeDescricao: Joi.string().allow(null).allow('').max(250),
+        capitalSocial: Joi.string().allow(null).allow('').max(50),
+        naturezaJuridica: Joi.string().allow(null).allow('').max(250),
+        situacao: Joi.string().allow(null).allow('').max(150),
+        dataAbertura: Joi.string().allow(null).allow('').max(50),
+        dataUltimaAtualizacao: Joi.string().allow(null).allow('').max(50),
+        tipoEmpresa: Joi.string().allow(null).allow('').max(50),
+        porte: Joi.string().allow(null).allow('').max(250),
+        dataSituacao: Joi.string().allow(null).allow('').max(50),
+        motivoSituacao: Joi.string().allow(null).allow('').max(250),
+        situacaoEspecial: Joi.string().allow(null).allow('').max(250),
+        dataSituacaoEspecial: Joi.string().allow(null).allow('').max(50),
+        representanteLegal: Joi.number().integer().allow(null).allow(''),
+        avalista: Joi.number().integer().allow(null).allow(''),
+        ad_usr: Joi.number().integer().required(),
+        
+    })
+}), verificaToken, avalistaController.create)
+
+routes.put('/avalista/:avalista_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        avalista_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        tipo: Joi.number().integer().required(),
+        cpf: Joi.string().allow(null).allow('').max(11),
+        cnpj: Joi.string().allow(null).allow('').max(14),
+        outroDocumento: Joi.string().allow(null).allow('').max(150),
+        nome: Joi.string().allow(null).allow('').max(250),
+        nomeFantasia: Joi.string().allow(null).allow('').max(250),
+        razaoSocial: Joi.string().allow(null).allow('').max(250),
+        cep: Joi.string().allow(null).allow('').max(50),
+        ibge_codigo: Joi.string().allow(null).allow('').max(7),
+        ibge_descri: Joi.string().allow(null).allow('').max(250),
+        uf: Joi.string().allow(null).allow('').max(2),
+        logradouro: Joi.string().allow(null).allow('').max(500),
+        numero: Joi.string().allow(null).allow('').max(150),
+        complemento: Joi.string().allow(null).allow('').max(100),
+        bairro: Joi.string().allow(null).allow('').max(150),
+        telefoneFixo: Joi.string().allow(null).allow('').max(100),
+        telefoneCelular: Joi.string().allow(null).allow('').max(100),
+        pessoaContato: Joi.string().allow(null).allow('').max(150),
+        email: Joi.string().allow(null).allow('').max(100),
+        observacao: Joi.string().allow(null).allow('').max(1000),
+        rg: Joi.string().allow(null).allow('').max(50),
+        nacionalidade: Joi.string().allow(null).allow('').max(150),
+        estadoCivil_id: Joi.number().integer().allow(null).allow(''),
+        expedicao_id: Joi.number().integer().allow(null).allow(''),
+        profissao: Joi.string().allow(null).allow('').max(150),
+        cnae: Joi.string().allow(null).allow('').max(50),
+        cnaeDescricao: Joi.string().allow(null).allow('').max(250),
+        capitalSocial: Joi.string().allow(null).allow('').max(50),
+        naturezaJuridica: Joi.string().allow(null).allow('').max(250),
+        situacao: Joi.string().allow(null).allow('').max(150),
+        dataAbertura: Joi.string().allow(null).allow('').max(50),
+        dataUltimaAtualizacao: Joi.string().allow(null).allow('').max(50),
+        tipoEmpresa: Joi.string().allow(null).allow('').max(50),
+        porte: Joi.string().allow(null).allow('').max(250),
+        dataSituacao: Joi.string().allow(null).allow('').max(50),
+        motivoSituacao: Joi.string().allow(null).allow('').max(250),
+        situacaoEspecial: Joi.string().allow(null).allow('').max(250),
+        dataSituacaoEspecial: Joi.string().allow(null).allow('').max(50),
+        representanteLegal: Joi.number().integer().allow(null).allow(''),
+        avalista: Joi.number().integer().allow(null).allow(''),
+        ad_usr: Joi.number().integer().required(),
+        
+    })
+}), verificaToken, avalistaController.update)
+
+routes.delete('/avalista/:avalista_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        avalista_id: Joi.number().integer().required()
+    }),
+}), verificaToken, avalistaController.destroy)
+
+
+//AVALISTA_TOMADOR
+//-------------------------------------------------------------------------------------------------------------
+const avalista_tomadorController = require('./src/controllers/avalista_tomadorController')
+
+routes.post('/avalista_tomadorConta', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), avalista_tomadorController.count)
+
+routes.post('/avalista_tomadorListaTodos', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), avalista_tomadorController.listaTodos)
+
+routes.post('/avalista_tomadorListaUm/:avalistaTomador_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        avalistaTomador_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, avalista_tomadorController.listaUm)
+
+routes.post('/avalista_tomador', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        tomador_id: Joi.number().integer().required(),
+        avalista_id: Joi.number().integer().required(),
+        ad_usr: Joi.number().integer().allow(null).allow(''),
+        deletado: Joi.number().integer().allow(null).allow(''),
+    })
+}), verificaToken, avalista_tomadorController.create)
+
+routes.put('/avalista_tomador/:avalistaTomador_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        avalistaTomador_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        tomador_id: Joi.number().integer().required(),
+        avalista_id: Joi.number().integer().required(),
+        ad_usr: Joi.number().integer().allow(null).allow(''),
+        deletado: Joi.number().integer().allow(null).allow(''),
+    })
+}), verificaToken, avalista_tomadorController.update)
+
+routes.delete('/avalista_tomador/:avalistaTomador_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        avalistaTomador_id: Joi.number().integer().required()
+    }),
+}), verificaToken, avalista_tomadorController.destroy)
+
+
+//BANCO
+//-------------------------------------------------------------------------------------------------------------
+const bancoController = require('./src/controllers/bancoController')
+
+routes.post('/bancoConta', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), bancoController.count)
+
+routes.post('/bancoListaTodos', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), bancoController.listaTodos)
+
+routes.post('/bancoListaUm/:banco_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        banco_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, bancoController.listaUm)
+
+routes.post('/banco', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        numero: Joi.string().required().max(3),
+        descricao: Joi.string().required().max(150),
+        ispb: Joi.string().required().max(50),
+        
+    })
+}), verificaToken, bancoController.create)
+
+routes.put('/banco/:banco_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        banco_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        numero: Joi.string().required().max(3),
+        descricao: Joi.string().required().max(150),
+        ispb: Joi.string().required().max(50),
+        
+    })
+}), verificaToken, bancoController.update)
+
+routes.delete('/banco/:banco_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        banco_id: Joi.number().integer().required()
+    }),
+}), verificaToken, bancoController.destroy)
+
+
+
+//CCG
+//-------------------------------------------------------------------------------------------------------------
+const ccgController = require('./src/controllers/ccgController')
+
+routes.post('/ccgConta', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), ccgController.count)
+
+routes.post('/ccgListaTodos', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), ccgController.listaTodos)
+
+routes.post('/ccgListaUm/:ccg_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        ccg_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, ccgController.listaUm)
+
+routes.post('/ccg', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        tomador_id: Joi.number().integer().required(),
+        tipo: Joi.string().allow(null).allow('').max(50),
+        arquivo: Joi.string().allow(null).allow('').max(250),
+        ad_usr: Joi.number().integer().allow(null).allow(''),
+        deletado: Joi.number().integer().allow(null).allow(''),
+    })
+}), verificaToken, ccgController.create)
+
+routes.put('/ccg/:ccg_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        ccg_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        tomador_id: Joi.number().integer().required(),
+        tipo: Joi.string().allow(null).allow('').max(50),
+        arquivo: Joi.string().allow(null).allow('').max(250),
+        ad_usr: Joi.number().integer().allow(null).allow(''),
+        deletado: Joi.number().integer().allow(null).allow(''),
+    })
+}), verificaToken, ccgController.update)
+
+routes.delete('/ccg/:ccg_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        ccg_id: Joi.number().integer().required()
+    }),
+}), verificaToken, ccgController.destroy)
+
+
+
+//CLIENTE
+//-------------------------------------------------------------------------------------------------------------
+const clienteController = require('./src/controllers/clienteController')
+
+routes.get('/clienteConta', verificaToken, clienteController.count)
+
+routes.get('/clienteListaTodos', verificaToken, clienteController.listaTodos)
+
+routes.get('/clienteListaUm/:cliente_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required()
+    })
+}), verificaToken, clienteController.listaUm)
+
+routes.post('/cliente', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cnpj: Joi.string().allow(null).allow('').max(14),
+        nomeFantasia: Joi.string().allow(null).allow('').max(250),
+        razaoSocial: Joi.string().allow(null).allow('').max(250),
+        cep: Joi.string().allow(null).allow('').max(50),
+        ibge_codigo: Joi.string().allow(null).allow('').max(7),
+        ibge_descri: Joi.string().allow(null).allow('').max(250),
+        uf: Joi.string().allow(null).allow('').max(2),
+        logradouro: Joi.string().allow(null).allow('').max(500),
+        numero: Joi.string().allow(null).allow('').max(150),
+        complemento: Joi.string().allow(null).allow('').max(100),
+        bairro: Joi.string().allow(null).allow('').max(150),
+        telefoneFixo: Joi.string().allow(null).allow('').max(100),
+        telefoneCelular: Joi.string().allow(null).allow('').max(100),
+        email: Joi.string().allow(null).allow('').max(100),
+        observacao: Joi.string().allow(null).allow('').max(1000),
+        cnae: Joi.string().allow(null).allow('').max(50),
+        cnaeDescricao: Joi.string().allow(null).allow('').max(250),
+        capitalSocial: Joi.string().allow(null).allow('').max(50),
+        naturezaJuridica: Joi.string().allow(null).allow('').max(250),
+        situacao: Joi.string().allow(null).allow('').max(150),
+        dataAbertura: Joi.string().allow(null).allow('').max(50),
+        dataUltimaAtualizacao: Joi.string().allow(null).allow('').max(50),
+        tipoEmpresa: Joi.string().allow(null).allow('').max(50),
+        porte: Joi.string().allow(null).allow('').max(250),
+        dataSituacao: Joi.string().allow(null).allow('').max(50),
+        motivoSituacao: Joi.string().allow(null).allow('').max(250),
+        situacaoEspecial: Joi.string().allow(null).allow('').max(250),
+        dataSituacaoEspecial: Joi.string().allow(null).allow('').max(50),
+        ad_usr: Joi.number().integer().required(),
+    })
+}), verificaToken, clienteController.create)
+
+routes.put('/cliente/:cliente_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cnpj: Joi.string().allow(null).allow('').max(14),
+        nomeFantasia: Joi.string().allow(null).allow('').max(250),
+        razaoSocial: Joi.string().allow(null).allow('').max(250),
+        cep: Joi.string().allow(null).allow('').max(50),
+        ibge_codigo: Joi.string().allow(null).allow('').max(7),
+        ibge_descri: Joi.string().allow(null).allow('').max(250),
+        uf: Joi.string().allow(null).allow('').max(2),
+        logradouro: Joi.string().allow(null).allow('').max(500),
+        numero: Joi.string().allow(null).allow('').max(150),
+        complemento: Joi.string().allow(null).allow('').max(100),
+        bairro: Joi.string().allow(null).allow('').max(150),
+        telefoneFixo: Joi.string().allow(null).allow('').max(100),
+        telefoneCelular: Joi.string().allow(null).allow('').max(100),
+        email: Joi.string().allow(null).allow('').max(100),
+        observacao: Joi.string().allow(null).allow('').max(1000),
+        cnae: Joi.string().allow(null).allow('').max(50),
+        cnaeDescricao: Joi.string().allow(null).allow('').max(250),
+        capitalSocial: Joi.string().allow(null).allow('').max(50),
+        naturezaJuridica: Joi.string().allow(null).allow('').max(250),
+        situacao: Joi.string().allow(null).allow('').max(150),
+        dataAbertura: Joi.string().allow(null).allow('').max(50),
+        dataUltimaAtualizacao: Joi.string().allow(null).allow('').max(50),
+        tipoEmpresa: Joi.string().allow(null).allow('').max(50),
+        porte: Joi.string().allow(null).allow('').max(250),
+        dataSituacao: Joi.string().allow(null).allow('').max(50),
+        motivoSituacao: Joi.string().allow(null).allow('').max(250),
+        situacaoEspecial: Joi.string().allow(null).allow('').max(250),
+        dataSituacaoEspecial: Joi.string().allow(null).allow('').max(50),
+        bloqueado: Joi.number().integer().allow(null).allow(''),
+        ad_usr: Joi.number().integer().required(),
+    })
+}), verificaToken, clienteController.update)
+
+routes.delete('/cliente/:cliente_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required()
+    }),
+}), verificaToken, clienteController.destroy)
+
+
+
+//COBERTURA
+//-------------------------------------------------------------------------------------------------------------
+const coberturaController = require('./src/controllers/coberturaController')
+
+routes.post('/coberturaConta', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), coberturaController.count)
+
+routes.post('/coberturaListaTodos', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), coberturaController.listaTodos)
+
+routes.post('/coberturaListaUm/:cobertura_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        cobertura_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, coberturaController.listaUm)
+
+routes.post('/cobertura', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        tipo: Joi.string().required().max(50),
+        descricao: Joi.string().required(),
+        ad_usr: Joi.number().integer().required(),
+        
+    })
+}), verificaToken, coberturaController.create)
+
+routes.put('/cobertura/:cobertura_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        cobertura_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        tipo: Joi.string().required().max(50),
+        descricao: Joi.string().required(),
+        ad_usr: Joi.number().integer().required(),
+        
+    })
+}), verificaToken, coberturaController.update)
+
+routes.delete('/cobertura/:cobertura_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        cobertura_id: Joi.number().integer().required()
+    }),
+}), verificaToken, coberturaController.destroy)
+
+
+
+
+//CORRETOR
+//-------------------------------------------------------------------------------------------------------------
+const corretorController = require('./src/controllers/corretorController')
+
+routes.post('/corretorListaTomador', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        tomador_id: Joi.number().integer().required(),        
+    })
+}), corretorController.listaTomador)
+
+routes.post('/corretorBusca', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        descricao: Joi.string().min(1).max(100)
+    })
+}), corretorController.busca)
+
+routes.post('/corretorConta', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), corretorController.count)
+
+routes.post('/corretorListaTabela', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), corretorController.listaTabela)
+
+routes.post('/corretorListaTodos', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), corretorController.listaTodos)
+
+routes.post('/corretorListaUm/:corretor_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        corretor_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, corretorController.listaUm)
+
+routes.post('/corretor', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        tipo: Joi.number().integer().required(),
+        cpf: Joi.string().allow(null).allow('').max(11),
+        cnpj: Joi.string().allow(null).allow('').max(14),
+        nome: Joi.string().allow(null).allow('').max(250),
+        nomeFantasia: Joi.string().allow(null).allow('').max(250),
+        razaoSocial: Joi.string().allow(null).allow('').max(250),
+        cep: Joi.string().allow(null).allow('').max(50),
+        ibge_codigo: Joi.string().allow(null).allow('').max(7),
+        ibge_descri: Joi.string().allow(null).allow('').max(250),
+        uf: Joi.string().allow(null).allow('').max(2),
+        logradouro: Joi.string().allow(null).allow('').max(500),
+        numero: Joi.string().allow(null).allow('').max(150),
+        complemento: Joi.string().allow(null).allow('').max(100),
+        bairro: Joi.string().allow(null).allow('').max(150),
+        telefoneFixo: Joi.string().allow(null).allow('').max(100),
+        telefoneCelular: Joi.string().allow(null).allow('').max(100),
+        email: Joi.string().allow(null).allow('').max(100),
+        pessoaContato: Joi.string().allow(null).allow('').max(150),
+        emailPessoaContato: Joi.string().allow(null).allow('').max(150),
+        telefoneFixoPessoaContato: Joi.string().allow(null).allow('').max(100),
+        telefoneCelularPessoaContato: Joi.string().allow(null).allow('').max(100),
+        observacao: Joi.string().allow(null).allow('').max(1000),
+        comissaoPorcentagem: Joi.number().allow(null).allow(''),
+        premioMinimo: Joi.number().allow(null).allow(''),
+        cnae: Joi.string().allow(null).allow('').max(50),
+        cnaeDescricao: Joi.string().allow(null).allow('').max(250),
+        capitalSocial: Joi.string().allow(null).allow('').max(50),
+        naturezaJuridica: Joi.string().allow(null).allow('').max(250),
+        situacao: Joi.string().allow(null).allow('').max(150),
+        dataAbertura: Joi.string().allow(null).allow('').max(50),
+        dataUltimaAtualizacao: Joi.string().allow(null).allow('').max(50),
+        tipoEmpresa: Joi.string().allow(null).allow('').max(50),
+        porte: Joi.string().allow(null).allow('').max(250),
+        dataSituacao: Joi.string().allow(null).allow('').max(50),
+        motivoSituacao: Joi.string().allow(null).allow('').max(250),
+        situacaoEspecial: Joi.string().allow(null).allow('').max(250),
+        dataSituacaoEspecial: Joi.string().allow(null).allow('').max(50),
+        susep: Joi.string().allow(null).allow('').max(50),
+        ad_usr: Joi.number().integer().allow(null).allow(''),
+    })
+}), verificaToken, corretorController.create)
+
+routes.put('/corretor/:corretor_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        corretor_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        tipo: Joi.number().integer().required(),
+        cpf: Joi.string().allow(null).allow('').max(11),
+        cnpj: Joi.string().allow(null).allow('').max(14),
+        nome: Joi.string().allow(null).allow('').max(250),
+        nomeFantasia: Joi.string().allow(null).allow('').max(250),
+        razaoSocial: Joi.string().allow(null).allow('').max(250),
+        cep: Joi.string().allow(null).allow('').max(50),
+        ibge_codigo: Joi.string().allow(null).allow('').max(7),
+        ibge_descri: Joi.string().allow(null).allow('').max(250),
+        uf: Joi.string().allow(null).allow('').max(2),
+        logradouro: Joi.string().allow(null).allow('').max(500),
+        numero: Joi.string().allow(null).allow('').max(150),
+        complemento: Joi.string().allow(null).allow('').max(100),
+        bairro: Joi.string().allow(null).allow('').max(150),
+        telefoneFixo: Joi.string().allow(null).allow('').max(100),
+        telefoneCelular: Joi.string().allow(null).allow('').max(100),
+        email: Joi.string().allow(null).allow('').max(100),
+        pessoaContato: Joi.string().allow(null).allow('').max(150),
+        emailPessoaContato: Joi.string().allow(null).allow('').max(150),
+        telefoneFixoPessoaContato: Joi.string().allow(null).allow('').max(100),
+        telefoneCelularPessoaContato: Joi.string().allow(null).allow('').max(100),
+        observacao: Joi.string().allow(null).allow('').max(1000),
+        comissaoPorcentagem: Joi.number().allow(null).allow(''),
+        premioMinimo: Joi.number().allow(null).allow(''),
+        cnae: Joi.string().allow(null).allow('').max(50),
+        cnaeDescricao: Joi.string().allow(null).allow('').max(250),
+        capitalSocial: Joi.string().allow(null).allow('').max(50),
+        naturezaJuridica: Joi.string().allow(null).allow('').max(250),
+        situacao: Joi.string().allow(null).allow('').max(150),
+        dataAbertura: Joi.string().allow(null).allow('').max(50),
+        dataUltimaAtualizacao: Joi.string().allow(null).allow('').max(50),
+        tipoEmpresa: Joi.string().allow(null).allow('').max(50),
+        porte: Joi.string().allow(null).allow('').max(250),
+        dataSituacao: Joi.string().allow(null).allow('').max(50),
+        motivoSituacao: Joi.string().allow(null).allow('').max(250),
+        situacaoEspecial: Joi.string().allow(null).allow('').max(250),
+        dataSituacaoEspecial: Joi.string().allow(null).allow('').max(50),
+        susep: Joi.string().allow(null).allow('').max(50),
+        bloqueado: Joi.number().integer().allow(null).allow(''),
+        ad_usr: Joi.number().integer().allow(null).allow(''),
+    })
+}), verificaToken, corretorController.update)
+
+routes.delete('/corretor/:corretor_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        corretor_id: Joi.number().integer().required()
+    }),
+}), verificaToken, corretorController.destroy)
+
+
+
+
+//CORRETOR_FUNCIONARIO
+//-------------------------------------------------------------------------------------------------------------
+const corretor_funcionarioController = require('./src/controllers/corretor_funcionarioController')
+
+routes.post('/corretor_funcionarioConta', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), corretor_funcionarioController.count)
+
+routes.post('/corretor_funcionarioListaTodos', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), corretor_funcionarioController.listaTodos)
+
+routes.post('/corretor_funcionarioListaUm/:corretorFuncionario_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        corretorFuncionario_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, corretor_funcionarioController.listaUm)
+
+routes.post('/corretor_funcionario', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        corretor_id: Joi.number().integer().required(),
+        nome: Joi.string().required().max(150),
+        cargo: Joi.string().allow(null).allow('').max(150),
+        aniversario: Joi.string().allow(null).allow('').max(50),
+        celular: Joi.string().allow(null).allow('').max(50),
+        email: Joi.string().allow(null).allow('').max(100),
+        observacao: Joi.string().allow(null).allow('').max(500),
+        ad_usr: Joi.number().integer().required(),
+        
+    })
+}), verificaToken, corretor_funcionarioController.create)
+
+routes.put('/corretor_funcionario/:corretorFuncionario_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        corretorFuncionario_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        corretor_id: Joi.number().integer().required(),
+        nome: Joi.string().required().max(150),
+        cargo: Joi.string().allow(null).allow('').max(150),
+        aniversario: Joi.string().allow(null).allow('').max(50),
+        celular: Joi.string().allow(null).allow('').max(50),
+        email: Joi.string().allow(null).allow('').max(100),
+        observacao: Joi.string().allow(null).allow('').max(500),
+        ad_usr: Joi.number().integer().required(),
+        
+    })
+}), verificaToken, corretor_funcionarioController.update)
+
+routes.delete('/corretor_funcionario/:corretorFuncionario_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        corretorFuncionario_id: Joi.number().integer().required()
+    }),
+}), verificaToken, corretor_funcionarioController.destroy)
+
+
+
+
+//CORRETOR_PRODUTOR
+//-------------------------------------------------------------------------------------------------------------
+const corretor_produtorController = require('./src/controllers/corretor_produtorController')
+
+routes.post('/corretor_produtorConta', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), corretor_produtorController.count)
+
+routes.post('/corretor_produtorListaTodos', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), corretor_produtorController.listaTodos)
+
+routes.post('/corretor_produtorListaUm/:corretorProdutor_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        corretorProdutor_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, corretor_produtorController.listaUm)
+
+routes.post('/corretor_produtor', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        corretor_id: Joi.number().integer().required(),
+        produtor_id: Joi.number().integer().required(),
+        ad_usr: Joi.number().integer().required(),
+        
+    })
+}), verificaToken, corretor_produtorController.create)
+
+routes.put('/corretor_produtor/:corretorProdutor_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        corretorProdutor_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        corretor_id: Joi.number().integer().required(),
+        produtor_id: Joi.number().integer().required(),
+        ad_usr: Joi.number().integer().required(),
+        
+    })
+}), verificaToken, corretor_produtorController.update)
+
+routes.delete('/corretor_produtor/:corretorProdutor_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        corretorProdutor_id: Joi.number().integer().required()
+    }),
+}), verificaToken, corretor_produtorController.destroy)
+
+
+
+//DOCUMENTO
+//-------------------------------------------------------------------------------------------------------------
+const documentoController = require('./src/controllers/documentoController')
+
+routes.post('/documentoConta', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), documentoController.count)
+
+routes.post('/documentoListaTodos', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), documentoController.listaTodos)
+
+routes.post('/documentoListaUm/:documento_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        documento_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, documentoController.listaUm)
+
+routes.post('/documento', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        favorecido_id: Joi.number().integer().allow(null).allow(''),
+        tomador_id: Joi.number().integer().allow(null).allow(''),
+        arquivo: Joi.string().required().max(500),
+        uuid: Joi.string().required().max(50),
+        ad_usr: Joi.number().integer().required(),
+        
+    })
+}), verificaToken, documentoController.create)
+
+routes.put('/documento/:documento_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        documento_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        favorecido_id: Joi.number().integer().allow(null).allow(''),
+        tomador_id: Joi.number().integer().allow(null).allow(''),
+        arquivo: Joi.string().required().max(500),
+        uuid: Joi.string().required().max(50),
+        ad_usr: Joi.number().integer().required(),
+        
+    })
+}), verificaToken, documentoController.update)
+
+routes.delete('/documento/:documento_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        documento_id: Joi.number().integer().required()
+    }),
+}), verificaToken, documentoController.destroy)
+
+
+
+
+
+//EMISSAO
+//-------------------------------------------------------------------------------------------------------------
+const emissaoController = require('./src/controllers/emissaoController')
+
+routes.post('/emissaoConta', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), emissaoController.count)
+
+routes.post('/emissaoListaTodos', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), emissaoController.listaTodos)
+
+routes.post('/emissaoListaUm/:emissao_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        emissao_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, emissaoController.listaUm)
+
+routes.post('/emissao', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        pin: Joi.string().allow(null).allow('').max(50),
+        dataEmissao: Joi.string().allow(null).allow(''),
+        dataInicio: Joi.string().allow(null).allow(''),
+        dataVencimento: Joi.string().allow(null).allow(''),
+        dias: Joi.number().integer().allow(null).allow(''),
+        dataVencimentoIndeterminado: Joi.number().integer().allow(null).allow(''),
+        valor: Joi.number().allow(null).allow(''),
+        valorExtenso: Joi.string().allow(null).allow('').max(200),
+        modalidade_id: Joi.number().integer().allow(null).allow(''),
+        modalidadeTexto: Joi.string().allow(null).allow('').max(5000),
+        objeto: Joi.string().allow(null).allow('').max(5000),
+        textoFianca: Joi.string().allow(null).allow(''),
+        documento: Joi.string().allow(null).allow('').max(3000),
+        sinistro: Joi.number().integer().allow(null).allow(''),
+        bloqueada: Joi.number().integer().allow(null).allow(''),
+        taxa: Joi.string().allow(null).allow('').max(50),
+        premio: Joi.string().allow(null).allow('').max(50),
+        pago: Joi.number().integer().allow(null).allow(''),
+        valorPago: Joi.number().allow(null).allow(''),
+        minuta: Joi.number().integer().allow(null).allow(''),
+        garantia: Joi.number().integer().allow(null).allow(''),
+        ad_usr: Joi.number().integer().required(),
+        
+    })
+}), verificaToken, emissaoController.create)
+
+routes.put('/emissao/:emissao_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        emissao_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        pin: Joi.string().allow(null).allow('').max(50),
+        dataEmissao: Joi.string().allow(null).allow(''),
+        dataInicio: Joi.string().allow(null).allow(''),
+        dataVencimento: Joi.string().allow(null).allow(''),
+        dias: Joi.number().integer().allow(null).allow(''),
+        dataVencimentoIndeterminado: Joi.number().integer().allow(null).allow(''),
+        valor: Joi.number().allow(null).allow(''),
+        valorExtenso: Joi.string().allow(null).allow('').max(200),
+        modalidade_id: Joi.number().integer().allow(null).allow(''),
+        modalidadeTexto: Joi.string().allow(null).allow('').max(5000),
+        objeto: Joi.string().allow(null).allow('').max(5000),
+        textoFianca: Joi.string().allow(null).allow(''),
+        documento: Joi.string().allow(null).allow('').max(3000),
+        sinistro: Joi.number().integer().allow(null).allow(''),
+        bloqueada: Joi.number().integer().allow(null).allow(''),
+        taxa: Joi.string().allow(null).allow('').max(50),
+        premio: Joi.string().allow(null).allow('').max(50),
+        pago: Joi.number().integer().allow(null).allow(''),
+        valorPago: Joi.number().allow(null).allow(''),
+        minuta: Joi.number().integer().allow(null).allow(''),
+        garantia: Joi.number().integer().allow(null).allow(''),
+        ad_usr: Joi.number().integer().required(),
+        
+    })
+}), verificaToken, emissaoController.update)
+
+routes.delete('/emissao/:emissao_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        emissao_id: Joi.number().integer().required()
+    }),
+}), verificaToken, emissaoController.destroy)
+
+
+
+//EMISSAO_COBERTURA
+//-------------------------------------------------------------------------------------------------------------
+const emissao_coberturaController = require('./src/controllers/emissao_coberturaController')
+
+routes.post('/emissao_coberturaConta', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), emissao_coberturaController.count)
+
+routes.post('/emissao_coberturaListaTodos', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), emissao_coberturaController.listaTodos)
+
+routes.post('/emissao_coberturaListaUm/:emissaoCobertura_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        emissaoCobertura_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, emissao_coberturaController.listaUm)
+
+routes.post('/emissao_cobertura', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        emissao_id: Joi.number().integer().required(),
+        cobertura_id: Joi.number().integer().required(),
+        ad_usr: Joi.number().integer().required(),
+        
+    })
+}), verificaToken, emissao_coberturaController.create)
+
+routes.put('/emissao_cobertura/:emissaoCobertura_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        emissaoCobertura_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        emissao_id: Joi.number().integer().required(),
+        cobertura_id: Joi.number().integer().required(),
+        ad_usr: Joi.number().integer().required(),
+        
+    })
+}), verificaToken, emissao_coberturaController.update)
+
+routes.delete('/emissao_cobertura/:emissaoCobertura_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        emissaoCobertura_id: Joi.number().integer().required()
+    }),
+}), verificaToken, emissao_coberturaController.destroy)
+
+
+
+
+//EMISSAO_DOCUMENTO
+//-------------------------------------------------------------------------------------------------------------
+const emissao_documentoController = require('./src/controllers/emissao_documentoController')
+
+routes.post('/emissao_documentoConta', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), emissao_documentoController.count)
+
+routes.post('/emissao_documentoListaTodos', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), emissao_documentoController.listaTodos)
+
+routes.post('/emissao_documentoListaUm/:documento_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        documento_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, emissao_documentoController.listaUm)
+
+routes.post('/emissao_documento', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        emissao_id: Joi.number().integer().required(),
+        arquivo: Joi.string().required().max(200),
+        ad_usr: Joi.number().integer().required(),
+        
+    })
+}), verificaToken, emissao_documentoController.create)
+
+routes.put('/emissao_documento/:documento_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        documento_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        emissao_id: Joi.number().integer().required(),
+        arquivo: Joi.string().required().max(200),
+        ad_usr: Joi.number().integer().required(),
+        
+    })
+}), verificaToken, emissao_documentoController.update)
+
+routes.delete('/emissao_documento/:documento_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        documento_id: Joi.number().integer().required()
+    }),
+}), verificaToken, emissao_documentoController.destroy)
+
+
+
+
+//EMISSAO_FAVORECIDO
+//-------------------------------------------------------------------------------------------------------------
+const emissao_favorecidoController = require('./src/controllers/emissao_favorecidoController')
+
+routes.post('/emissao_favorecidoConta', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), emissao_favorecidoController.count)
+
+routes.post('/emissao_favorecidoListaTodos', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), emissao_favorecidoController.listaTodos)
+
+routes.post('/emissao_favorecidoListaUm/:emissaoFavorecido_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        emissaoFavorecido_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, emissao_favorecidoController.listaUm)
+
+routes.post('/emissao_favorecido', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        emissao_id: Joi.number().integer().required(),
+        favorecido_id: Joi.number().integer().required(),
+        ad_usr: Joi.number().integer().required(),
+        
+    })
+}), verificaToken, emissao_favorecidoController.create)
+
+routes.put('/emissao_favorecido/:emissaoFavorecido_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        emissaoFavorecido_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        emissao_id: Joi.number().integer().required(),
+        favorecido_id: Joi.number().integer().required(),
+        ad_usr: Joi.number().integer().required(),
+        
+    })
+}), verificaToken, emissao_favorecidoController.update)
+
+routes.delete('/emissao_favorecido/:emissaoFavorecido_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        emissaoFavorecido_id: Joi.number().integer().required()
+    }),
+}), verificaToken, emissao_favorecidoController.destroy)
+
+
+
+
+//EMISSAO_TOMADOR
+//-------------------------------------------------------------------------------------------------------------
+const emissao_tomadorController = require('./src/controllers/emissao_tomadorController')
+
+routes.post('/emissao_tomadorConta', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), emissao_tomadorController.count)
+
+routes.post('/emissao_tomadorListaTodos', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), emissao_tomadorController.listaTodos)
+
+routes.post('/emissao_tomadorListaUm/:emissaoTomador_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        emissaoTomador_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, emissao_tomadorController.listaUm)
+
+routes.post('/emissao_tomador', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        emissao_id: Joi.number().integer().required(),
+        tomador_id: Joi.number().integer().required(),
+        ad_usr: Joi.number().integer().required(),
+        
+    })
+}), verificaToken, emissao_tomadorController.create)
+
+routes.put('/emissao_tomador/:emissaoTomador_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        emissaoTomador_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        emissao_id: Joi.number().integer().required(),
+        tomador_id: Joi.number().integer().required(),
+        ad_usr: Joi.number().integer().required(),
+        
+    })
+}), verificaToken, emissao_tomadorController.update)
+
+routes.delete('/emissao_tomador/:emissaoTomador_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        emissaoTomador_id: Joi.number().integer().required()
+    }),
+}), verificaToken, emissao_tomadorController.destroy)
+
+
+
+//ESTADO_CIVIL
+//-------------------------------------------------------------------------------------------------------------
+const estado_civilController = require('./src/controllers/estado_civilController')
+
+routes.post('/estado_civilConta', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), estado_civilController.count)
+
+routes.post('/estado_civilListaTodos', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), estado_civilController.listaTodos)
+
+routes.post('/estado_civilListaUm/:estadoCivil_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        estadoCivil_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, estado_civilController.listaUm)
+
+routes.post('/estado_civil', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        descricao: Joi.string().required().max(50),
+    })
+}), verificaToken, estado_civilController.create)
+
+routes.put('/estado_civil/:estadoCivil_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        estadoCivil_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        descricao: Joi.string().required().max(50),
+    })
+}), verificaToken, estado_civilController.update)
+
+routes.delete('/estado_civil/:estadoCivil_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        estadoCivil_id: Joi.number().integer().required()
+    }),
+}), verificaToken, estado_civilController.destroy)
+
+
+
+
+//EXPEDICAO
+//-------------------------------------------------------------------------------------------------------------
+const expedicaoController = require('./src/controllers/expedicaoController')
+
+routes.post('/expedicaoConta', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), expedicaoController.count)
+
+routes.post('/expedicaoListaTodos', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), expedicaoController.listaTodos)
+
+routes.post('/expedicaoListaUm/:expedicao_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        expedicao_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, expedicaoController.listaUm)
+
+routes.post('/expedicao', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        descricao: Joi.string().required().max(6),
+    })
+}), verificaToken, expedicaoController.create)
+
+routes.put('/expedicao/:expedicao_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        expedicao_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        descricao: Joi.string().required().max(6),
+    })
+}), verificaToken, expedicaoController.update)
+
+routes.delete('/expedicao/:expedicao_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        expedicao_id: Joi.number().integer().required()
+    }),
+}), verificaToken, expedicaoController.destroy)
+
+
+
+
+//FAVORECIDO
+//-------------------------------------------------------------------------------------------------------------
+const favorecidoController = require('./src/controllers/favorecidoController')
+
+routes.post('/favorecidoBusca', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        descricao: Joi.string().min(3).max(100)
+    })
+}), favorecidoController.busca)
+
+routes.post('/favorecidoListaTabela', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), favorecidoController.listaTabela)
+
+routes.post('/favorecidoConta', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), favorecidoController.count)
+
+routes.post('/favorecidoListaTodos', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), favorecidoController.listaTodos)
+
+routes.post('/favorecidoListaUm/:favorecido_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        favorecido_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, favorecidoController.listaUm)
+
+routes.post('/favorecido', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        tipo: Joi.number().integer().required(),
+        cpf: Joi.string().allow(null).allow('').max(11),
+        cnpj: Joi.string().allow(null).allow('').max(14),
+        nome: Joi.string().allow(null).allow('').max(250),
+        nomeFantasia: Joi.string().allow(null).allow('').max(250),
+        razaoSocial: Joi.string().allow(null).allow('').max(250),
+        cep: Joi.string().allow(null).allow('').max(50),
+        ibge_codigo: Joi.string().allow(null).allow('').max(7),
+        ibge_descri: Joi.string().allow(null).allow('').max(250),
+        uf: Joi.string().allow(null).allow('').max(2),
+        logradouro: Joi.string().allow(null).allow('').max(500),
+        numero: Joi.string().allow(null).allow('').max(150),
+        complemento: Joi.string().allow(null).allow('').max(100),
+        bairro: Joi.string().allow(null).allow('').max(150),
+        telefoneFixo: Joi.string().allow(null).allow('').max(100),
+        telefoneCelular: Joi.string().allow(null).allow('').max(100),
+        email: Joi.string().allow(null).allow('').max(100),
+        pessoaContato: Joi.string().allow(null).allow('').max(250),
+        emailPessoaContato: Joi.string().allow(null).allow('').max(250),
+        telefoneFixoPessoaContato: Joi.string().allow(null).allow('').max(100),
+        telefoneCelularPessoaContato: Joi.string().allow(null).allow('').max(100),
+        observacao: Joi.string().allow(null).allow('').max(1000),
+        cnae: Joi.string().allow(null).allow('').max(50),
+        cnaeDescricao: Joi.string().allow(null).allow('').max(250),
+        capitalSocial: Joi.string().allow(null).allow('').max(50),
+        naturezaJuridica: Joi.string().allow(null).allow('').max(250),
+        situacao: Joi.string().allow(null).allow('').max(150),
+        dataAbertura: Joi.string().allow(null).allow('').max(50),
+        dataUltimaAtualizacao: Joi.string().allow(null).allow('').max(50),
+        tipoEmpresa: Joi.string().allow(null).allow('').max(50),
+        porte: Joi.string().allow(null).allow('').max(250),
+        dataSituacao: Joi.string().allow(null).allow('').max(50),
+        motivoSituacao: Joi.string().allow(null).allow('').max(250),
+        situacaoEspecial: Joi.string().allow(null).allow('').max(250),
+        dataSituacaoEspecial: Joi.string().allow(null).allow('').max(50),
+        ad_usr: Joi.number().integer().required(),
+    })
+}), verificaToken, favorecidoController.create)
+
+routes.put('/favorecido/:favorecido_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        favorecido_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        tipo: Joi.number().integer().required(),
+        cpf: Joi.string().allow(null).allow('').max(11),
+        cnpj: Joi.string().allow(null).allow('').max(14),
+        nome: Joi.string().allow(null).allow('').max(250),
+        nomeFantasia: Joi.string().allow(null).allow('').max(250),
+        razaoSocial: Joi.string().allow(null).allow('').max(250),
+        cep: Joi.string().allow(null).allow('').max(50),
+        ibge_codigo: Joi.string().allow(null).allow('').max(7),
+        ibge_descri: Joi.string().allow(null).allow('').max(250),
+        uf: Joi.string().allow(null).allow('').max(2),
+        logradouro: Joi.string().allow(null).allow('').max(500),
+        numero: Joi.string().allow(null).allow('').max(150),
+        complemento: Joi.string().allow(null).allow('').max(100),
+        bairro: Joi.string().allow(null).allow('').max(150),
+        telefoneFixo: Joi.string().allow(null).allow('').max(100),
+        telefoneCelular: Joi.string().allow(null).allow('').max(100),
+        email: Joi.string().allow(null).allow('').max(100),
+        pessoaContato: Joi.string().allow(null).allow('').max(250),
+        emailPessoaContato: Joi.string().allow(null).allow('').max(250),
+        telefoneFixoPessoaContato: Joi.string().allow(null).allow('').max(100),
+        telefoneCelularPessoaContato: Joi.string().allow(null).allow('').max(100),
+        observacao: Joi.string().allow(null).allow('').max(1000),
+        cnae: Joi.string().allow(null).allow('').max(50),
+        cnaeDescricao: Joi.string().allow(null).allow('').max(250),
+        capitalSocial: Joi.string().allow(null).allow('').max(50),
+        naturezaJuridica: Joi.string().allow(null).allow('').max(250),
+        situacao: Joi.string().allow(null).allow('').max(150),
+        dataAbertura: Joi.string().allow(null).allow('').max(50),
+        dataUltimaAtualizacao: Joi.string().allow(null).allow('').max(50),
+        tipoEmpresa: Joi.string().allow(null).allow('').max(50),
+        porte: Joi.string().allow(null).allow('').max(250),
+        dataSituacao: Joi.string().allow(null).allow('').max(50),
+        motivoSituacao: Joi.string().allow(null).allow('').max(250),
+        situacaoEspecial: Joi.string().allow(null).allow('').max(250),
+        dataSituacaoEspecial: Joi.string().allow(null).allow('').max(50),
+        bloqueado: Joi.number().integer().allow(null).allow(''),
+        ad_usr: Joi.number().integer().required(),
+    })
+}), verificaToken, favorecidoController.update)
+
+routes.delete('/favorecido/:favorecido_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        favorecido_id: Joi.number().integer().required()
+    }),
+}), verificaToken, favorecidoController.destroy)
+
+
+
+
+//FINANCEIRO
+//-------------------------------------------------------------------------------------------------------------
+const financeiroController = require('./src/controllers/financeiroController')
+
+routes.post('/financeiroConta', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), financeiroController.count)
+
+routes.post('/financeiroListaTodos', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), financeiroController.listaTodos)
+
+routes.post('/financeiroListaUm/:financeiro_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        financeiro_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, financeiroController.listaUm)
+
+routes.post('/financeiro', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        formaPagamento_id: Joi.number().integer().required(),
+        corretor_id: Joi.number().integer().allow(null).allow(''),
+        produtor_id: Joi.number().integer().allow(null).allow(''),
+        pix_id: Joi.number().integer().allow(null).allow(''),
+        banco_id: Joi.number().integer().allow(null).allow(''),
+        agencia: Joi.string().allow(null).allow('').max(50),
+        conta: Joi.string().allow(null).allow('').max(50),
+        cpf: Joi.string().allow(null).allow('').max(50),
+        cnpj: Joi.string().allow(null).allow('').max(50),
+        nome: Joi.string().allow(null).allow('').max(150),
+        razaoSocial: Joi.string().allow(null).allow('').max(150),
+        pixCnpj: Joi.string().allow(null).allow('').max(50),
+        pixCpf: Joi.string().allow(null).allow('').max(50),
+        pixCelular: Joi.string().allow(null).allow('').max(50),
+        pixEmail: Joi.string().allow(null).allow('').max(50),
+        pixAleatorio: Joi.string().allow(null).allow('').max(50),
+        ad_usr: Joi.number().integer().required(),
+        
+    })
+}), verificaToken, financeiroController.create)
+
+routes.put('/financeiro/:financeiro_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        financeiro_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        formaPagamento_id: Joi.number().integer().required(),
+        corretor_id: Joi.number().integer().allow(null).allow(''),
+        produtor_id: Joi.number().integer().allow(null).allow(''),
+        pix_id: Joi.number().integer().allow(null).allow(''),
+        banco_id: Joi.number().integer().allow(null).allow(''),
+        agencia: Joi.string().allow(null).allow('').max(50),
+        conta: Joi.string().allow(null).allow('').max(50),
+        cpf: Joi.string().allow(null).allow('').max(50),
+        cnpj: Joi.string().allow(null).allow('').max(50),
+        nome: Joi.string().allow(null).allow('').max(150),
+        razaoSocial: Joi.string().allow(null).allow('').max(150),
+        pixCnpj: Joi.string().allow(null).allow('').max(50),
+        pixCpf: Joi.string().allow(null).allow('').max(50),
+        pixCelular: Joi.string().allow(null).allow('').max(50),
+        pixEmail: Joi.string().allow(null).allow('').max(50),
+        pixAleatorio: Joi.string().allow(null).allow('').max(50),
+        ad_usr: Joi.number().integer().required(),
+        
+    })
+}), verificaToken, financeiroController.update)
+
+routes.delete('/financeiro/:financeiro_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        financeiro_id: Joi.number().integer().required()
+    }),
+}), verificaToken, financeiroController.destroy)
+
+
+
+
+
+//IBGE
+//-------------------------------------------------------------------------------------------------------------
+const ibgeController = require('./src/controllers/ibgeController')
+
+routes.post('/ibgeConta', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, ibgeController.count)
+
+routes.post('/ibgeListaTodos', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, ibgeController.listaTodos)
+
+routes.post('/ibgeListaUm/:ibge_codigo', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        ibge_codigo: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, ibgeController.listaUm)
+
+routes.post('/ibge', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        ibge_descri: Joi.string().required().max(250),
+        uf_codigo: Joi.string().required().max(2),
+        uf_descri: Joi.string().required().max(150),
+    })
+}), verificaToken, ibgeController.create)
+
+routes.put('/ibge/:ibge_codigo', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        ibge_codigo: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        ibge_descri: Joi.string().required().max(250),
+        uf_codigo: Joi.string().required().max(2),
+        uf_descri: Joi.string().required().max(150),
+    })
+}), verificaToken, ibgeController.update)
+
+routes.delete('/ibge/:ibge_codigo', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        ibge_codigo: Joi.number().integer().required()
+    }),
+}), verificaToken, ibgeController.destroy)
+
+
+
+//LOGIN
+//-------------------------------------------------------------------------------------------------------------
+const loginController = require('./src/controllers/loginController')
+
+routes.post('/login', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cpf: Joi.string().required().min(11).max(11),
+        senha: Joi.string().required().max(32),
+    })
+}), verificaToken, loginController.login)
+
+
+
+//MODALIDADE
+//-------------------------------------------------------------------------------------------------------------
+const modalidadeController = require('./src/controllers/modalidadeController')
+
+routes.post('/modalidadeConta', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, modalidadeController.count)
+
+routes.post('/modalidadeListaTodos', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, modalidadeController.listaTodos)
+
+routes.post('/modalidadeListaUm/:modalidade_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        modalidade_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, modalidadeController.listaUm)
+
+routes.post('/modalidade', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        descricao: Joi.string().required().max(150),
+        textoPre: Joi.string().required(),
+        texto: Joi.string().required(),
+        ad_usr: Joi.number().integer().required(),
+        
+    })
+}), verificaToken, modalidadeController.create)
+
+routes.put('/modalidade/:modalidade_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        modalidade_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        descricao: Joi.string().required().max(150),
+        textoPre: Joi.string().required(),
+        texto: Joi.string().required(),
+        ad_usr: Joi.number().integer().required(),
+        
+    })
+}), verificaToken, modalidadeController.update)
+
+routes.delete('/modalidade/:modalidade_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        modalidade_id: Joi.number().integer().required()
+    }),
+}), verificaToken, modalidadeController.destroy)
+
+
+
+
+//NP
+//-------------------------------------------------------------------------------------------------------------
+const npController = require('./src/controllers/npController')
+
+routes.post('/npConta', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, npController.count)
+
+routes.post('/npListaTodos', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, npController.listaTodos)
+
+routes.post('/npListaUm/:np_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        np_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, npController.listaUm)
+
+routes.post('/np', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        emissao_id: Joi.number().integer().required(),
+        valor: Joi.number().required(),
+        valorExtenso: Joi.string().required().max(200),
+        ad_usr: Joi.number().integer().required(),
+        
+    })
+}), verificaToken, npController.create)
+
+routes.put('/np/:np_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        np_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        emissao_id: Joi.number().integer().required(),
+        valor: Joi.number().required(),
+        valorExtenso: Joi.string().required().max(200),
+        ad_usr: Joi.number().integer().required(),
+        
+    })
+}), verificaToken, npController.update)
+
+routes.delete('/np/:np_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        np_id: Joi.number().integer().required()
+    }),
+}), verificaToken, npController.destroy)
+
+
+
+
+
+//PERFIL
+//-------------------------------------------------------------------------------------------------------------
+const perfilController = require('./src/controllers/perfilController')
+
+routes.post('/perfilConta', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, perfilController.count)
+
+routes.post('/perfilListaTodos', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, perfilController.listaTodos)
+
+routes.post('/perfilListaUm/:perfil_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        perfil_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, perfilController.listaUm)
+
+routes.post('/perfil', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        descricao: Joi.string().required().max(50),
+        ad_usr: Joi.number().integer().required(),
+        
+    })
+}), verificaToken, perfilController.create)
+
+routes.put('/perfil/:perfil_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        perfil_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        descricao: Joi.string().required().max(50),
+        ad_usr: Joi.number().integer().required(),
+        
+    })
+}), verificaToken, perfilController.update)
+
+routes.delete('/perfil/:perfil_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        perfil_id: Joi.number().integer().required()
+    }),
+}), verificaToken, perfilController.destroy)
+
+
+
+
+
+//PIX
+//-------------------------------------------------------------------------------------------------------------
+const pixController = require('./src/controllers/pixController')
+
+routes.post('/pixConta', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, pixController.count)
+
+routes.post('/pixListaTodos', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, pixController.listaTodos)
+
+routes.post('/pixListaUm/:pix_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        pix_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })    
+}), verificaToken, pixController.listaUm)
+
+routes.post('/pix', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        descricao: Joi.string().required().max(50),
+    })
+}), verificaToken, pixController.create)
+
+routes.put('/pix/:pix_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        pix_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        descricao: Joi.string().required().max(50),
+    })
+}), verificaToken, pixController.update)
+
+routes.delete('/pix/:pix_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        pix_id: Joi.number().integer().required()
+    }),
+}), verificaToken, pixController.destroy)
+
+
+
+
+//PRODUTOR
+//-------------------------------------------------------------------------------------------------------------
+const produtorController = require('./src/controllers/produtorController')
+
+routes.post('/produtorBusca', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        descricao: Joi.string().min(3).max(100)
+    })
+}), produtorController.busca)
+
+routes.post('/produtorConta', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, produtorController.count)
+
+routes.post('/produtorListaTodos', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, produtorController.listaTodos)
+
+routes.post('/produtorListaUm/:produtor_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        produtor_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, produtorController.listaUm)
+
+routes.post('/produtor', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        tipo: Joi.number().integer().required(),
+        cpf: Joi.string().allow(null).allow('').max(11),
+        cnpj: Joi.string().allow(null).allow('').max(14),
+        nome: Joi.string().allow(null).allow('').max(250),
+        nomeFantasia: Joi.string().allow(null).allow('').max(250),
+        razaoSocial: Joi.string().allow(null).allow('').max(250),
+        cep: Joi.string().allow(null).allow('').max(50),
+        ibge_codigo: Joi.string().allow(null).allow('').max(7),
+        ibge_descri: Joi.string().allow(null).allow('').max(250),
+        uf: Joi.string().allow(null).allow('').max(2),
+        logradouro: Joi.string().allow(null).allow('').max(500),
+        numero: Joi.string().allow(null).allow('').max(150),
+        complemento: Joi.string().allow(null).allow('').max(100),
+        bairro: Joi.string().allow(null).allow('').max(150),
+        telefoneFixo: Joi.string().allow(null).allow('').max(100),
+        telefoneCelular: Joi.string().allow(null).allow('').max(100),
+        email: Joi.string().allow(null).allow('').max(100),
+        pessoaContato: Joi.string().allow(null).allow('').max(150),
+        emailPessoaContato: Joi.string().allow(null).allow('').max(150),
+        telefoneFixoPessoaContato: Joi.string().allow(null).allow('').max(100),
+        telefoneCelularPessoaContato: Joi.string().allow(null).allow('').max(100),
+        observacao: Joi.string().allow(null).allow('').max(1000),
+        comissaoPorcentagem: Joi.number().allow(null).allow(''),
+        premioMinimo: Joi.number().allow(null).allow(''),
+        cnae: Joi.string().allow(null).allow('').max(50),
+        cnaeDescricao: Joi.string().allow(null).allow('').max(250),
+        capitalSocial: Joi.string().allow(null).allow('').max(50),
+        naturezaJuridica: Joi.string().allow(null).allow('').max(250),
+        situacao: Joi.string().allow(null).allow('').max(150),
+        dataAbertura: Joi.string().allow(null).allow('').max(50),
+        dataUltimaAtualizacao: Joi.string().allow(null).allow('').max(50),
+        tipoEmpresa: Joi.string().allow(null).allow('').max(50),
+        porte: Joi.string().allow(null).allow('').max(250),
+        dataSituacao: Joi.string().allow(null).allow('').max(50),
+        motivoSituacao: Joi.string().allow(null).allow('').max(250),
+        situacaoEspecial: Joi.string().allow(null).allow('').max(250),
+        dataSituacaoEspecial: Joi.string().allow(null).allow('').max(50),
+        susep: Joi.string().allow(null).allow('').max(50),
+        bloqueado: Joi.number().integer().allow(null).allow(''),
+        ad_usr: Joi.number().integer().required(),
+    })
+}), verificaToken, produtorController.create)
+
+routes.put('/produtor/:produtor_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        produtor_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        tipo: Joi.number().integer().required(),
+        cpf: Joi.string().allow(null).allow('').max(11),
+        cnpj: Joi.string().allow(null).allow('').max(14),
+        nome: Joi.string().allow(null).allow('').max(250),
+        nomeFantasia: Joi.string().allow(null).allow('').max(250),
+        razaoSocial: Joi.string().allow(null).allow('').max(250),
+        cep: Joi.string().allow(null).allow('').max(50),
+        ibge_codigo: Joi.string().allow(null).allow('').max(7),
+        ibge_descri: Joi.string().allow(null).allow('').max(250),
+        uf: Joi.string().allow(null).allow('').max(2),
+        logradouro: Joi.string().allow(null).allow('').max(500),
+        numero: Joi.string().allow(null).allow('').max(150),
+        complemento: Joi.string().allow(null).allow('').max(100),
+        bairro: Joi.string().allow(null).allow('').max(150),
+        telefoneFixo: Joi.string().allow(null).allow('').max(100),
+        telefoneCelular: Joi.string().allow(null).allow('').max(100),
+        email: Joi.string().allow(null).allow('').max(100),
+        pessoaContato: Joi.string().allow(null).allow('').max(150),
+        emailPessoaContato: Joi.string().allow(null).allow('').max(150),
+        telefoneFixoPessoaContato: Joi.string().allow(null).allow('').max(100),
+        telefoneCelularPessoaContato: Joi.string().allow(null).allow('').max(100),
+        observacao: Joi.string().allow(null).allow('').max(1000),
+        comissaoPorcentagem: Joi.number().allow(null).allow(''),
+        premioMinimo: Joi.number().allow(null).allow(''),
+        cnae: Joi.string().allow(null).allow('').max(50),
+        cnaeDescricao: Joi.string().allow(null).allow('').max(250),
+        capitalSocial: Joi.string().allow(null).allow('').max(50),
+        naturezaJuridica: Joi.string().allow(null).allow('').max(250),
+        situacao: Joi.string().allow(null).allow('').max(150),
+        dataAbertura: Joi.string().allow(null).allow('').max(50),
+        dataUltimaAtualizacao: Joi.string().allow(null).allow('').max(50),
+        tipoEmpresa: Joi.string().allow(null).allow('').max(50),
+        porte: Joi.string().allow(null).allow('').max(250),
+        dataSituacao: Joi.string().allow(null).allow('').max(50),
+        motivoSituacao: Joi.string().allow(null).allow('').max(250),
+        situacaoEspecial: Joi.string().allow(null).allow('').max(250),
+        dataSituacaoEspecial: Joi.string().allow(null).allow('').max(50),
+        susep: Joi.string().allow(null).allow('').max(50),
+        bloqueado: Joi.number().integer().allow(null).allow(''),
+        ad_usr: Joi.number().integer().required(),
+    })
+}), verificaToken, produtorController.update)
+
+routes.delete('/produtor/:produtor_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        produtor_id: Joi.number().integer().required()
+    }),
+}), verificaToken, produtorController.destroy)
+
+
+
+
+//TOMADOR
+//-------------------------------------------------------------------------------------------------------------
+const tomadorController = require('./src/controllers/tomadorController')
+
+routes.post('/tomadorVerificaDuplicidade', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        documento: Joi.string().required().max(14),
+    })
+}), tomadorController.verificaDuplicidade)
+
+routes.post('/tomadorBusca', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        descricao: Joi.string().min(3).max(100)
+    })
+}), tomadorController.busca)
+
+routes.post('/tomadorListaTabela', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), tomadorController.listaTabela)
+
+routes.post('/tomadorConta', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, tomadorController.count)
+
+routes.post('/tomadorListaTodos', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, tomadorController.listaTodos)
+
+routes.post('/tomadorListaUm/:tomador_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        tomador_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, tomadorController.listaUm)
+
+routes.post('/tomador', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        tipo: Joi.number().integer().required(),
+        cpf: Joi.string().allow(null).allow('').max(11),
+        cnpj: Joi.string().allow(null).allow('').max(14),
+        nome: Joi.string().allow(null).allow('').max(250),
+        nomeFantasia: Joi.string().allow(null).allow('').max(250),
+        razaoSocial: Joi.string().allow(null).allow('').max(250),
+        cep: Joi.string().allow(null).allow('').max(50),
+        ibge_codigo: Joi.string().allow(null).allow('').max(7),
+        ibge_descri: Joi.string().allow(null).allow('').max(250),
+        uf: Joi.string().allow(null).allow('').max(2),
+        logradouro: Joi.string().allow(null).allow('').max(500),
+        numero: Joi.string().allow(null).allow('').max(150),
+        complemento: Joi.string().allow(null).allow('').max(100),
+        bairro: Joi.string().allow(null).allow('').max(150),
+        telefoneFixo: Joi.string().allow(null).allow('').max(100),
+        telefoneCelular: Joi.string().allow(null).allow('').max(100),
+        email: Joi.string().allow(null).allow('').max(100),
+        pessoaContato: Joi.string().allow(null).allow('').max(250),
+        emailPessoaContato: Joi.string().allow(null).allow('').max(250),
+        telefoneFixoPessoaContato: Joi.string().allow(null).allow('').max(100),
+        telefoneCelularPessoaContato: Joi.string().allow(null).allow('').max(100),
+        observacao: Joi.string().allow(null).allow('').max(1000),
+        cnae: Joi.string().allow(null).allow('').max(50),
+        cnaeDescricao: Joi.string().allow(null).allow('').max(250),
+        capitalSocial: Joi.string().allow(null).allow('').max(50),
+        naturezaJuridica: Joi.string().allow(null).allow('').max(250),
+        situacao: Joi.string().allow(null).allow('').max(150),
+        dataAbertura: Joi.string().allow(null).allow('').max(50),
+        dataUltimaAtualizacao: Joi.string().allow(null).allow('').max(50),
+        tipoEmpresa: Joi.string().allow(null).allow('').max(50),
+        porte: Joi.string().allow(null).allow('').max(250),
+        dataSituacao: Joi.string().allow(null).allow('').max(50),
+        motivoSituacao: Joi.string().allow(null).allow('').max(250),
+        situacaoEspecial: Joi.string().allow(null).allow('').max(250),
+        dataSituacaoEspecial: Joi.string().allow(null).allow('').max(50),
+        restricao: Joi.number().integer().allow(null).allow(''),
+        bloqueado: Joi.number().integer().allow(null).allow(''),
+        ad_usr: Joi.number().integer().required(),
+        
+    })
+}), verificaToken, tomadorController.create)
+
+routes.put('/tomador/:tomador_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        tomador_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        tipo: Joi.number().integer().required(),
+        cpf: Joi.string().allow(null).allow('').max(11),
+        cnpj: Joi.string().allow(null).allow('').max(14),
+        nome: Joi.string().allow(null).allow('').max(250),
+        nomeFantasia: Joi.string().allow(null).allow('').max(250),
+        razaoSocial: Joi.string().allow(null).allow('').max(250),
+        cep: Joi.string().allow(null).allow('').max(50),
+        ibge_codigo: Joi.string().allow(null).allow('').max(7),
+        ibge_descri: Joi.string().allow(null).allow('').max(250),
+        uf: Joi.string().allow(null).allow('').max(2),
+        logradouro: Joi.string().allow(null).allow('').max(500),
+        numero: Joi.string().allow(null).allow('').max(150),
+        complemento: Joi.string().allow(null).allow('').max(100),
+        bairro: Joi.string().allow(null).allow('').max(150),
+        telefoneFixo: Joi.string().allow(null).allow('').max(100),
+        telefoneCelular: Joi.string().allow(null).allow('').max(100),
+        email: Joi.string().allow(null).allow('').max(100),
+        pessoaContato: Joi.string().allow(null).allow('').max(250),
+        emailPessoaContato: Joi.string().allow(null).allow('').max(250),
+        telefoneFixoPessoaContato: Joi.string().allow(null).allow('').max(100),
+        telefoneCelularPessoaContato: Joi.string().allow(null).allow('').max(100),
+        observacao: Joi.string().allow(null).allow('').max(1000),
+        cnae: Joi.string().allow(null).allow('').max(50),
+        cnaeDescricao: Joi.string().allow(null).allow('').max(250),
+        capitalSocial: Joi.string().allow(null).allow('').max(50),
+        naturezaJuridica: Joi.string().allow(null).allow('').max(250),
+        situacao: Joi.string().allow(null).allow('').max(150),
+        dataAbertura: Joi.string().allow(null).allow('').max(50),
+        dataUltimaAtualizacao: Joi.string().allow(null).allow('').max(50),
+        tipoEmpresa: Joi.string().allow(null).allow('').max(50),
+        porte: Joi.string().allow(null).allow('').max(250),
+        dataSituacao: Joi.string().allow(null).allow('').max(50),
+        motivoSituacao: Joi.string().allow(null).allow('').max(250),
+        situacaoEspecial: Joi.string().allow(null).allow('').max(250),
+        dataSituacaoEspecial: Joi.string().allow(null).allow('').max(50),
+        restricao: Joi.number().integer().allow(null).allow(''),
+        bloqueado: Joi.number().integer().allow(null).allow(''),
+        ad_usr: Joi.number().integer().required(),
+        
+    })
+}), verificaToken, tomadorController.update)
+
+routes.delete('/tomador/:tomador_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        tomador_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required()
+    })
+}), verificaToken, tomadorController.destroy)
+
+
+
+
+//TOMADOR_CORRETOR
+//-------------------------------------------------------------------------------------------------------------
+const tomadorCorretorController = require('./src/controllers/tomadorCorretorController')
+
+routes.post('/tomadorCorretorConta', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, tomadorCorretorController.count)
+
+routes.post('/tomadorCorretorListaTodos', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, tomadorCorretorController.listaTodos)
+
+routes.post('/tomadorCorretorListaUm/:tomadorCorretor_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        tomadorCorretor_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, tomadorCorretorController.listaUm)
+
+routes.post('/tomadorCorretor', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        tomador_id: Joi.number().integer().required(),
+        corretor_id: Joi.number().integer().required(),
+        ad_usr: Joi.number().integer().required(),
+        
+    })
+}), verificaToken, tomadorCorretorController.create)
+
+routes.delete('/tomadorCorretor/:tomadorCorretor_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        tomadorCorretor_id: Joi.number().integer().required()
+    }),
+}), verificaToken, tomadorCorretorController.destroy)
+
+
+
+//USUARIO
+//-------------------------------------------------------------------------------------------------------------
+const usuarioController = require('./src/controllers/usuarioController')
+
+routes.post('/usuarioConta', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, usuarioController.count)
+
+routes.post('/usuarioListaTabela', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, usuarioController.listaTabela)
+
+routes.post('/usuarioListaTodos', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, usuarioController.listaTodos)
+
+routes.post('/usuarioListaUm/:usuario_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        usuario_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), verificaToken, usuarioController.listaUm)
+
+routes.post('/usuario', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        perfil_id: Joi.number().integer().required(),
+        produtor_id: Joi.number().integer().allow(null).allow(''),
+        corretor_id: Joi.number().integer().allow(null).allow(''),
+        cpf: Joi.string().required().max(11),
+        nome: Joi.string().required().max(150),
+        email: Joi.string().required().max(150),
+        senha: Joi.string().required().max(50),
+        ad_usr: Joi.number().integer().required(),
+    })
+}), verificaToken, usuarioController.create)
+
+routes.put('/usuario/:usuario_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        usuario_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        perfil_id: Joi.number().integer().required(),
+        produtor_id: Joi.number().integer().allow(null).allow(''),
+        corretor_id: Joi.number().integer().allow(null).allow(''),
+        nome: Joi.string().required().max(150),
+        email: Joi.string().required().max(150),
+        bloqueado: Joi.number().integer().allow(null).allow(''),
+        ad_usr: Joi.number().integer().required(),
+    })
+}), verificaToken, usuarioController.update)
+
+routes.post('/usuarioAlteraSenha/:usuario_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        usuario_id: Joi.number().integer().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        senha: Joi.string().required().max(50),
+        ad_usr: Joi.number().integer().required(),
+    })
+}), verificaToken, usuarioController.alteraSenha)
+
+routes.delete('/usuario/:usuario_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        usuario_id: Joi.number().integer().required()
+    }),
+}), verificaToken, usuarioController.destroy)
+
+
+module.exports = routes
