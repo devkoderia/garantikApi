@@ -3,21 +3,32 @@ const { executeQuery } = require('../services/generalFunctions');
 
 module.exports = {
 
-    async count(_, response) {
-        const strsql = `select count(*) as total from AVALISTA where (deletado = 0 or deletado is null)`;
+    async count(request, response) {
+
+        const { cliente_id } = request.body;
+        
+        const strsql = `select count(*) as total from AVALISTA where (deletado = 0 or deletado is null) and cliente_id = ${cliente_id}`;
         const resultado = await executeQuery(strsql);
+
         response.status(200).send(resultado);
     },
 
     async destroy(request, response) {
+
         const { avalista_id } = request.params;
-        const strsql = `update AVALISTA set deletado = 1 where avalista_id = ${avalista_id}`;
+        const { cliente_id } = request.body;
+
+        const strsql = `update AVALISTA set deletado = 1 where avalista_id = ${avalista_id} and cliente_id = ${cliente_id}`;
+
         await executeQuery(strsql);
         response.status(200).json([{ status: 'ok' }]);
     },
 
     async listaUm(request, response) {
+
         const { avalista_id } = request.params;
+        const { cliente_id } = request.body;
+
         const strsql = `select 
                 AVALISTA.avalista_id,
                 AVALISTA.cliente_id,
@@ -65,12 +76,16 @@ module.exports = {
                 AVALISTA.ad_usr,
                 AVALISTA.deletado
             from AVALISTA
-            where (AVALISTA.deletado = 0 or AVALISTA.deletado is null) and avalista_id = ${avalista_id}`;
+            where (AVALISTA.deletado = 0 or AVALISTA.deletado is null) and avalista_id = ${avalista_id} and cliente_id = ${cliente_id}`;
+
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
     },
 
-    async listaTodos(_, response) {
+    async listaTodos(request, response) {
+
+        const { cliente_id } = request.body;
+        
         const strsql = `select 
                 AVALISTA.avalista_id,
                 AVALISTA.cliente_id,
@@ -118,7 +133,8 @@ module.exports = {
                 AVALISTA.ad_usr,
                 AVALISTA.deletado
             from AVALISTA
-            where (AVALISTA.deletado = 0 or AVALISTA.deletado is null)`;
+            where (AVALISTA.deletado = 0 or AVALISTA.deletado is null) and cliente_id = ${cliente_id}`;
+
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
     },
@@ -268,6 +284,7 @@ module.exports = {
     },
 
     async update(request, response) {
+
         const { avalista_id } = request.params;
         const {
             cliente_id,
@@ -358,7 +375,8 @@ module.exports = {
                 AVALISTA.avalista = ${avalista},
                 AVALISTA.ad_upd = '${ad_upd}',
                 AVALISTA.ad_usr = ${ad_usr}
-            where avalista_id = ${avalista_id}`;
+            where avalista_id = ${avalista_id} and cliente_id = ${cliente_id}`;
+
         await executeQuery(strsql);
         response.status(200).json([{ status: 'ok' }]);
     },

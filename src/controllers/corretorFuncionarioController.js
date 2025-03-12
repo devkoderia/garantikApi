@@ -3,21 +3,32 @@ const { executeQuery } = require('../services/generalFunctions');
 
 module.exports = {
 
-    async count(_, response) {
-        const strsql = `select count(*) as total from CORRETOR_FUNCIONARIO where (deletado = 0 or deletado is null)`;
+    async count(request, response) {
+
+        const { cliente_id } = request.body;
+
+        const strsql = `select count(*) as total from CORRETOR_FUNCIONARIO where (deletado = 0 or deletado is null) and cliente_id = ${cliente_id}`;
+        
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
     },
 
     async destroy(request, response) {
+
         const { corretorFuncionario_id } = request.params;
-        const strsql = `update CORRETOR_FUNCIONARIO set deletado = 1 where corretorFuncionario_id = ${corretorFuncionario_id}`;
+        const { cliente_id } = request.body;
+
+        const strsql = `update CORRETOR_FUNCIONARIO set deletado = 1 where corretorFuncionario_id = ${corretorFuncionario_id} and cliente_id = ${cliente_id}`;
+
         await executeQuery(strsql);
         response.status(200).json([{ status: 'ok' }]);
     },
 
     async listaUm(request, response) {
+
         const { corretorFuncionario_id } = request.params;
+        const { cliente_id } = request.body;
+
         const strsql = `select 
                 CORRETOR_FUNCIONARIO.corretorFuncionario_id,
                 CORRETOR_FUNCIONARIO.cliente_id,
@@ -33,12 +44,16 @@ module.exports = {
                 CORRETOR_FUNCIONARIO.ad_usr,
                 CORRETOR_FUNCIONARIO.deletado
             from CORRETOR_FUNCIONARIO
-            where (CORRETOR_FUNCIONARIO.deletado = 0 or CORRETOR_FUNCIONARIO.deletado is null) and corretorFuncionario_id = ${corretorFuncionario_id}`;
+            where (CORRETOR_FUNCIONARIO.deletado = 0 or CORRETOR_FUNCIONARIO.deletado is null) and corretorFuncionario_id = ${corretorFuncionario_id} and cliente_id = ${cliente_id}`;
+
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
     },
 
-    async listaTodos(_, response) {
+    async listaTodos(request, response) {
+
+        const { cliente_id } = request.body;
+
         const strsql = `select 
                 CORRETOR_FUNCIONARIO.corretorFuncionario_id,
                 CORRETOR_FUNCIONARIO.cliente_id,
@@ -54,12 +69,14 @@ module.exports = {
                 CORRETOR_FUNCIONARIO.ad_usr,
                 CORRETOR_FUNCIONARIO.deletado
             from CORRETOR_FUNCIONARIO
-            where (CORRETOR_FUNCIONARIO.deletado = 0 or CORRETOR_FUNCIONARIO.deletado is null)`;
+            where (CORRETOR_FUNCIONARIO.deletado = 0 or CORRETOR_FUNCIONARIO.deletado is null) and cliente_id = ${cliente_id}`;
+
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
     },
 
     async create(request, response) {
+        
         const {
             cliente_id,
             corretor_id,
@@ -108,6 +125,7 @@ module.exports = {
     },
 
     async update(request, response) {
+
         const { corretorFuncionario_id } = request.params;
         const {
             cliente_id,
@@ -134,7 +152,7 @@ module.exports = {
                 CORRETOR_FUNCIONARIO.observacao = '${observacao}',
                 CORRETOR_FUNCIONARIO.ad_upd = '${ad_upd}',
                 CORRETOR_FUNCIONARIO.ad_usr = ${ad_usr}
-            where corretorFuncionario_id = ${corretorFuncionario_id}`;
+            where corretorFuncionario_id = ${corretorFuncionario_id} and cliente_id = ${cliente_id}`;
         await executeQuery(strsql);
         response.status(200).json([{ status: 'ok' }]);
     },

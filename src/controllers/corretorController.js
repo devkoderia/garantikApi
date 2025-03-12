@@ -4,7 +4,9 @@ const { executeQuery } = require('../services/generalFunctions');
 module.exports = {
 
     async busca(request, response) {
+
         const { cliente_id, descricao } = request.body;
+        
         const strsql = `select 
             CORRETOR.corretor_id as id,
             concat(CORRETOR.nome, CORRETOR.razaoSocial) + ' - ' + concat(CORRETOR.cpf, CORRETOR.cnpj) as descricao
@@ -21,21 +23,30 @@ module.exports = {
         response.status(200).send(resultado);
     },
 
-    async count(_, response) {
-        const strsql = `select count(*) as total from CORRETOR where (deletado = 0 or deletado is null)`;
+    async count(request, response) {
+
+        const { cliente_id } = request.body;
+
+        const strsql = `select count(*) as total from CORRETOR where (deletado = 0 or deletado is null) and cliente_id = ${cliente_id}`;
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
     },
 
     async destroy(request, response) {
+
         const { corretor_id } = request.params;
-        const strsql = `update CORRETOR set deletado = 1 where corretor_id = ${corretor_id}`;
+        const { cliente_id } = request.body;
+
+        const strsql = `update CORRETOR set deletado = 1 where corretor_id = ${corretor_id} and cliente_id = ${cliente_id}`;
         await executeQuery(strsql);
         response.status(200).json([{ status: 'ok' }]);
     },
 
     async listaUm(request, response) {
+
         const { corretor_id } = request.params;
+        const { cliente_id } = request.body;
+
         const strsql = `select 
                 CORRETOR.corretor_id,
                 CORRETOR.cliente_id,
@@ -85,12 +96,16 @@ module.exports = {
                 CORRETOR.deletado
             from CORRETOR
             inner join USUARIO on USUARIO.usuario_id = CORRETOR.ad_usr
-            where (CORRETOR.deletado = 0 or CORRETOR.deletado is null) and CORRETOR.corretor_id = ${corretor_id}`;
+            where (CORRETOR.deletado = 0 or CORRETOR.deletado is null) and CORRETOR.corretor_id = ${corretor_id} and cliente_id = ${cliente_id}`;
+
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
     },
 
-    async listaTodos(_, response) {
+    async listaTodos(request, response) {
+
+        const { cliente_id } = request.body;
+
         const strsql = `select 
                 CORRETOR.corretor_id,
                 CORRETOR.cliente_id,
@@ -138,12 +153,16 @@ module.exports = {
                 CORRETOR.ad_usr,
                 CORRETOR.deletado
             from CORRETOR
-            where (CORRETOR.deletado = 0 or CORRETOR.deletado is null)`;
+            where (CORRETOR.deletado = 0 or CORRETOR.deletado is null) and cliente_id = ${cliente_id}`;
+
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
     },
 
-    async listaTabela(_, response) {
+    async listaTabela(request, response) {
+
+        const { cliente_id } = request.body;
+
         const strsql = `select 
             CORRETOR.corretor_id as id,
             concat(CORRETOR.nome, CORRETOR.razaoSocial) as descricao,
@@ -153,13 +172,16 @@ module.exports = {
             CONCAT('', 
             CASE WHEN LEN(CORRETOR.telefoneCelular) = 0 THEN CORRETOR.telefoneFixo ELSE CONCAT(CORRETOR.telefoneFixo,' / ',CORRETOR.telefoneCelular) END) as telefone
             from CORRETOR
-            where (CORRETOR.deletado = 0 or CORRETOR.deletado is null)`;
+            where (CORRETOR.deletado = 0 or CORRETOR.deletado is null) and cliente_id = ${cliente_id}`;
+
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
     },
 
     async listaTomador(request, response) {
+
         const { cliente_id, tomador_id } = request.body;
+
         const strsql = `select 
             CORRETOR.corretor_id as id,
             concat(CORRETOR.nome, CORRETOR.razaoSocial) as descricao,
@@ -171,11 +193,13 @@ module.exports = {
             (TOMADOR_CORRETOR.deletado = 0 or TOMADOR_CORRETOR.deletado is null) and 
             CORRETOR.cliente_id = ${cliente_id} and
             TOMADOR_CORRETOR.tomador_id = ${tomador_id}`;
+
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
     },
 
     async create(request, response) {
+
         const {
             cliente_id,
             tipo,
@@ -225,8 +249,8 @@ module.exports = {
         // Resolve errors
         if (!cpf) cpf = null;
         if (!cnpj) cnpj = null;
-        if (!premioMinimo) premioMinimo = 0;
-        if (!comissaoPorcentagem) comissaoPorcentagem = 0;
+        if (!premioMinimo) {premioMinimo = 0}
+        if (!comissaoPorcentagem) {comissaoPorcentagem = 0}
 
         const strsql = `insert into CORRETOR (
                 cliente_id,
@@ -324,6 +348,7 @@ module.exports = {
     },
 
     async update(request, response) {
+        
         const { corretor_id } = request.params;
         const {
             cliente_id,
@@ -418,7 +443,7 @@ module.exports = {
                 CORRETOR.bloqueado = ${bloqueado},
                 CORRETOR.ad_upd = '${ad_upd}',
                 CORRETOR.ad_usr = ${ad_usr}
-            where corretor_id = ${corretor_id}`;
+            where corretor_id = ${corretor_id} and cliente_id = ${cliente_id}`;
 
         await executeQuery(strsql);
         response.status(200).json([{ status: 'ok' }]);

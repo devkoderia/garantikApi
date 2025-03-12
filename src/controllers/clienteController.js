@@ -3,62 +3,28 @@ const { executeQuery } = require('../services/generalFunctions');
 
 module.exports = {
 
-    async count(_, response) {
+    async count(request, response) {
+
         const strsql = `select count(*) as total from CLIENTE where (deletado = 0 or deletado is null)`;
+
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
     },
 
     async destroy(request, response) {
+
         const { cliente_id } = request.params;
+
         const strsql = `update CLIENTE set deletado = 1 where cliente_id = ${cliente_id}`;
+
         await executeQuery(strsql);
         response.status(200).json([{ status: 'ok' }]);
     },
 
     async listaUm(request, response) {
-        const { cliente_id } = request.params;
-        const strsql = `select 
-                CLIENTE.cliente_id,
-                CLIENTE.cnpj,
-                CLIENTE.nomeFantasia,
-                CLIENTE.razaoSocial,
-                CLIENTE.cep,
-                CLIENTE.ibge_codigo,
-                CLIENTE.uf,
-                CLIENTE.logradouro,
-                CLIENTE.numero,
-                CLIENTE.complemento,
-                CLIENTE.bairro,
-                CLIENTE.telefoneFixo,
-                CLIENTE.telefoneCelular,
-                CLIENTE.email,
-                CLIENTE.observacao,
-                CLIENTE.cnae,
-                CLIENTE.cnaeDescricao,
-                CLIENTE.capitalSocial,
-                CLIENTE.naturezaJuridica,
-                CLIENTE.situacao,
-                CLIENTE.dataAbertura,
-                CLIENTE.dataUltimaAtualizacao,
-                CLIENTE.tipoEmpresa,
-                CLIENTE.porte,
-                CLIENTE.dataSituacao,
-                CLIENTE.motivoSituacao,
-                CLIENTE.situacaoEspecial,
-                CLIENTE.dataSituacaoEspecial,
-                CLIENTE.bloqueado,
-                CONVERT(VARCHAR, CLIENTE.ad_new, 103) + ' ' + CONVERT(VARCHAR, CLIENTE.ad_new, 8) as ad_new,
-                CONVERT(VARCHAR, CLIENTE.ad_upd, 103) + ' ' + CONVERT(VARCHAR, CLIENTE.ad_upd, 8) as ad_upd,
-                CLIENTE.ad_usr,
-                CLIENTE.deletado
-            from CLIENTE
-            where (CLIENTE.deletado = 0 or CLIENTE.deletado is null) and cliente_id = ${cliente_id}`;
-        const resultado = await executeQuery(strsql);
-        response.status(200).send(resultado);
-    },
 
-    async listaTodos(_, response) {
+        const { cliente_id } = request.params;
+        
         const strsql = `select 
                 CLIENTE.cliente_id,
                 CLIENTE.cnpj,
@@ -95,6 +61,49 @@ module.exports = {
                 CLIENTE.deletado
             from CLIENTE
             where (CLIENTE.deletado = 0 or CLIENTE.deletado is null)`;
+
+        const resultado = await executeQuery(strsql);
+        response.status(200).send(resultado);
+    },
+
+    async listaTodos(request, response) {
+        const strsql = `select 
+                CLIENTE.cliente_id,
+                CLIENTE.cnpj,
+                CLIENTE.nomeFantasia,
+                CLIENTE.razaoSocial,
+                CLIENTE.cep,
+                CLIENTE.ibge_codigo,
+                CLIENTE.uf,
+                CLIENTE.logradouro,
+                CLIENTE.numero,
+                CLIENTE.complemento,
+                CLIENTE.bairro,
+                CLIENTE.telefoneFixo,
+                CLIENTE.telefoneCelular,
+                CLIENTE.email,
+                CLIENTE.observacao,
+                CLIENTE.cnae,
+                CLIENTE.cnaeDescricao,
+                CLIENTE.capitalSocial,
+                CLIENTE.naturezaJuridica,
+                CLIENTE.situacao,
+                CLIENTE.dataAbertura,
+                CLIENTE.dataUltimaAtualizacao,
+                CLIENTE.tipoEmpresa,
+                CLIENTE.porte,
+                CLIENTE.dataSituacao,
+                CLIENTE.motivoSituacao,
+                CLIENTE.situacaoEspecial,
+                CLIENTE.dataSituacaoEspecial,
+                CLIENTE.bloqueado,
+                CONVERT(VARCHAR, CLIENTE.ad_new, 103) + ' ' + CONVERT(VARCHAR, CLIENTE.ad_new, 8) as ad_new,
+                CONVERT(VARCHAR, CLIENTE.ad_upd, 103) + ' ' + CONVERT(VARCHAR, CLIENTE.ad_upd, 8) as ad_upd,
+                CLIENTE.ad_usr,
+                CLIENTE.deletado
+            from CLIENTE
+            where (CLIENTE.deletado = 0 or CLIENTE.deletado is null)`;
+
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
     },
@@ -200,11 +209,13 @@ module.exports = {
                 ${ad_usr},
                 ${deletado}
             )`;
+
         const result = await executeQuery(strsql);
         response.status(200).json([{ status: 'ok', cliente_id: result[0].cliente_id }]);
     },
 
     async update(request, response) {
+
         const { cliente_id } = request.params;
         const {
             cnpj,
@@ -276,6 +287,7 @@ module.exports = {
                 CLIENTE.ad_upd = '${ad_upd}',
                 CLIENTE.ad_usr = ${ad_usr}
             where cliente_id = ${cliente_id}`;
+
         await executeQuery(strsql);
         response.status(200).json([{ status: 'ok' }]);
     },

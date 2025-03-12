@@ -3,7 +3,7 @@ const { executeQuery } = require('../services/generalFunctions');
 
 module.exports = {
 
-    async count(_, response) {
+    async count(request, response) {
         const strsql = `select count(*) as total from EXPEDICAO where (deletado = 0 or deletado is null)`;
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
@@ -27,7 +27,7 @@ module.exports = {
         response.status(200).send(resultado);
     },
 
-    async listaTodos(_, response) {
+    async listaTodos(request, response) {
         const strsql = `select 
             EXPEDICAO.expedicao_id,
             EXPEDICAO.descricao

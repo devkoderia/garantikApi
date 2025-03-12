@@ -4,6 +4,7 @@ const { executeQuery } = require('../services/generalFunctions');
 module.exports = {
 
     async login(request, response) {
+
         const { cpf, senha } = request.body;
         const hashedSenha = md5(senha);
 
@@ -23,9 +24,10 @@ module.exports = {
             from USUARIO 
             inner join PERFIL on PERFIL.perfil_id = USUARIO.perfil_id 
             where (USUARIO.deletado = 0 or USUARIO.deletado is null) 
-            and cpf = '${cpf}' and senha = '${hashedSenha}'`;
+            and USUARIO.cpf = '${cpf}' and USUARIO.senha = '${hashedSenha}'`;
 
         const resultado = await executeQuery(strsql);
+
         if (resultado.length > 0) {
             response.status(200).send(resultado);
         } else {

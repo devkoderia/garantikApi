@@ -4,20 +4,30 @@ const { executeQuery } = require('../services/generalFunctions');
 module.exports = {
 
     async count(_, response) {
-        const strsql = `select count(*) as total from CCG where (deletado = 0 or deletado is null)`;
+
+        const { cliente_id } = request.body;
+        
+        const strsql = `select count(*) as total from CCG where (deletado = 0 or deletado is null) and cliente_id = ${cliente_id}`;
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
     },
 
     async destroy(request, response) {
+
         const { ccg_id } = request.params;
-        const strsql = `update CCG set deletado = 1 where ccg_id = ${ccg_id}`;
+        const { cliente_id } = request.body;
+
+        const strsql = `update CCG set deletado = 1 where ccg_id = ${ccg_id} and cliente_id = ${cliente_id}`;
+
         await executeQuery(strsql);
         response.status(200).json([{ status: 'ok' }]);
     },
 
     async listaUm(request, response) {
+
         const { ccg_id } = request.params;
+        const { cliente_id } = request.body;
+
         const strsql = `select 
                 CCG.ccg_id,
                 CCG.cliente_id,
@@ -29,12 +39,16 @@ module.exports = {
                 CCG.ad_usr,
                 CCG.deletado
             from CCG
-            where (CCG.deletado = 0 or CCG.deletado is null) and ccg_id = ${ccg_id}`;
+            where (CCG.deletado = 0 or CCG.deletado is null) and ccg_id = ${ccg_id} and cliente_id = ${cliente_id}`;
+
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
     },
 
     async listaTodos(_, response) {
+
+        const { cliente_id } = request.body;
+
         const strsql = `select 
                 CCG.ccg_id,
                 CCG.cliente_id,
@@ -46,12 +60,14 @@ module.exports = {
                 CCG.ad_usr,
                 CCG.deletado
             from CCG
-            where (CCG.deletado = 0 or CCG.deletado is null)`;
+            where (CCG.deletado = 0 or CCG.deletado is null) and cliente_id = ${cliente_id}`;
+
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
     },
 
     async create(request, response) {
+        
         const {
             cliente_id,
             tomador_id,
@@ -83,11 +99,13 @@ module.exports = {
                 ${ad_usr},
                 ${deletado}
             )`;
+
         const result = await executeQuery(strsql);
         response.status(200).json([{ status: 'ok', ccg_id: result[0].ccg_id }]);
     },
 
     async update(request, response) {
+
         const { ccg_id } = request.params;
         const {
             cliente_id,
@@ -106,7 +124,8 @@ module.exports = {
                 CCG.arquivo = '${arquivo}',
                 CCG.ad_upd = '${ad_upd}',
                 CCG.ad_usr = ${ad_usr}
-            where ccg_id = ${ccg_id}`;
+            where ccg_id = ${ccg_id} and cliente_id = ${cliente_id}`;
+
         await executeQuery(strsql);
         response.status(200).json([{ status: 'ok' }]);
     },

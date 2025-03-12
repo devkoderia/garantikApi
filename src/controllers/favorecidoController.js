@@ -4,6 +4,7 @@ const { executeQuery } = require('../services/generalFunctions');
 module.exports = {
 
     async busca(request, response) {
+
         const { cliente_id, descricao } = request.body;
 
         const strsql = `select 
@@ -23,7 +24,10 @@ module.exports = {
         response.status(200).send(resultado);
     },
 
-    async listaTabela(_, response) {
+    async listaTabela(request, response) {
+
+        const { cliente_id } = request.body;
+
         const strsql = `select 
             FAVORECIDO.favorecido_id as id,
             concat(FAVORECIDO.nome, FAVORECIDO.razaoSocial) as descricao,
@@ -33,27 +37,36 @@ module.exports = {
             CONCAT('', 
                 CASE WHEN LEN(FAVORECIDO.telefoneCelular) = 0 THEN FAVORECIDO.telefoneFixo ELSE CONCAT(FAVORECIDO.telefoneFixo,' / ',FAVORECIDO.telefoneCelular) END) as telefone
             from FAVORECIDO
-            where (FAVORECIDO.deletado = 0 or FAVORECIDO.deletado is null)`;
+            where (FAVORECIDO.deletado = 0 or FAVORECIDO.deletado is null) and cliente_id = ${cliente_id}`;
 
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
     },
 
-    async count(_, response) {
-        const strsql = `select count(*) as total from FAVORECIDO where (deletado = 0 or deletado is null)`;
+    async count(request, response) {
+
+        const { cliente_id } = request.body;
+        
+        const strsql = `select count(*) as total from FAVORECIDO where (deletado = 0 or deletado is null) and cliente_id = ${cliente_id}`;
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
     },
 
     async destroy(request, response) {
+
         const { favorecido_id } = request.params;
-        const strsql = `update FAVORECIDO set deletado = 1 where favorecido_id = ${favorecido_id}`;
+        const { cliente_id } = request.body;
+
+        const strsql = `update FAVORECIDO set deletado = 1 where favorecido_id = ${favorecido_id} and cliente_id = ${cliente_id}`;
         await executeQuery(strsql);
         response.status(200).json([{ status: 'ok' }]);
     },
 
     async listaUm(request, response) {
+
         const { favorecido_id } = request.params;
+        const { cliente_id } = request.body;
+
         const strsql = `select 
             FAVORECIDO.favorecido_id,
             FAVORECIDO.cliente_id,
@@ -94,13 +107,16 @@ module.exports = {
             FAVORECIDO.ad_usr,
             FAVORECIDO.deletado
             from FAVORECIDO
-            where (FAVORECIDO.deletado = 0 or FAVORECIDO.deletado is null) and favorecido_id = ${favorecido_id}`;
+            where (FAVORECIDO.deletado = 0 or FAVORECIDO.deletado is null) and favorecido_id = ${favorecido_id} and cliente_id = ${cliente_id}`;
 
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
     },
 
-    async listaTodos(_, response) {
+    async listaTodos(request, response) {
+
+        const { cliente_id } = request.body;
+
         const strsql = `select 
             FAVORECIDO.favorecido_id,
             FAVORECIDO.cliente_id,

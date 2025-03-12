@@ -3,21 +3,30 @@ const { executeQuery } = require('../services/generalFunctions');
 
 module.exports = {
 
-    async count(_, response) {
-        const strsql = `select count(*) as total from EMISSAO_FAVORECIDO where (deletado = 0 or deletado is null)`;
+    async count(request, response) {
+
+        const { cliente_id } = request.body;
+
+        const strsql = `select count(*) as total from EMISSAO_FAVORECIDO where (deletado = 0 or deletado is null) and cliente_id = ${cliente_id}`;
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
     },
 
     async destroy(request, response) {
+
         const { emissaoFavorecido_id } = request.params;
-        const strsql = `update EMISSAO_FAVORECIDO set deletado = 1 where emissaoFavorecido_id = ${emissaoFavorecido_id}`;
+        const { cliente_id } = request.body;
+
+        const strsql = `update EMISSAO_FAVORECIDO set deletado = 1 where emissaoFavorecido_id = ${emissaoFavorecido_id} and cliente_id = ${cliente_id}`;
         await executeQuery(strsql);
         response.status(200).json([{ status: 'ok' }]);
     },
 
     async listaUm(request, response) {
+
         const { emissaoFavorecido_id } = request.params;
+        const { cliente_id } = request.body;
+
         const strsql = `select 
             EMISSAO_FAVORECIDO.emissaoFavorecido_id,
             EMISSAO_FAVORECIDO.cliente_id,
@@ -28,12 +37,16 @@ module.exports = {
             EMISSAO_FAVORECIDO.ad_usr,
             EMISSAO_FAVORECIDO.deletado
             from EMISSAO_FAVORECIDO
-            where (EMISSAO_FAVORECIDO.deletado = 0 or EMISSAO_FAVORECIDO.deletado is null) and emissaoFavorecido_id = ${emissaoFavorecido_id}`;
+            where (EMISSAO_FAVORECIDO.deletado = 0 or EMISSAO_FAVORECIDO.deletado is null) and emissaoFavorecido_id = ${emissaoFavorecido_id} and cliente_id = ${cliente_id}`;
+
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
     },
 
-    async listaTodos(_, response) {
+    async listaTodos(request, response) {
+
+        const { cliente_id } = request.body;
+
         const strsql = `select 
             EMISSAO_FAVORECIDO.emissaoFavorecido_id,
             EMISSAO_FAVORECIDO.cliente_id,
@@ -44,12 +57,13 @@ module.exports = {
             EMISSAO_FAVORECIDO.ad_usr,
             EMISSAO_FAVORECIDO.deletado
             from EMISSAO_FAVORECIDO
-            where (EMISSAO_FAVORECIDO.deletado = 0 or EMISSAO_FAVORECIDO.deletado is null)`;
+            where (EMISSAO_FAVORECIDO.deletado = 0 or EMISSAO_FAVORECIDO.deletado is null) and cliente_id = ${cliente_id}`;
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
     },
 
     async create(request, response) {
+
         const {
             cliente_id,
             emissao_id,
@@ -84,7 +98,9 @@ module.exports = {
     },
 
     async update(request, response) {
+
         const { emissaoFavorecido_id } = request.params;
+        
         const {
             cliente_id,
             emissao_id,
@@ -100,7 +116,7 @@ module.exports = {
             favorecido_id = ${favorecido_id},
             ad_upd = '${ad_upd}',
             ad_usr = ${ad_usr}
-            where emissaoFavorecido_id = ${emissaoFavorecido_id}`;
+            where emissaoFavorecido_id = ${emissaoFavorecido_id} and cliente_id = ${cliente_id}`;
 
         await executeQuery(strsql);
         response.status(200).json([{ status: 'ok' }]);

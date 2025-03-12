@@ -3,21 +3,32 @@ const { executeQuery } = require('../services/generalFunctions');
 
 module.exports = {
 
-    async count(_, response) {
-        const strsql = `select count(*) as total from DOCUMENTO where (deletado = 0 or deletado is null)`;
+    async count(request, response) {
+
+        const { cliente_id } = request.body;
+
+        const strsql = `select count(*) as total from DOCUMENTO where (deletado = 0 or deletado is null) and cliente_id = ${cliente_id}`;
+
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
     },
 
     async destroy(request, response) {
+
         const { documento_id } = request.params;
-        const strsql = `update DOCUMENTO set deletado = 1 where documento_id = ${documento_id}`;
+        const { cliente_id } = request.body;
+
+        const strsql = `update DOCUMENTO set deletado = 1 where documento_id = ${documento_id} and cliente_id = ${cliente_id}`;
+
         await executeQuery(strsql);
         response.status(200).json([{ status: 'ok' }]);
     },
 
     async listaUm(request, response) {
+
         const { documento_id } = request.params;
+        const { cliente_id } = request.body;
+
         const strsql = `select 
                 DOCUMENTO.documento_id,
                 DOCUMENTO.cliente_id,
@@ -30,12 +41,16 @@ module.exports = {
                 DOCUMENTO.ad_usr,
                 DOCUMENTO.deletado
             from DOCUMENTO
-            where (DOCUMENTO.deletado = 0 or DOCUMENTO.deletado is null) and documento_id = ${documento_id}`;
+            where (DOCUMENTO.deletado = 0 or DOCUMENTO.deletado is null) and documento_id = ${documento_id} and cliente_id = ${cliente_id}`;
+
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
     },
 
-    async listaTodos(_, response) {
+    async listaTodos(request, response) {
+
+        const { cliente_id } = request.body;
+
         const strsql = `select 
                 DOCUMENTO.documento_id,
                 DOCUMENTO.cliente_id,
@@ -48,7 +63,8 @@ module.exports = {
                 DOCUMENTO.ad_usr,
                 DOCUMENTO.deletado
             from DOCUMENTO
-            where (DOCUMENTO.deletado = 0 or DOCUMENTO.deletado is null)`;
+            where (DOCUMENTO.deletado = 0 or DOCUMENTO.deletado is null) and cliente_id = ${cliente_id}`;
+
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
     },
@@ -88,11 +104,13 @@ module.exports = {
                 ${ad_usr},
                 ${deletado}
             )`;
+
         const result = await executeQuery(strsql);
         response.status(200).json([{ status: 'ok', documento_id: result[0].documento_id }]);
     },
 
     async update(request, response) {
+        
         const { documento_id } = request.params;
         const {
             cliente_id,
@@ -114,6 +132,7 @@ module.exports = {
                 DOCUMENTO.ad_upd = '${ad_upd}',
                 DOCUMENTO.ad_usr = ${ad_usr}
             where documento_id = ${documento_id}`;
+
         await executeQuery(strsql);
         response.status(200).json([{ status: 'ok' }]);
     },

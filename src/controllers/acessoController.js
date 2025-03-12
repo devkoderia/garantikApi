@@ -3,10 +3,13 @@ const { executeQuery } = require('../services/generalFunctions');
 
 
 module.exports = {
+    
 
-    async count(_, response) {
+    async count(request, response) {
 
-        const strsql = `select count(*) as total from ACESSO where (deletado = 0 or deletado is null)`
+        const { cliente_id } = request.body;
+
+        const strsql = `select count(*) as total from ACESSO where (deletado = 0 or deletado is null) and cliente_id = ${cliente_id}`;
 
         const resultado = await executeQuery(strsql)
 
@@ -18,8 +21,9 @@ module.exports = {
     async destroy(request, response) {
 
         var { acesso_id } = request.params
+        const { cliente_id } = request.body;
 
-        const strsql = `update ACESSO set deletado = 1 where acesso_id = ${acesso_id}`
+        const strsql = `update ACESSO set deletado = 1 where acesso_id = ${acesso_id} and cliente_id = ${cliente_id}`;
 
         await executeQuery(strsql)
 
@@ -32,6 +36,7 @@ module.exports = {
     async listaUm(request, response) {
 
         var { acesso_id } = request.params
+        const { cliente_id } = request.body;
 
         const strsql = `select 
 				ACESSO.acesso_id
@@ -43,7 +48,7 @@ module.exports = {
 				,ACESSO.senha
 				,CONVERT(VARCHAR, ACESSO.ad_new, 103) + ' ' + CONVERT(VARCHAR, ACESSO.ad_new, 8) as ad_new
 				from ACESSO
-				where (ACESSO.deletado = 0 or ACESSO.deletado is null) and acesso_id = ${acesso_id}`
+				where (ACESSO.deletado = 0 or ACESSO.deletado is null) and acesso_id = ${acesso_id} and cliente_id = ${cliente_id}`;
 
         const resultado = await executeQuery(strsql)
 
@@ -52,7 +57,9 @@ module.exports = {
     },
 
 
-    async listaTodos(_, response) {
+    async listaTodos(request, response) {
+
+        const { cliente_id } = request.body;
 
         const strsql = `select 
 				ACESSO.acesso_id
@@ -64,7 +71,7 @@ module.exports = {
 				,ACESSO.senha
 				,CONVERT(VARCHAR, ACESSO.ad_new, 103) + ' ' + CONVERT(VARCHAR, ACESSO.ad_new, 8) as ad_new
 				from ACESSO
-				where (ACESSO.deletado = 0 or ACESSO.deletado is null)`
+				where (ACESSO.deletado = 0 or ACESSO.deletado is null) and cliente_id = ${cliente_id}`;
 
         const resultado = await executeQuery(strsql)
 
