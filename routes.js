@@ -28,6 +28,34 @@ routes.get('/', function (_, res) {
 })
 
 
+
+
+//CONVITE
+//-------------------------------------------------------------------------------------------------------------
+const conviteController = require('./src/controllers/conviteController')
+
+routes.post('/convite', verificaToken, celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+        email: Joi.string().required(),
+        nome: Joi.string().required(),
+        nomeFantasia: Joi.string().required(),
+        ad_usr: Joi.number().integer().required(),
+    })
+}), conviteController.create)
+
+routes.post('/conviteValida', verificaToken, celebrate({
+
+    [Segments.BODY]: Joi.object().keys({
+
+        cliente_id: Joi.number().integer().required(),
+        chaveLink: Joi.string().max(32).required(),
+
+    })
+
+}), conviteController.valida)
+
+
 //ACESSO
 //-------------------------------------------------------------------------------------------------------------
 const acessoController = require('./src/controllers/acessoController')
@@ -2158,11 +2186,13 @@ routes.delete('/tomadorCorretor/:tomadorCorretor_id', celebrate({
 //-------------------------------------------------------------------------------------------------------------
 const usuarioController = require('./src/controllers/usuarioController')
 
+
 routes.post('/usuarioConta', celebrate({
     [Segments.BODY]: Joi.object().keys({
         cliente_id: Joi.number().integer().required(),
     })
 }), verificaToken, usuarioController.count)
+
 
 routes.post('/usuarioListaTabela', celebrate({
     [Segments.BODY]: Joi.object().keys({
@@ -2176,14 +2206,14 @@ routes.post('/usuarioListaTodos', celebrate({
     })
 }), verificaToken, usuarioController.listaTodos)
 
-routes.post('/usuarioListaUm/:usuario_id', celebrate({
+routes.post('/usuario/:usuario_id', celebrate({
     [Segments.PARAMS]: Joi.object().keys({
         usuario_id: Joi.number().integer().required()
     }),
     [Segments.BODY]: Joi.object().keys({
         cliente_id: Joi.number().integer().required(),
     })
-}), verificaToken, usuarioController.listaUm)
+}), verificaToken, usuarioController.show)
 
 routes.post('/usuarioListaCpf/:cpf', celebrate({
     [Segments.PARAMS]: Joi.object().keys({
@@ -2204,6 +2234,7 @@ routes.post('/usuario', celebrate({
         nome: Joi.string().required().max(150),
         email: Joi.string().required().max(150),
         senha: Joi.string().required().max(50),
+        telefone: Joi.string().required().max(50),
         ad_usr: Joi.number().integer().required(),
     })
 }), verificaToken, usuarioController.create)
@@ -2221,6 +2252,7 @@ routes.put('/usuario/:usuario_id', celebrate({
         email: Joi.string().required().max(150),
         bloqueado: Joi.number().integer().allow(null).allow(''),
         ad_usr: Joi.number().integer().required(),
+        telefone: Joi.string().required().max(50),
     })
 }), verificaToken, usuarioController.update)
 

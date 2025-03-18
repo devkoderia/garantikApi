@@ -1,9 +1,10 @@
 const sql = require('mssql');
 const connection = require('../database/connection');
-const nodemailer = require('nodemailer');
-const jwt = require('jsonwebtoken');
+//const nodemailer = require('nodemailer');
+//const jwt = require('jsonwebtoken');
 
 // Cria a conexão com o MSSQL
+
 const poolPromise = new sql.ConnectionPool(connection)
     .connect()
     .then(pool => {
@@ -15,19 +16,10 @@ const poolPromise = new sql.ConnectionPool(connection)
         throw err;
     });
 
-const executeQuery = async (strsql) => {
-    try {
-        const pool = await poolPromise;
-        const result = await pool.request().query(strsql);
-        return result.recordset;
-    } catch (err) {
-        console.log(err);
-        throw err;
-    }
-};
 
 // Configuração do transporter do Nodemailer.
 // As configurações podem ser definidas via variáveis de ambiente.
+/*
 const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST || 'br246.hostgator.com.br',
     port: process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT) : 465,
@@ -99,5 +91,49 @@ const sendEmail = async (usuario_id, tipo) => {
         return { success: false, error: error.message };
     }
 };
+*/
 
-module.exports = { executeQuery, sendEmail };
+
+
+module.exports = { 
+    
+
+
+    async escapeString(str) {
+
+        if (typeof str !== "string") {
+            return str;
+        }
+    
+        return str
+            .replace(/\\/g, "\\\\")
+            .replace(/\x00/g, "\\0")
+            .replace(/\n/g, "\\n")
+            .replace(/\r/g, "\\r")
+            .replace(/\x1a/g, "\\Z")
+            .replace(/'/g, "''")
+            .replace(/"/g, '\\"')
+            .replace(/\x08/g, "\\b")
+            .replace(/\t/g, "\\t")
+            .replace(/%/g, "\\%");
+    
+    
+        },
+    
+    
+
+
+        async executeQuery(strsql) {
+            try {
+                const pool = await poolPromise;
+                const result = await pool.request().query(strsql);
+                return result.recordset;
+            } catch (err) {
+                console.log(err);
+                throw err;
+            }
+        },
+
+
+        
+ }

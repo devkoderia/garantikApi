@@ -87,8 +87,6 @@ module.exports = {
             usuario_id,
             tipo,
             ip,
-            usuario,
-            senha,
 
         } = request.body
 
@@ -101,16 +99,12 @@ module.exports = {
 				,usuario_id
 				,tipo
 				,ip
-				,usuario
-				,senha
 				,ad_new
 				) OUTPUT INSERTED.acesso_id VALUES (
 				${cliente_id}
 				,${usuario_id}
 				,'${tipo}'
 				,'${ip}'
-				,'${usuario}'
-				,'${senha}'
 				,'${ad_new}'
 				)`
 

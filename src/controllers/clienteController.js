@@ -24,7 +24,7 @@ module.exports = {
     async listaUm(request, response) {
 
         const { cliente_id } = request.params;
-        
+
         const strsql = `select 
                 CLIENTE.cliente_id,
                 CLIENTE.cnpj,
@@ -60,7 +60,7 @@ module.exports = {
                 CLIENTE.ad_usr,
                 CLIENTE.deletado
             from CLIENTE
-            where (CLIENTE.deletado = 0 or CLIENTE.deletado is null)`;
+            where (CLIENTE.deletado = 0 or CLIENTE.deletado is null) and cliente_id = ${cliente_id}`;
 
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
@@ -103,6 +103,25 @@ module.exports = {
                 CLIENTE.deletado
             from CLIENTE
             where (CLIENTE.deletado = 0 or CLIENTE.deletado is null)`;
+
+        const resultado = await executeQuery(strsql);
+        response.status(200).send(resultado);
+    },
+
+
+    async listaLogin(request, response) {
+
+        const { usuario_id } = request.params
+
+        const strsql = `select 
+                C.cliente_id,
+                C.cnpj,
+                C.nomeFantasia,
+                C.razaoSocial
+            from CLIENTE_USUARIO CU
+            inner join CLIENTE C on CU.cliente_id = C.cliente_id
+            inner join USUARIO U on CU.usuario_id = U.usuario_id
+            where (C.deletado = 0 or C.deletado is null) and CU.usuario_id = ${usuario_id}`;
 
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
@@ -217,6 +236,7 @@ module.exports = {
     async update(request, response) {
 
         const { cliente_id } = request.params;
+        
         const {
             cnpj,
             nomeFantasia,

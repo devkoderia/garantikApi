@@ -1,5 +1,5 @@
 const moment = require('moment-timezone');
-const { executeQuery, sendEmail } = require('../services/generalFunctions');
+const { executeQuery, sendEmail, escapeString } = require('../services/generalFunctions');
 const md5 = require('md5');
 const jwt = require('jsonwebtoken');
 
@@ -58,7 +58,7 @@ module.exports = {
         response.status(200).send(resultado);
     },
 
-    async listaUm(request, response) {
+    async show(request, response) {
 
         const { usuario_id } = request.params;
         const { cliente_id } = request.body;
@@ -77,6 +77,7 @@ module.exports = {
             CONVERT(VARCHAR, USUARIO.ultimoAcesso, 103) + ' ' + CONVERT(VARCHAR, USUARIO.ad_new, 8) as ultimoAcesso,
             USUARIO.ip,
             USUARIO.bloqueado,
+            USUARIO.telefone,
             CLIENTE_USUARIO.status,
             CONVERT(VARCHAR, USUARIO.ad_new, 103) + ' ' + CONVERT(VARCHAR, USUARIO.ad_new, 8) as ad_new,
             CONVERT(VARCHAR, USUARIO.ad_upd, 103) + ' ' + CONVERT(VARCHAR, USUARIO.ad_upd, 8) as ad_upd,
@@ -139,14 +140,16 @@ module.exports = {
             USUARIO.nome
             from USUARIO
             inner join PERFIL on PERFIL.perfil_id = USUARIO.perfil_id
+            inner join CLIENTE_USUARIO on CLIENTE_USUARIO.usuario_id = USUARIO.usuario_id
             where (USUARIO.deletado = 0 or USUARIO.deletado is null) and CLIENTE_USUARIO.cliente_id = ${cliente_id}`;
+
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
     },
 
     async create(request, response) {
 
-        const {
+        var {
             cliente_id,
             perfil_id,
             produtor_id,
@@ -155,8 +158,15 @@ module.exports = {
             nome,
             email,
             senha,
-            ad_usr
+            ad_usr,
+            telefone,
         } = request.body;
+
+        var nome = await escapeString(nome)
+        var cpf = await escapeString(cpf)
+        var email = await escapeString(email)
+        var senha = await escapeString(senha)
+        var telefone = await escapeString(telefone)
 
         const ad_new = moment().format('YYYY-MM-DD HH:MM:ss');
         const ad_upd = ad_new;
@@ -168,6 +178,7 @@ module.exports = {
         if (resultadoConsulta && resultadoConsulta.length > 0) {
             return response.status(201).json([{ status: 'erro', descricao: 'Usuário já cadastrado nesse cliente.' }]);
         }
+        
 
         const strsql = `insert into USUARIO (
             cliente_id,
@@ -181,6 +192,7 @@ module.exports = {
             ad_new,
             ad_upd,
             ad_usr,
+            telefone,
             deletado
         ) OUTPUT INSERTED.usuario_id VALUES (
             ${cliente_id},
@@ -193,6 +205,7 @@ module.exports = {
             '${hashedSenha}',
             '${ad_new}',
             '${ad_upd}',
+            '${telefone}',
             ${ad_usr},
             0
         )`;
@@ -242,7 +255,7 @@ module.exports = {
 
         const { usuario_id } = request.params;
 
-        const {
+        var {
             cliente_id,
             perfil_id,
             produtor_id,
@@ -250,8 +263,15 @@ module.exports = {
             nome,
             email,
             ad_usr,
-            bloqueado
+            bloqueado,
+            telefone,
         } = request.body;
+
+        var nome = await escapeString(nome)
+        var cpf = await escapeString(cpf)
+        var email = await escapeString(email)
+        var senha = await escapeString(senha)
+        var telefone = await escapeString(telefone)
 
         const ad_upd = moment().format('YYYY-MM-DD HH:MM:ss');
 
@@ -263,7 +283,8 @@ module.exports = {
             email = '${email}',
             bloqueado = ${bloqueado || 0},
             ad_upd = '${ad_upd}',
-            ad_usr = ${ad_usr}
+            ad_usr = ${ad_usr},
+            telefone = '${telefone}'
             where usuario_id = ${usuario_id} and cliente_id = ${cliente_id}`
 
         await executeQuery(strsql);
@@ -327,5 +348,43 @@ module.exports = {
        response.status(200).json([{ status: 'ok' }]);
 
 
+    },
+
+
+    async clienteUsuario(request, response) {
+
+        const { usuario_id, cliente_id, ad_usr } = request.body;
+
+        const ad_new = moment().format('YYYY-MM-DD HH:MM:ss');
+        const ad_upd = ad_new
+        
+        const strsql = `update USUARIO set
+            deletado = 1            
+            where cliente_id = ${cliente_id} and usuario_id = ${usuario_id};
+            
+            insert INTO CLIENTE_USUARIO (
+                cliente_id,
+                usuario_id,
+                status,
+                ad_new,
+                ad_upd,
+                bloqueado,
+                deletado,
+                ad_usr
+            ) values (
+                ${cliente_id},
+                ${usuario_id},
+                'P',
+                '${ad_new}',
+                '${ad_upd}',
+                0,
+                0,
+                ${ad_usr}
+            );
+            
+            `;
+
+        await executeQuery(strsql);
+        response.status(200).json([{ status: 'ok' }]);
     },
 };

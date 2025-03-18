@@ -47,7 +47,8 @@ module.exports = {
         response.status(200).send(resultado);
     },
 
-    async listaTodos(_, response) {
+    async listaTodos(request, response) {
+
         const strsql = `
             SELECT 
                 clienteUsuario_id,
