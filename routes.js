@@ -28,6 +28,21 @@ routes.get('/', function (_, res) {
 })
 
 
+//AUTO CADASTRO
+//-------------------------------------------------------------------------------------------------------------
+const autoCadastroController = require('./src/controllers/autoCadastroController')
+
+routes.post('/autoCadastro', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        convite_id: Joi.number().integer().required(),
+        cliente_id: Joi.number().integer().required(),
+        cpf: Joi.string().required().length(11),
+        nome: Joi.string().required().max(150),
+        email: Joi.string().required().max(150),
+        senha: Joi.string().required().max(50),
+        telefone: Joi.string().required().max(50),
+    })
+}), verificaToken, autoCadastroController.index)
 
 
 //CONVITE
@@ -85,9 +100,9 @@ routes.post('/acesso', celebrate({
     [Segments.BODY]: Joi.object().keys({
         cliente_id: Joi.number().integer().required(),
         usuario_id: Joi.number().integer().allow(null).allow(''),
+        cpf: Joi.string().allow(null).allow('').length(11),
         tipo: Joi.string().required().max(50),
-        ip: Joi.string().allow(null).allow('').max(150),
-        usuario: Joi.string().allow(null).allow('').max(150),
+        ip: Joi.string().allow(null).allow('').max(150),        
         senha: Joi.string().allow(null).allow('').max(150),
     })
 }), verificaToken, acessoController.create)
@@ -510,7 +525,13 @@ routes.post('/clienteUsuario', celebrate({
     [Segments.BODY]: Joi.object().keys({
         cliente_id: Joi.number().integer().required(),
         usuario_id: Joi.number().integer().required(),
-        bloqueado: Joi.number().integer().optional()
+        produtor_id: Joi.number().integer().optional().allow(null, ''),
+        corretor_id: Joi.number().integer().optional().allow(null, ''),
+        perfil_id: Joi.number().integer().optional().allow(null, ''),
+        email: Joi.string().required().max(150),
+        telefone: Joi.string().required().max(50),
+        status: Joi.string().length(1).required(),
+        ad_usr: Joi.number().integer().required(),
     })
 }), verificaToken, clienteUsuarioController.create);
 
@@ -521,8 +542,13 @@ routes.put('/clienteUsuario/:clienteUsuario_id', celebrate({
     [Segments.BODY]: Joi.object().keys({
         cliente_id: Joi.number().integer().required(),
         usuario_id: Joi.number().integer().required(),
-        bloqueado: Joi.number().integer().required(),
-        status: Joi.string().required().max(1),
+        produtor_id: Joi.number().integer().optional().allow(null, ''),
+        corretor_id: Joi.number().integer().optional().allow(null, ''),
+        perfil_id: Joi.number().integer().optional().allow(null, ''),
+        email: Joi.string().required().max(150),
+        telefone: Joi.string().required().max(50),
+        status: Joi.string().length(1).required(),
+        ad_usr: Joi.number().integer().required(),
     })
 }), verificaToken, clienteUsuarioController.update);
 
@@ -2186,13 +2212,11 @@ routes.delete('/tomadorCorretor/:tomadorCorretor_id', celebrate({
 //-------------------------------------------------------------------------------------------------------------
 const usuarioController = require('./src/controllers/usuarioController')
 
-
 routes.post('/usuarioConta', celebrate({
     [Segments.BODY]: Joi.object().keys({
         cliente_id: Joi.number().integer().required(),
     })
 }), verificaToken, usuarioController.count)
-
 
 routes.post('/usuarioListaTabela', celebrate({
     [Segments.BODY]: Joi.object().keys({
@@ -2227,14 +2251,10 @@ routes.post('/usuarioListaCpf/:cpf', celebrate({
 routes.post('/usuario', celebrate({
     [Segments.BODY]: Joi.object().keys({
         cliente_id: Joi.number().integer().required(),
-        perfil_id: Joi.number().integer().required(),
-        produtor_id: Joi.number().integer().allow(null).allow(''),
-        corretor_id: Joi.number().integer().allow(null).allow(''),
+        perfil_id: Joi.number().integer().required(),        
         cpf: Joi.string().required().length(11),
-        nome: Joi.string().required().max(150),
-        email: Joi.string().required().max(150),
+        nome: Joi.string().required().max(150),        
         senha: Joi.string().required().max(50),
-        telefone: Joi.string().required().max(50),
         ad_usr: Joi.number().integer().required(),
     })
 }), verificaToken, usuarioController.create)
@@ -2245,14 +2265,11 @@ routes.put('/usuario/:usuario_id', celebrate({
     }),
     [Segments.BODY]: Joi.object().keys({
         cliente_id: Joi.number().integer().required(),
-        perfil_id: Joi.number().integer().required(),
-        produtor_id: Joi.number().integer().allow(null).allow(''),
-        corretor_id: Joi.number().integer().allow(null).allow(''),
+        perfil_id: Joi.number().integer().required(),        
         nome: Joi.string().required().max(150),
-        email: Joi.string().required().max(150),
         bloqueado: Joi.number().integer().allow(null).allow(''),
         ad_usr: Joi.number().integer().required(),
-        telefone: Joi.string().required().max(50),
+
     })
 }), verificaToken, usuarioController.update)
 
@@ -2272,9 +2289,6 @@ routes.delete('/usuario/:usuario_id', celebrate({
         usuario_id: Joi.number().integer().required()
     }),
 }), verificaToken, usuarioController.destroy)
-
-
-
 
 
 module.exports = routes

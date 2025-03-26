@@ -3,8 +3,6 @@ const { enviaMail } = require('./emailController')
 const md5 = require('md5')
 const { executeQuery, escapeString } = require('../services/generalFunctions')
 
-
-
 const geraChaveConvite = async (obj) => {
 
     var {
@@ -30,7 +28,8 @@ const geraChaveConvite = async (obj) => {
         ad_new,
         ad_usr,
         cliente_id,
-        chaveLink
+        chaveLink,
+        expirado
     )
     values
     (
@@ -39,7 +38,8 @@ const geraChaveConvite = async (obj) => {
         '${ad_new}',
         ${ad_usr},
         ${cliente_id},
-        '${chaveLink}'
+        '${chaveLink}',
+        0
     )
     
     `
@@ -70,21 +70,20 @@ module.exports = {
 
         var chaveLink = await escapeString(chaveLink)
 
-        var strsql = `
-        
+        var strsql = `        
         select 
-        C.nomeFantasia, V.email, V.nome
+        C.convite_id, C.nomeFantasia, V.email, V.nome
         from CONVITE V
         inner join CLIENTE C on V.cliente_id = C.cliente_id
         where (C.deletado = 0 or C.deletado is null)
-        and V.chaveLink = '${chaveLink}' and V.cliente_id = ${cliente_id}
-        
+        and V.chaveLink = '${chaveLink}' and V.cliente_id = ${cliente_id}        
         `
+
+        //adicionar na query se o cpf já existe usuario_id
 
         const resultado = await executeQuery(strsql)
 
         response.status(200).send(resultado)
-
 
 
     },
@@ -95,15 +94,14 @@ module.exports = {
 
         var {
 
-            nome, 
-            cliente_id, 
-            email, 
-            nomeFantasia, 
+            nome,
+            cliente_id,
+            email,
+            nomeFantasia,
             ad_usr,
 
         } = request.body
 
-        
 
         const chaveLink = await geraChaveConvite({
 
@@ -157,9 +155,20 @@ module.exports = {
 
 
 
-        response.status(200).send({status: 'ok'})
+        response.status(200).send({ status: 'ok' })
 
 
     },
+
+
+    async expira(convite_id) {
+
+        const strsql = `update CONVITE set expirado = 1 where convite_id = ${convite_id}`
+
+        await executeQuery(strsql)
+
+        return true
+
+    }
 
 }
