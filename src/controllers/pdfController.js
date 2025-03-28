@@ -151,7 +151,12 @@ module.exports = {
             try {
                 // Inicia o browser com Puppeteer
                 const browser = await puppeteer.launch({
-                    args: ['--no-sandbox', '--disable-setuid-sandbox']
+                    executablePath: '/snap/bin/chromium',
+                    args: [
+                        '--no-sandbox',
+                        '--disable-setuid-sandbox',
+                        '--disable-dev-shm-usage'
+                    ]
                 });
 
                 const page = await browser.newPage();
