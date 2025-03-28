@@ -76,7 +76,7 @@ module.exports = {
                 console.log('Bairro:', tomador.bairro);
             });
 
-            const fundoPath = `https://cdn.garantik.com.br/${cliente_id}/fundo_garantia.jpg`;
+            //const fundoPath = `https://cdn.garantik.com.br/${cliente_id}/fundo_garantia.jpg`;
 
             const htmlContent = `
             <!DOCTYPE html>
@@ -88,7 +88,7 @@ module.exports = {
                   @page { margin: 20mm; }
                   body {
                     font-family: Arial, sans-serif;
-                    background-image: url("${fundoPath}");
+                    
                     background-size: cover;
                     background-repeat: no-repeat;
                     margin: 0;
