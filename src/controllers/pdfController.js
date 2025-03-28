@@ -76,7 +76,7 @@ module.exports = {
                 console.log('Bairro:', tomador.bairro);
             });
 
-            //const fundoPath = `https://cdn.garantik.com.br/${cliente_id}/fundo_garantia.jpg`;
+            const fundoPath = `https://cdn.garantik.com.br/${cliente_id}/fundo_garantia.jpg`;
 
             const htmlContent = `
             <!DOCTYPE html>
@@ -85,19 +85,19 @@ module.exports = {
                 <meta charset="utf-8">
                 <title>Emissão ${pin}</title>
                 <style>
-                  @page { margin: 20mm; }
+                  @page { margin: 10mm; }
                   body {
                     font-family: Arial, sans-serif;
-                    
+                    background-image: url("${fundoPath}");
                     background-size: cover;
-                    background-repeat: no-repeat;
+                    background-repeat: repeat;
                     margin: 0;
                     padding: 0;
                   }
                   .container {
-                    margin: 20mm;
+                    margin: 10mm;
                     background: rgba(255, 255, 255, 0.9);
-                    padding: 20px;
+                    padding: 10px;
                   }
                   h1, h2 { text-align: center; }
                   ul { list-style-type: none; padding: 0; }
@@ -106,7 +106,7 @@ module.exports = {
               </head>
               <body>
                 <div class="container">
-                  <h1>Emissão ${pin}</h1>
+                  <h1>Carta de Fiança n. ${pin}</h1>
                   <p><strong>Data de Emissão:</strong> ${dataEmissao}</p>
                   <p><strong>Valor:</strong> ${valor} - ${valorExtenso}</p>
                   <h2>Favorecidos</h2>

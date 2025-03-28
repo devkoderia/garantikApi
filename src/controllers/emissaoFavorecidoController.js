@@ -7,6 +7,7 @@ module.exports = {
 
         const strsql = `select 
             FAVORECIDO.favorecido_id,
+            FAVORECIDO.cliente_id,
             FAVORECIDO.tipo,
             FAVORECIDO.cpf,
             FAVORECIDO.cnpj,
@@ -48,7 +49,7 @@ module.exports = {
             where
             (FAVORECIDO.deletado = 0 or FAVORECIDO.deletado is null) and 
             (EMISSAO_FAVORECIDO.deletado = 0 or EMISSAO_FAVORECIDO.deletado is null) and             
-            EMISSAO_FAVORECIDO.emissao_id = ${emissao_id} and cliente_id = ${cliente_id}`;
+            EMISSAO_FAVORECIDO.emissao_id = ${emissao_id} and FAVORECIDO.cliente_id = ${cliente_id}`;
 
         const resultado = await executeQuery(strsql);
         

@@ -7,6 +7,7 @@ module.exports = {
 
         const strsql = `select 
             TOMADOR.tomador_id,
+            TOMADOR.cliente_id,
             TOMADOR.tipo,
             TOMADOR.cpf,
             TOMADOR.cnpj,
@@ -49,7 +50,7 @@ module.exports = {
             where 
             (TOMADOR.deletado = 0 or TOMADOR.deletado is null) and 
             (EMISSAO_TOMADOR.deletado = 0 or EMISSAO_TOMADOR.deletado is null) and             
-            EMISSAO_TOMADOR.emissao_id = ${emissao_id} and cliente_id = ${cliente_id}`;
+            EMISSAO_TOMADOR.emissao_id = ${emissao_id} and TOMADOR.cliente_id = ${cliente_id}`;
 
         const resultado = await executeQuery(strsql);
         
