@@ -76,7 +76,7 @@ module.exports = {
                 console.log('Bairro:', tomador.bairro);
             });
 
-            const fundoPath = `https://cdn.garantik.com.br/${cliente_id}/fundo_garantia.jpg)}`;
+            const fundoPath = `https://cdn.garantik.com.br/${cliente_id}/fundo_garantia.jpg`;
 
             const htmlContent = `
             <!DOCTYPE html>
