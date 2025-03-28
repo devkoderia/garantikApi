@@ -1204,8 +1204,6 @@ routes.delete('/emissaoFavorecido/:emissaoFavorecido_id', celebrate({
 }), verificaToken, emissaoFavorecidoController.destroy)
 
 
-
-
 //EMISSAO_TOMADOR
 //-------------------------------------------------------------------------------------------------------------
 const emissaoTomadorController = require('./src/controllers/emissaoTomadorController')
@@ -1762,6 +1760,19 @@ routes.delete('/np/:np_id', celebrate({
 }), verificaToken, npController.destroy)
 
 
+
+//PDF
+//-------------------------------------------------------------------------------------------------------------
+const pdfController = require('./src/controllers/pdfController')
+
+routes.post('/pdf/:emissao_id', verificaToken, celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        emissao_id: Joi.number().integer().required(),
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), pdfController.index)
 
 
 
