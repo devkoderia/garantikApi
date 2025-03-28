@@ -150,7 +150,10 @@ module.exports = {
 
             try {
                 // Inicia o browser com Puppeteer
-                const browser = await puppeteer.launch();
+                const browser = await puppeteer.launch({
+                    args: ['--no-sandbox', '--disable-setuid-sandbox']
+                });
+
                 const page = await browser.newPage();
 
                 // Define o conteúdo da página com o HTML acima
@@ -175,11 +178,11 @@ module.exports = {
 
                 // Envia o PDF como resposta -- e depois vai ter que salvar em disco
                 response.set({
-                  'Content-Type': 'application/pdf',
-                  'Content-Length': pdfBuffer.length,
-                  'Content-Disposition': `attachment; filename="emissao-${pin}.pdf"`
-              });
-                
+                    'Content-Type': 'application/pdf',
+                    'Content-Length': pdfBuffer.length,
+                    'Content-Disposition': `attachment; filename="emissao-${pin}.pdf"`
+                });
+
                 return response.send(pdfBuffer);
 
             } catch (err) {
