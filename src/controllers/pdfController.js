@@ -162,7 +162,7 @@ module.exports = {
                 await browser.close();
 
                 // Define o diretório de destino e cria se não existir
-                const dirPath = path.join(__dirname, `../public/${cliente_id}`);
+                const dirPath = path.join(__dirname, `../../public/${cliente_id}`);
                 if (!fs.existsSync(dirPath)) {
                     fs.mkdirSync(dirPath, { recursive: true });
                 }
