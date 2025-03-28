@@ -3,9 +3,9 @@ const fs = require('fs');
 const path = require('path');
 const moment = require('moment-timezone');
 const { executeQuery } = require('../services/generalFunctions');
-const { listaEmissao } = require('./emissaoController')
-const { listaEmissaoFavorecido } = require('./emissaoFavorecidoController')
-const { listaEmissaoTomador } = require('./emissaoTomadorController')
+const { listaEmissao } = require('./emissaoController');
+const { listaEmissaoFavorecido } = require('./emissaoFavorecidoController');
+const { listaEmissaoTomador } = require('./emissaoTomadorController');
 
 module.exports = {
 
@@ -18,35 +18,35 @@ module.exports = {
 
         if (emissao.length > 0) {
 
-            const emissaoFavorecido = await listaEmissaoFavorecido(emissao_id, cliente_id)
-            const emissaoTomador = await listaEmissaoTomador(emissao_id, cliente_id)
+            const emissaoFavorecido = await listaEmissaoFavorecido(emissao_id, cliente_id);
+            const emissaoTomador = await listaEmissaoTomador(emissao_id, cliente_id);
 
+            // Pega as variáveis da emissão PRINCIPAL
+            const pin = emissao[0].pin;
+            const dataEmissao = emissao[0].dataEmissao;
+            const dataInicio = emissao[0].dataInicio;
+            const dataVencimento = emissao[0].dataVencimento;
+            const dias = emissao[0].dias;
+            const dataVencimentoIndeterminado = emissao[0].dataVencimentoIndeterminado;
+            const valor = emissao[0].valor;
+            const valorExtenso = emissao[0].valorExtenso;
+            const modalidade_id = emissao[0].modalidade_id;
+            const modalidadeTexto = emissao[0].modalidadeTexto;
+            const objeto = emissao[0].objeto;
+            const textoFianca = emissao[0].textoFianca;
+            const documento = emissao[0].documento;
+            const sinistro = emissao[0].sinistro;
+            const bloqueada = emissao[0].bloqueada;
+            const taxa = emissao[0].taxa;
+            const premio = emissao[0].premio;
+            const pago = emissao[0].pago;
+            const valorPago = emissao[0].valorPago;
+            const minuta = emissao[0].minuta;
+            const garantia = emissao[0].garantia;
+            const ad_new = emissao[0].ad_new;
+            const ad_upd = emissao[0].ad_upd;
 
-            //Pega as variáveis da emissão PRINCIPAL
-            const pin = emissao[0].pin
-            const dataEmissao = emissao[0].dataEmissao
-            const dataInicio = emissao[0].dataInicio
-            const dataVencimento = emissao[0].dataVencimento
-            const dias = emissao[0].dias
-            const dataVencimentoIndeterminado = emissao[0].dataVencimentoIndeterminado
-            const valor = emissao[0].valor
-            const valorExtenso = emissao[0].valorExtenso
-            const modalidade_id = emissao[0].modalidade_id
-            const modalidadeTexto = emissao[0].modalidadeTexto
-            const objeto = emissao[0].objeto
-            const textoFianca = emissao[0].textoFianca
-            const documento = emissao[0].documento
-            const sinistro = emissao[0].sinistro
-            const bloqueada = emissao[0].bloqueada
-            const taxa = emissao[0].taxa
-            const premio = emissao[0].premio
-            const pago = emissao[0].pago
-            const valorPago = emissao[0].valorPago
-            const minuta = emissao[0].minuta
-            const garantia = emissao[0].garantia
-            const ad_new = emissao[0].ad_new
-            const ad_upd = emissao[0].ad_upd
-
+            // Exibe logs para favorecidos e tomadores
             emissaoFavorecido.forEach((favorecido) => {
                 console.log('Favorecido ID:', favorecido.favorecido_id);
                 console.log('Tipo:', favorecido.tipo);
@@ -85,13 +85,9 @@ module.exports = {
                 <meta charset="utf-8">
                 <title>Emissão ${pin}</title>
                 <style>
-                  /* Define a margem para cada página */
-                  @page {
-                    margin: 20mm;
-                  }
+                  @page { margin: 20mm; }
                   body {
                     font-family: Arial, sans-serif;
-                    /* Define a imagem de fundo */
                     background-image: url("${fundoPath}");
                     background-size: cover;
                     background-repeat: no-repeat;
@@ -99,21 +95,13 @@ module.exports = {
                     padding: 0;
                   }
                   .container {
-                    /* Margem interna extra para separar o conteúdo */
                     margin: 20mm;
                     background: rgba(255, 255, 255, 0.9);
                     padding: 20px;
                   }
-                  h1, h2 {
-                    text-align: center;
-                  }
-                  ul {
-                    list-style-type: none;
-                    padding: 0;
-                  }
-                  li {
-                    margin-bottom: 5px;
-                  }
+                  h1, h2 { text-align: center; }
+                  ul { list-style-type: none; padding: 0; }
+                  li { margin-bottom: 5px; }
                 </style>
               </head>
               <body>
@@ -121,8 +109,6 @@ module.exports = {
                   <h1>Emissão ${pin}</h1>
                   <p><strong>Data de Emissão:</strong> ${dataEmissao}</p>
                   <p><strong>Valor:</strong> ${valor} - ${valorExtenso}</p>
-                  <!-- Outros dados da emissão podem ser inseridos aqui -->
-                  
                   <h2>Favorecidos</h2>
                   <ul>
                     ${emissaoFavorecido.map(fav => `
@@ -132,7 +118,6 @@ module.exports = {
                       </li>
                     `).join('')}
                   </ul>
-    
                   <h2>Tomadores</h2>
                   <ul>
                     ${emissaoTomador.map(tom => `
@@ -147,7 +132,6 @@ module.exports = {
             </html>
           `;
 
-
             try {
                 // Inicia o browser com Puppeteer
                 const browser = await puppeteer.launch({
@@ -158,13 +142,12 @@ module.exports = {
                         '--disable-dev-shm-usage'
                     ]
                 });
-
                 const page = await browser.newPage();
 
                 // Define o conteúdo da página com o HTML acima
                 await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
 
-                // Gera o PDF com as configurações desejadas
+                // Gera o PDF
                 const pdfBuffer = await page.pdf({
                     format: 'A4',
                     printBackground: true,
@@ -178,28 +161,32 @@ module.exports = {
 
                 await browser.close();
 
-                response.setHeader('Content-Disposition', `attachment; filename="emissao-${pin}.pdf"`);
+                // Define o diretório de destino e cria se não existir
+                const dirPath = path.join(__dirname, `../public/${cliente_id}`);
+                if (!fs.existsSync(dirPath)) {
+                    fs.mkdirSync(dirPath, { recursive: true });
+                }
 
+                // Define o caminho completo do arquivo PDF
+                const filePath = path.join(dirPath, `emissao-${pin}.pdf`);
 
-                // Envia o PDF como resposta -- e depois vai ter que salvar em disco
-                response.set({
-                    'Content-Type': 'application/pdf',
-                    'Content-Length': pdfBuffer.length,
-                    'Content-Disposition': `attachment; filename="emissao-${pin}.pdf"`
+                // Salva o PDF no diretório
+                fs.writeFileSync(filePath, pdfBuffer);
+
+                return response.json({
+                    status: 'sucesso',
+                    descricao: 'PDF gerado e salvo com sucesso.',
+                    file: filePath
                 });
-
-                return response.send(pdfBuffer);
 
             } catch (err) {
                 console.error('Erro ao gerar PDF:', err);
                 return response.status(500).json([{ status: 'erro', descricao: 'Erro ao gerar o PDF.' }]);
             }
 
-
         } else {
-            response.status(201).json([{ status: 'erro', descricao: 'Erro ao selecionar a emissão.' }]);
+            return response.status(201).json([{ status: 'erro', descricao: 'Erro ao selecionar a emissão.' }]);
         }
-
     },
 
 };
