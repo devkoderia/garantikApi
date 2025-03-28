@@ -3,6 +3,9 @@ const fs = require('fs');
 const path = require('path');
 const moment = require('moment-timezone');
 const { executeQuery } = require('../services/generalFunctions');
+const { listaEmissao } = require('./emissaoController')
+const { listaEmissaoFavorecido } = require('./emissaoFavorecidoController')
+const { listaEmissaoTomador } = require('./emissaoTomadorController')
 
 module.exports = {
 
@@ -11,101 +14,178 @@ module.exports = {
         const { emissao_id } = request.params;
         const { cliente_id } = request.body;
 
+        const emissao = await listaEmissao(emissao_id, cliente_id);
 
-        //pega a emissão
-        const strsql = `select 
-            EMISSAO.emissao_id,
-            EMISSAO.cliente_id,
-            EMISSAO.pin,
-            CONVERT(VARCHAR, EMISSAO.dataEmissao, 103) as dataEmissao,
-            CONVERT(VARCHAR, EMISSAO.dataInicio, 103) as dataInicio,
-            CONVERT(VARCHAR, EMISSAO.dataVencimento, 103) as dataVencimento,
-            EMISSAO.dias,
-            EMISSAO.dataVencimentoIndeterminado,
-            EMISSAO.valor,
-            EMISSAO.valorExtenso,
-            EMISSAO.modalidade_id,
-            EMISSAO.modalidadeTexto,
-            EMISSAO.objeto,
-            EMISSAO.textoFianca,
-            EMISSAO.documento,
-            EMISSAO.sinistro,
-            EMISSAO.bloqueada,
-            EMISSAO.taxa,
-            EMISSAO.premio,
-            EMISSAO.pago,
-            EMISSAO.valorPago,
-            EMISSAO.minuta,
-            EMISSAO.garantia,
-            CONVERT(VARCHAR, EMISSAO.ad_new, 103) + ' ' + CONVERT(VARCHAR, EMISSAO.ad_new, 8) as ad_new,
-            CONVERT(VARCHAR, EMISSAO.ad_upd, 103) + ' ' + CONVERT(VARCHAR, EMISSAO.ad_upd, 8) as ad_upd,
-            EMISSAO.ad_usr,
-            EMISSAO.deletado
-            from EMISSAO
-            where (EMISSAO.deletado = 0 or EMISSAO.deletado is null) and emissao_id = ${emissao_id} and cliente_id = ${cliente_id}`
+        if (emissao.length > 0) {
 
-        const resultado = await executeQuery(strsql);
+            const emissaoFavorecido = await listaEmissaoFavorecido(emissao_id, cliente_id)
+            const emissaoTomador = await listaEmissaoTomador(emissao_id, cliente_id)
 
-        if (resultado.length > 0) {
 
-            const strsqlFavorecido = `select 
-            EMISSAO_FAVORECIDO.emissaoFavorecido_id,
-            EMISSAO_FAVORECIDO.cliente_id,
-            EMISSAO_FAVORECIDO.emissao_id,
-            EMISSAO_FAVORECIDO.favorecido_id,
-            CONVERT(VARCHAR, EMISSAO_FAVORECIDO.ad_new, 103) + ' ' + CONVERT(VARCHAR, EMISSAO_FAVORECIDO.ad_new, 8) as ad_new,
-            CONVERT(VARCHAR, EMISSAO_FAVORECIDO.ad_upd, 103) + ' ' + CONVERT(VARCHAR, EMISSAO_FAVORECIDO.ad_upd, 8) as ad_upd,
-            EMISSAO_FAVORECIDO.ad_usr,
-            EMISSAO_FAVORECIDO.deletado
-            from EMISSAO_FAVORECIDO
-            where (EMISSAO_FAVORECIDO.deletado = 0 or EMISSAO_FAVORECIDO.deletado is null) and emissao_id = ${emissao_id} and cliente_id = ${cliente_id}`;
-
-            const resultadoFavorecido = await executeQuery(strsqlFavorecido);
-
-            const strsqlTomador = `select 
-            EMISSAO_TOMADOR.emissaoTomador_id,
-            EMISSAO_TOMADOR.cliente_id,
-            EMISSAO_TOMADOR.emissao_id,
-            EMISSAO_TOMADOR.tomador_id,
-            CONVERT(VARCHAR, EMISSAO_TOMADOR.ad_new, 103) + ' ' + CONVERT(VARCHAR, EMISSAO_TOMADOR.ad_new, 8) as ad_new,
-            CONVERT(VARCHAR, EMISSAO_TOMADOR.ad_upd, 103) + ' ' + CONVERT(VARCHAR, EMISSAO_TOMADOR.ad_upd, 8) as ad_upd,
-            EMISSAO_TOMADOR.ad_usr,
-            EMISSAO_TOMADOR.deletado
-            from EMISSAO_TOMADOR
-            inner join TOMADOR on EMISSAO_TOMADOR.tomador_id = TOMADOR.tomador_id
-            where (EMISSAO_TOMADOR.deletado = 0 or EMISSAO_TOMADOR.deletado is null) and emissao_id = ${emissao_id} and cliente_id = ${cliente_id}`;
-            
-            const resultadoTomador = await executeQuery(strsqlTomador);
-
-            
             //Pega as variáveis da emissão PRINCIPAL
-            const pin = resultado[0].pin
-            const dataEmissao = resultado[0].dataEmissao
-            const dataInicio = resultado[0].dataInicio
-            const dataVencimento = resultado[0].dataVencimento
-            const dias = resultado[0].dias
-            const dataVencimentoIndeterminado = resultado[0].dataVencimentoIndeterminado
-            const valor = resultado[0].valor
-            const valorExtenso = resultado[0].valorExtenso
-            const modalidade_id = resultado[0].modalidade_id
-            const modalidadeTexto = resultado[0].modalidadeTexto
-            const objeto = resultado[0].objeto
-            const textoFianca = resultado[0].textoFianca
-            const documento = resultado[0].documento
-            const sinistro = resultado[0].sinistro
-            const bloqueada = resultado[0].bloqueada
-            const taxa = resultado[0].taxa
-            const premio = resultado[0].premio
-            const pago = resultado[0].pago
-            const valorPago = resultado[0].valorPago
-            const minuta = resultado[0].minuta
-            const garantia = resultado[0].garantia
-            const ad_new = resultado[0].ad_new
-            const ad_upd = resultado[0].ad_upd
+            const pin = emissao[0].pin
+            const dataEmissao = emissao[0].dataEmissao
+            const dataInicio = emissao[0].dataInicio
+            const dataVencimento = emissao[0].dataVencimento
+            const dias = emissao[0].dias
+            const dataVencimentoIndeterminado = emissao[0].dataVencimentoIndeterminado
+            const valor = emissao[0].valor
+            const valorExtenso = emissao[0].valorExtenso
+            const modalidade_id = emissao[0].modalidade_id
+            const modalidadeTexto = emissao[0].modalidadeTexto
+            const objeto = emissao[0].objeto
+            const textoFianca = emissao[0].textoFianca
+            const documento = emissao[0].documento
+            const sinistro = emissao[0].sinistro
+            const bloqueada = emissao[0].bloqueada
+            const taxa = emissao[0].taxa
+            const premio = emissao[0].premio
+            const pago = emissao[0].pago
+            const valorPago = emissao[0].valorPago
+            const minuta = emissao[0].minuta
+            const garantia = emissao[0].garantia
+            const ad_new = emissao[0].ad_new
+            const ad_upd = emissao[0].ad_upd
+
+            emissaoFavorecido.forEach((favorecido) => {
+                console.log('Favorecido ID:', favorecido.favorecido_id);
+                console.log('Tipo:', favorecido.tipo);
+                console.log('CPF:', favorecido.cpf);
+                console.log('CNPJ:', favorecido.cnpj);
+                console.log('Nome:', favorecido.nome);
+                console.log('Nome Fantasia:', favorecido.nomeFantasia);
+                console.log('Razão Social:', favorecido.razaoSocial);
+                console.log('IBGE Descrição:', favorecido.ibge_descri);
+                console.log('UF:', favorecido.uf);
+            });
+
+            emissaoTomador.forEach((tomador) => {
+                console.log('Tomador ID:', tomador.tomador_id);
+                console.log('Tipo:', tomador.tipo);
+                console.log('CPF:', tomador.cpf);
+                console.log('CNPJ:', tomador.cnpj);
+                console.log('Nome:', tomador.nome);
+                console.log('Nome Fantasia:', tomador.nomeFantasia);
+                console.log('Razão Social:', tomador.razaoSocial);
+                console.log('CEP:', tomador.cep);
+                console.log('IBGE Descrição:', tomador.ibge_descri);
+                console.log('UF:', tomador.uf);
+                console.log('Logradouro:', tomador.logradouro);
+                console.log('Número:', tomador.numero);
+                console.log('Complemento:', tomador.complemento);
+                console.log('Bairro:', tomador.bairro);
+            });
+
+            const fundoPath = `https://cdn.garantik.com.br/${cliente_id}/fundo_garantia.jpg)}`;
+
+            const htmlContent = `
+            <!DOCTYPE html>
+            <html>
+              <head>
+                <meta charset="utf-8">
+                <title>Emissão ${pin}</title>
+                <style>
+                  /* Define a margem para cada página */
+                  @page {
+                    margin: 20mm;
+                  }
+                  body {
+                    font-family: Arial, sans-serif;
+                    /* Define a imagem de fundo */
+                    background-image: url("${fundoPath}");
+                    background-size: cover;
+                    background-repeat: no-repeat;
+                    margin: 0;
+                    padding: 0;
+                  }
+                  .container {
+                    /* Margem interna extra para separar o conteúdo */
+                    margin: 20mm;
+                    background: rgba(255, 255, 255, 0.9);
+                    padding: 20px;
+                  }
+                  h1, h2 {
+                    text-align: center;
+                  }
+                  ul {
+                    list-style-type: none;
+                    padding: 0;
+                  }
+                  li {
+                    margin-bottom: 5px;
+                  }
+                </style>
+              </head>
+              <body>
+                <div class="container">
+                  <h1>Emissão ${pin}</h1>
+                  <p><strong>Data de Emissão:</strong> ${dataEmissao}</p>
+                  <p><strong>Valor:</strong> ${valor} - ${valorExtenso}</p>
+                  <!-- Outros dados da emissão podem ser inseridos aqui -->
+                  
+                  <h2>Favorecidos</h2>
+                  <ul>
+                    ${emissaoFavorecido.map(fav => `
+                      <li>
+                        <strong>${fav.nome}</strong> 
+                        (${fav.cpf || fav.cnpj}) - ${fav.razaoSocial || fav.nome}
+                      </li>
+                    `).join('')}
+                  </ul>
+    
+                  <h2>Tomadores</h2>
+                  <ul>
+                    ${emissaoTomador.map(tom => `
+                      <li>
+                        <strong>${tom.nome}</strong> 
+                        (${tom.cpf || tom.cnpj}) - ${tom.razaoSocial || tom.nome})
+                      </li>
+                    `).join('')}
+                  </ul>
+                </div>
+              </body>
+            </html>
+          `;
+
+
+            try {
+                // Inicia o browser com Puppeteer
+                const browser = await puppeteer.launch();
+                const page = await browser.newPage();
+
+                // Define o conteúdo da página com o HTML acima
+                await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
+
+                // Gera o PDF com as configurações desejadas
+                const pdfBuffer = await page.pdf({
+                    format: 'A4',
+                    printBackground: true,
+                    margin: {
+                        top: '20mm',
+                        bottom: '20mm',
+                        left: '20mm',
+                        right: '20mm'
+                    }
+                });
+
+                await browser.close();
+
+                // Envia o PDF como resposta -- e depois vai ter que salvar em disco
+                response.set({
+                    'Content-Type': 'application/pdf',
+                    'Content-Length': pdfBuffer.length
+                });
+                
+                return response.send(pdfBuffer);
+
+            } catch (err) {
+                console.error('Erro ao gerar PDF:', err);
+                return response.status(500).json([{ status: 'erro', descricao: 'Erro ao gerar o PDF.' }]);
+            }
 
 
         } else {
-            response.status(201).json([{ status: 'erro' }]);
+            response.status(201).json([{ status: 'erro', descricao: 'Erro ao selecionar a emissão.' }]);
         }
 
     },

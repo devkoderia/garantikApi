@@ -50,6 +50,7 @@ module.exports = {
         const strsql = `select count(*) as total from FAVORECIDO where (deletado = 0 or deletado is null) and cliente_id = ${cliente_id}`;
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
+
     },
 
     async destroy(request, response) {
@@ -60,6 +61,7 @@ module.exports = {
         const strsql = `update FAVORECIDO set deletado = 1 where favorecido_id = ${favorecido_id} and cliente_id = ${cliente_id}`;
         await executeQuery(strsql);
         response.status(200).json([{ status: 'ok' }]);
+
     },
 
     async listaUm(request, response) {
@@ -112,6 +114,7 @@ module.exports = {
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
     },
+
 
     async listaTodos(request, response) {
 

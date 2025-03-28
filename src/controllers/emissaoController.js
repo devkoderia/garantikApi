@@ -3,29 +3,7 @@ const { executeQuery } = require('../services/generalFunctions');
 
 module.exports = {
 
-    async count(request, response) {
-
-        const { cliente_id } = request.body;
-
-        const strsql = `select count(*) as total from EMISSAO where (deletado = 0 or deletado is null) and cliente_id = ${cliente_id}`;
-        const resultado = await executeQuery(strsql);
-        response.status(200).send(resultado);
-    },
-
-    async destroy(request, response) {
-
-        const { emissao_id } = request.params;
-        const { cliente_id } = request.body;
-
-        const strsql = `update EMISSAO set deletado = 1 where emissao_id = ${emissao_id} and cliente_id = ${cliente_id}`;
-        await executeQuery(strsql);
-        response.status(200).json([{ status: 'ok' }]);
-    },
-
-    async listaUm(request, response) {
-
-        const { emissao_id } = request.params;
-        const { cliente_id } = request.body;
+    async listaEmissao(emissao_id, cliente_id) {
 
         const strsql = `select 
             EMISSAO.emissao_id,
@@ -59,7 +37,29 @@ module.exports = {
             where (EMISSAO.deletado = 0 or EMISSAO.deletado is null) and emissao_id = ${emissao_id} and cliente_id = ${cliente_id}`;
 
         const resultado = await executeQuery(strsql);
+
+        return resultado
+    },
+
+    //----------------------------------------------------------------
+
+    async count(request, response) {
+
+        const { cliente_id } = request.body;
+
+        const strsql = `select count(*) as total from EMISSAO where (deletado = 0 or deletado is null) and cliente_id = ${cliente_id}`;
+        const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
+    },
+
+    async destroy(request, response) {
+
+        const { emissao_id } = request.params;
+        const { cliente_id } = request.body;
+
+        const strsql = `update EMISSAO set deletado = 1 where emissao_id = ${emissao_id} and cliente_id = ${cliente_id}`;
+        await executeQuery(strsql);
+        response.status(200).json([{ status: 'ok' }]);
     },
 
     async listaTodos(request, response) {

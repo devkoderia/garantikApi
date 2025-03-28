@@ -966,15 +966,6 @@ routes.post('/emissaoListaTodos', verificaToken, celebrate({
     })
 }), emissaoController.listaTodos)
 
-routes.post('/emissaoListaUm/:emissao_id', celebrate({
-    [Segments.PARAMS]: Joi.object().keys({
-        emissao_id: Joi.number().integer().required()
-    }),
-    [Segments.BODY]: Joi.object().keys({
-        cliente_id: Joi.number().integer().required(),
-    })
-}), verificaToken, emissaoController.listaUm)
-
 routes.post('/emissao', celebrate({
     [Segments.BODY]: Joi.object().keys({
         cliente_id: Joi.number().integer().required(),
@@ -1162,28 +1153,28 @@ routes.delete('/emissao_documento/:documento_id', celebrate({
 //-------------------------------------------------------------------------------------------------------------
 const emissaoFavorecidoController = require('./src/controllers/emissaoFavorecidoController')
 
-routes.post('/emissao_favorecidoConta', verificaToken, celebrate({
+routes.post('/emissaoFavorecidoConta', verificaToken, celebrate({
     [Segments.BODY]: Joi.object().keys({
         cliente_id: Joi.number().integer().required(),
     })
 }), emissaoFavorecidoController.count)
 
-routes.post('/emissao_favorecidoListaTodos', verificaToken, celebrate({
+routes.post('/emissaoFavorecidoListaTodos', verificaToken, celebrate({
     [Segments.BODY]: Joi.object().keys({
         cliente_id: Joi.number().integer().required(),
     })
 }), emissaoFavorecidoController.listaTodos)
 
-routes.post('/emissao_favorecidoListaUm/:emissaoFavorecido_id', celebrate({
+routes.post('/emissaoFavorecidoListaUm/:emissaoFavorecido_id', celebrate({
     [Segments.PARAMS]: Joi.object().keys({
-        emissaoFavorecido_id: Joi.number().integer().required()
+        emissao_id: Joi.number().integer().required()
     }),
     [Segments.BODY]: Joi.object().keys({
         cliente_id: Joi.number().integer().required(),
     })
 }), verificaToken, emissaoFavorecidoController.listaUm)
 
-routes.post('/emissao_favorecido', celebrate({
+routes.post('/emissaoFavorecido', celebrate({
     [Segments.BODY]: Joi.object().keys({
         cliente_id: Joi.number().integer().required(),
         emissao_id: Joi.number().integer().required(),
@@ -1193,7 +1184,7 @@ routes.post('/emissao_favorecido', celebrate({
     })
 }), verificaToken, emissaoFavorecidoController.create)
 
-routes.put('/emissao_favorecido/:emissaoFavorecido_id', celebrate({
+routes.put('/emissaoFavorecido/:emissaoFavorecido_id', celebrate({
     [Segments.PARAMS]: Joi.object().keys({
         emissaoFavorecido_id: Joi.number().integer().required()
     }),
@@ -1206,7 +1197,7 @@ routes.put('/emissao_favorecido/:emissaoFavorecido_id', celebrate({
     })
 }), verificaToken, emissaoFavorecidoController.update)
 
-routes.delete('/emissao_favorecido/:emissaoFavorecido_id', celebrate({
+routes.delete('/emissaoFavorecido/:emissaoFavorecido_id', celebrate({
     [Segments.PARAMS]: Joi.object().keys({
         emissaoFavorecido_id: Joi.number().integer().required()
     }),

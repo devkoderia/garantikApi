@@ -3,6 +3,60 @@ const { executeQuery } = require('../services/generalFunctions');
 
 module.exports = {
 
+    async listaEmissaoFavorecido(emissao_id, cliente_id) {
+
+        const strsql = `select 
+            FAVORECIDO.favorecido_id,
+            FAVORECIDO.cliente_id,
+            FAVORECIDO.tipo,
+            FAVORECIDO.cpf,
+            FAVORECIDO.cnpj,
+            FAVORECIDO.nome,
+            FAVORECIDO.nomeFantasia,
+            FAVORECIDO.razaoSocial,
+            FAVORECIDO.cep,
+            FAVORECIDO.ibge_codigo,
+            FAVORECIDO.ibge_descri,
+            FAVORECIDO.uf,
+            FAVORECIDO.logradouro,
+            FAVORECIDO.numero,
+            FAVORECIDO.complemento,
+            FAVORECIDO.bairro,
+            FAVORECIDO.telefoneFixo,
+            FAVORECIDO.telefoneCelular,
+            FAVORECIDO.email,
+            FAVORECIDO.observacao,
+            FAVORECIDO.cnae,
+            FAVORECIDO.cnaeDescricao,
+            FAVORECIDO.capitalSocial,
+            FAVORECIDO.naturezaJuridica,
+            FAVORECIDO.situacao,
+            FAVORECIDO.dataAbertura,
+            FAVORECIDO.dataUltimaAtualizacao,
+            FAVORECIDO.tipoEmpresa,
+            FAVORECIDO.porte,
+            FAVORECIDO.dataSituacao,
+            FAVORECIDO.motivoSituacao,
+            FAVORECIDO.situacaoEspecial,
+            FAVORECIDO.dataSituacaoEspecial,
+            FAVORECIDO.bloqueado,
+            CONVERT(VARCHAR, FAVORECIDO.ad_new, 103) + ' ' + CONVERT(VARCHAR, FAVORECIDO.ad_new, 8) as ad_new,
+            CONVERT(VARCHAR, FAVORECIDO.ad_upd, 103) + ' ' + CONVERT(VARCHAR, FAVORECIDO.ad_upd, 8) as ad_upd,
+            FAVORECIDO.ad_usr,
+            FAVORECIDO.deletado
+            from FAVORECIDO
+            inner join EMISSAO_FAVORECIDO on EMISSAO_FAVORECIDO.favorecido_id = FAVORECIDO.favorecido_id
+            where
+            (FAVORECIDO.deletado = 0 or FAVORECIDO.deletado is null) and 
+            (EMISSAO_FAVORECIDO.deletado = 0 or EMISSAO_FAVORECIDO.deletado is null) and             
+            EMISSAO_FAVORECIDO.emissao_id = ${emissao_id} and cliente_id = ${cliente_id}`;
+
+        const resultado = await executeQuery(strsql);
+        
+        return resultado
+    },
+
+
     async count(request, response) {
 
         const { cliente_id } = request.body;
@@ -24,7 +78,7 @@ module.exports = {
 
     async listaUm(request, response) {
 
-        const { emissaoFavorecido_id } = request.params;
+        const { emissao_id } = request.params;
         const { cliente_id } = request.body;
 
         const strsql = `select 
@@ -37,7 +91,7 @@ module.exports = {
             EMISSAO_FAVORECIDO.ad_usr,
             EMISSAO_FAVORECIDO.deletado
             from EMISSAO_FAVORECIDO
-            where (EMISSAO_FAVORECIDO.deletado = 0 or EMISSAO_FAVORECIDO.deletado is null) and emissaoFavorecido_id = ${emissaoFavorecido_id} and cliente_id = ${cliente_id}`;
+            where (EMISSAO_FAVORECIDO.deletado = 0 or EMISSAO_FAVORECIDO.deletado is null) and emissao_id = ${emissao_id} and cliente_id = ${cliente_id}`;
 
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);

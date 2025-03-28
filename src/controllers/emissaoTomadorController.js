@@ -3,6 +3,62 @@ const { executeQuery } = require('../services/generalFunctions');
 
 module.exports = {
 
+    async listaEmissaoTomador(emissao_id, cliente_id) {
+
+        const strsql = `select 
+            TOMADOR.tomador_id,
+            TOMADOR.cliente_id,
+            TOMADOR.tipo,
+            TOMADOR.cpf,
+            TOMADOR.cnpj,
+            TOMADOR.nome,
+            TOMADOR.nomeFantasia,
+            TOMADOR.razaoSocial,
+            TOMADOR.cep,
+            TOMADOR.ibge_codigo,
+            TOMADOR.ibge_descri,
+            TOMADOR.uf,
+            TOMADOR.logradouro,
+            TOMADOR.numero,
+            TOMADOR.complemento,
+            TOMADOR.bairro,
+            TOMADOR.telefoneFixo,
+            TOMADOR.telefoneCelular,
+            TOMADOR.email,
+            TOMADOR.observacao,
+            TOMADOR.cnae,
+            TOMADOR.cnaeDescricao,
+            TOMADOR.capitalSocial,
+            TOMADOR.naturezaJuridica,
+            TOMADOR.situacao,
+            TOMADOR.dataAbertura,
+            TOMADOR.dataUltimaAtualizacao,
+            TOMADOR.tipoEmpresa,
+            TOMADOR.porte,
+            TOMADOR.dataSituacao,
+            TOMADOR.motivoSituacao,
+            TOMADOR.situacaoEspecial,
+            TOMADOR.dataSituacaoEspecial,
+            case when TOMADOR.restricao = 1 then 1 else 0 end as restricao,
+            case when TOMADOR.bloqueado = 1 then 1 else 0 end as bloqueado,
+            CONVERT(VARCHAR, TOMADOR.ad_new, 103) + ' ' + CONVERT(VARCHAR, TOMADOR.ad_new, 8) as ad_new,
+            CONVERT(VARCHAR, TOMADOR.ad_upd, 103) + ' ' + CONVERT(VARCHAR, TOMADOR.ad_upd, 8) as ad_upd,
+            TOMADOR.ad_usr,
+            TOMADOR.deletado
+            from TOMADOR
+            inner join EMISSAO_TOMADOR on EMISSAO_TOMADOR.tomador_id = TOMADOR.tomador_id
+            where 
+            (TOMADOR.deletado = 0 or TOMADOR.deletado is null) and 
+            (EMISSAO_TOMADOR.deletado = 0 or EMISSAO_TOMADOR.deletado is null) and             
+            EMISSAO_TOMADOR.emissao_id = ${emissao_id} and EMISSAO_TOMADOR.cliente_id = ${cliente_id}`;
+
+        const resultado = await executeQuery(strsql);
+        
+        return resultado
+    },
+
+    //----------------------------------------------------------------
+
     async count(request, response) {
 
         const { cliente_id } = request.body;
