@@ -10,9 +10,11 @@ const usuariosClientes = async (usuario_id) => {
     
     select 
     CL.cliente_id,
-    C.cnpj, C.nomeFantasia, C.razaoSocial
+    C.cnpj, C.nomeFantasia, C.razaoSocial, CL.email, P.descricao as perfil, CL.produtor_id, CL.corretor_id, CL.perfil_id,
+    CL.status, CL.ultimoAcesso
     from CLIENTE_USUARIO CL
     inner join CLIENTE C on CL.cliente_id = C.cliente_id
+    left join PERFIL P on P.perfil_id = CL.perfil_id
     where (CL.deletado = 0 or CL.deletado is null)
     and CL.usuario_id = ${usuario_id}
     and (C.deletado = 0 or C.deletado is null)
@@ -32,25 +34,17 @@ module.exports = {
         const { cpf, senha } = request.body;
         const hashedSenha = md5(senha);
 
-        const strsql = `select distinct
-            USUARIO.usuario_id,
-            CLIENTE_USUARIO.perfil_id,
-            CLIENTE_USUARIO.produtor_id,
-            CLIENTE_USUARIO.corretor_id,
+        const strsql = `
+            select distinct
+            USUARIO.usuario_id,            
             USUARIO.nome,
             USUARIO.cpf,
-            USUARIO.email,
-            PERFIL.descricao as perfilDescricao,
-            CONVERT(VARCHAR, USUARIO.ad_new, 103) + ' ' + CONVERT(VARCHAR, USUARIO.ad_new, 8) as ad_new,
-            CONVERT(VARCHAR, USUARIO.ad_upd, 103) + ' ' + CONVERT(VARCHAR, USUARIO.ad_upd, 8) as ad_upd
+            USUARIO.tipo
             from USUARIO
-            inner join CLIENTE_USUARIO on CLIENTE_USUARIO.usuario_id = USUARIO.usuario_id
-            inner join PERFIL on PERFIL.perfil_id = CLIENTE_USUARIO.perfil_id
             where (USUARIO.deletado = 0 or USUARIO.deletado is null) and
-			(CLIENTE_USUARIO.deletado = 0 or CLIENTE_USUARIO.deletado is null) and
             USUARIO.cpf = '${cpf}' and USUARIO.senha = '${hashedSenha}'`;
 
-        console.log(strsql)
+        //console.log(strsql)
 
         const resultado = await executeQuery(strsql);
 
@@ -69,12 +63,9 @@ module.exports = {
             var dataBack = {
 
                 usuario_id: resultado[0].usuario_id,
-                perfil_id: resultado[0].perfil_id,
-                produtor_id: resultado[0].produtor_id,
-                corretor_id: resultado[0].corretor_id,
+                tipo: resultado[0].tipo,                
                 nome: resultado[0].nome,
-                cpf: resultado[0].cpf,
-                email: resultado[0].email,
+                cpf: resultado[0].cpf,                
                 descricao: resultado[0].descricao,
                 clientes: clientes
 

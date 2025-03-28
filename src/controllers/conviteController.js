@@ -72,7 +72,7 @@ module.exports = {
 
         var strsql = `        
         select 
-        C.convite_id, C.nomeFantasia, V.email, V.nome
+        V.convite_id, C.nomeFantasia, V.email, V.nome
         from CONVITE V
         inner join CLIENTE C on V.cliente_id = C.cliente_id
         where (C.deletado = 0 or C.deletado is null)

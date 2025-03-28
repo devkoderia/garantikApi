@@ -8,7 +8,7 @@ module.exports = {
 
     async consultaUsuarioExistenteCpf(cpf) {
 
-        const strsql = `select usuario_id from USUARIO
+        const strsql = `select usuario_id, cpf, nome from USUARIO
                             where cpf = '${cpf}' and
                             (USUARIO.deletado = 0 OR USUARIO.deletado IS NULL)`
 
@@ -16,7 +16,7 @@ module.exports = {
 
         return resultado
     },
-    
+
 
     async insereUsuarioAutoCadastro(cpf, nome, hashedSenha, ad_usr) {
 
@@ -55,6 +55,20 @@ module.exports = {
 
 
     //-------------------------------------------------------------------------------------------------------------------------
+
+
+    async consultaUsuarioCpf(request, response) {
+
+        var { cpf } = request.params
+
+        const strsql = `select usuario_id, cpf, nome from USUARIO
+                            where cpf = '${cpf}' and
+                            (USUARIO.deletado = 0 OR USUARIO.deletado IS NULL)`
+
+        const resultado = await executeQuery(strsql);
+
+        response.status(200).send(resultado);
+    },
 
 
     async count(request, response) {
@@ -131,11 +145,8 @@ module.exports = {
             CONVERT(VARCHAR, CLIENTE_USUARIO.ultimoAcesso, 103) + ' ' + CONVERT(VARCHAR, CLIENTE_USUARIO.ad_new, 8) as ultimoAcesso,
             CLIENTE_USUARIO.ip,
             CLIENTE_USUARIO.bloqueado,
-            CLIENTE_USUARIO.status,
-            CONVERT(VARCHAR, USUARIO.ad_new, 103) + ' ' + CONVERT(VARCHAR, USUARIO.ad_new, 8) as ad_new,
-            CONVERT(VARCHAR, USUARIO.ad_upd, 103) + ' ' + CONVERT(VARCHAR, USUARIO.ad_upd, 8) as ad_upd,
-            USUARIO.ad_usr,
-            USUARIO.deletado
+            CLIENTE_USUARIO.status
+            
             from USUARIO
             inner join CLIENTE_USUARIO on CLIENTE_USUARIO.usuario_id = USUARIO.usuario_id
             inner join PERFIL on PERFIL.perfil_id = CLIENTE_USUARIO.perfil_id
@@ -143,6 +154,7 @@ module.exports = {
 			(CLIENTE_USUARIO.deletado = 0 or CLIENTE_USUARIO.deletado is null) and
             USUARIO.usuario_id = ${usuario_id} and CLIENTE_USUARIO.cliente_id = ${cliente_id}`;
 
+        //console.log(strsql)
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
 
@@ -225,7 +237,7 @@ module.exports = {
         const ad_upd = ad_new;
         const hashedSenha = md5(senha);
 
-        const resultadoConsulta = await consultaUsuarioExistenteCpf(cliente_id, cpf)
+        const resultadoConsulta = await consultaUsuarioExistenteCpf(cpf)
 
         if (resultadoConsulta && resultadoConsulta.length > 0) {
             return response.status(201).json([{ status: 'erro', descricao: 'Usuário existente na tabela de usuários.' }]);

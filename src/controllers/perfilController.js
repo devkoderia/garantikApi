@@ -41,15 +41,16 @@ module.exports = {
         response.status(200).send(resultado);
     },
 
-    async listaTodos(request, response) {
+    async index(request, response) {
 
-        const { cliente_id } = request.body;
+        
         
         const strsql = `select 
             PERFIL.perfil_id,
             PERFIL.descricao
             from PERFIL
-            where (PERFIL.deletado = 0 or PERFIL.deletado is null) and cliente_id = ${cliente_id} and cliente_id = ${cliente_id}`;
+            where (PERFIL.deletado = 0 or PERFIL.deletado is null)
+            order by descricao`;
 
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);

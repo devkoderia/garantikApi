@@ -558,6 +558,15 @@ routes.delete('/clienteUsuario/:clienteUsuario_id', celebrate({
     })
 }), verificaToken, clienteUsuarioController.destroy);
 
+routes.post('/consultaClienteUsuarioCpf/:cpf', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        cpf: Joi.string().allow(null).allow('').length(11),
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required()
+    }),
+}), verificaToken, clienteUsuarioController.consultaClienteUsuarioCpf);
+
 
 
 //COBERTURA
@@ -1786,11 +1795,7 @@ routes.post('/perfilConta', celebrate({
     })
 }), verificaToken, perfilController.count)
 
-routes.post('/perfilListaTodos', celebrate({
-    [Segments.BODY]: Joi.object().keys({
-        cliente_id: Joi.number().integer().required(),
-    })
-}), verificaToken, perfilController.listaTodos)
+routes.get('/perfilListaTodos', verificaToken, perfilController.index)
 
 routes.post('/perfilListaUm/:perfil_id', celebrate({
     [Segments.PARAMS]: Joi.object().keys({
@@ -2219,6 +2224,12 @@ routes.post('/usuarioConta', celebrate({
         cliente_id: Joi.number().integer().required(),
     })
 }), verificaToken, usuarioController.count)
+
+routes.get('/consultaUsuarioCpf/:cpf', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        cpf: Joi.string().required().length(11),
+    })
+}), verificaToken, usuarioController.consultaUsuarioCpf)
 
 routes.post('/usuarioListaTabela', celebrate({
     [Segments.BODY]: Joi.object().keys({

@@ -58,6 +58,26 @@ module.exports = {
 
     //--------------------------------------------------------------------------------------------------------------------------------
 
+    async consultaClienteUsuarioCpf(request, response) {
+
+        var { cpf } = request.params
+        var { cliente_id } = request.body
+
+        const strsql = `select USUARIO.usuario_id,
+                            CLIENTE_USUARIO.clienteUsuario_id,
+                            USUARIO.cpf, 
+                            USUARIO.nome 
+                            from USUARIO
+                            inner join CLIENTE_USUARIO on CLIENTE_USUARIO.usuario_id = USUARIO.usuario_id
+                            where cpf = '${cpf}' and cliente_id = ${cliente_id} and
+                            (USUARIO.deletado = 0 OR USUARIO.deletado IS NULL) and 
+                            (CLIENTE_USUARIO.deletado = 0 OR CLIENTE_USUARIO.deletado IS NULL)`
+
+        const resultado = await executeQuery(strsql);
+
+        response.status(200).send(resultado);
+    },
+
     async count(_, response) {
         const strsql = `
             SELECT count(*) as total 
