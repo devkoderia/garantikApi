@@ -170,11 +170,15 @@ module.exports = {
 
                 await browser.close();
 
+                response.setHeader('Content-Disposition', `attachment; filename="emissao-${pin}.pdf"`);
+
+
                 // Envia o PDF como resposta -- e depois vai ter que salvar em disco
                 response.set({
-                    'Content-Type': 'application/pdf',
-                    'Content-Length': pdfBuffer.length
-                });
+                  'Content-Type': 'application/pdf',
+                  'Content-Length': pdfBuffer.length,
+                  'Content-Disposition': `attachment; filename="emissao-${pin}.pdf"`
+              });
                 
                 return response.send(pdfBuffer);
 
