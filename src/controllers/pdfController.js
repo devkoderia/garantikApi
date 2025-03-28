@@ -145,7 +145,7 @@ module.exports = {
                 const page = await browser.newPage();
 
                 // Define o conteúdo da página com o HTML acima
-                await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
+                await page.setContent(htmlContent, { waitUntil: 'domcontentloaded' });
 
                 // Gera o PDF
                 const pdfBuffer = await page.pdf({
