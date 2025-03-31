@@ -75,118 +75,114 @@ module.exports = {
                     </style>
                 </head>
 
-                    <body>
+                <body>
 
-                        <br><br><br><br>
-                        <br><br><br><br>
+                    <br><br><br><br>
+                    <br><br><br><br>
 
-                        <table border="0" width="774" align="center">
-                            <tr>
-                            <td>
-                            <center><font size="3" color="black" face="verdana,arial,helvetica">
-                            <b>Carta de Fiança n. ${pin}</b>
-                            </td>
-                            </tr>
-                        </table>
-                        <br><br>
-                        <table border="0" width="774" align="center">
-                            <tr>
-                            <td align="left"><font size="3" color="black" face="verdana,arial,helvetica">
-                            <b>Data de emissão: ${dataEmissao}</b>
-                            </td>
-                            <td align="right"><font size="3" color="black" face="verdana,arial,helvetica">
-                            <b>Data de início: ${dataInicio}</b>
-                            </td>
-                            </tr>
-                            <tr>
-                            <td align="left"><font size="3" color="black" face="verdana,arial,helvetica">
-                            
-                            </td>
-                            <td align="right"><font size="3" color="black" face="verdana,arial,helvetica">
-                            <b>Data de vencimento: ${dataVencimento}</b>
-                            </td>
-                            </tr>
-                        </table>
-                        <br>
-                        <table border="0" width="774" align="center">
+                    <table border="0" width="774" align="center">
+                        <tr>
+                        <td>
+                        <center><font size="3" color="black" face="verdana,arial,helvetica">
+                        <b>Carta de Fiança n. ${pin}</b>
+                        </td>
+                        </tr>
+                    </table>
+                    <br><br>
+                    <table border="0" width="774" align="center">
+                        <tr>
+                        <td align="left"><font size="3" color="black" face="verdana,arial,helvetica">
+                        <b>Data de emissão: ${dataEmissao}</b>
+                        </td>
+                        <td align="right"><font size="3" color="black" face="verdana,arial,helvetica">
+                        <b>Data de início: ${dataInicio}</b>
+                        </td>
+                        </tr>
+                        <tr>
+                        <td align="left"><font size="3" color="black" face="verdana,arial,helvetica">
+                        
+                        </td>
+                        <td align="right"><font size="3" color="black" face="verdana,arial,helvetica">
+                        <b>Data de vencimento: ${dataVencimento}</b>
+                        </td>
+                        </tr>
+                    </table>
+                    <br>
+                    <table border="0" width="774" align="center">
 
-                        ${emissaoFavorecido.map((fav) => {
-                            return `<tr>
-                                      <td align="left">
-                                        <font size="3" color="black" face="verdana,arial,helvetica">
-                                          <b>FAVORECIDO/CREDOR: </b>${fav.nome}
-                                        </font>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td align="left">
-                                        <font size="3" color="black" face="verdana,arial,helvetica">
-                                          ${fav.tipo == 1 ? '<b>CPF: </b>' + fav.cpf : '<b>CNPJ: </b>' + fav.cnpj}
-                                        </font>
-                                      </td>
-                                    </tr>`;
-                          }).join('')}
+                    ${emissaoFavorecido.map((fav) => {
+                        return `<tr>
+                                    <td align="left">
+                                    <font size="3" color="black" face="verdana,arial,helvetica">
+                                        <b>FAVORECIDO/CREDOR: </b>${fav.nome}
+                                    </font>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="left">
+                                    <font size="3" color="black" face="verdana,arial,helvetica">
+                                        ${fav.tipo == 1 ? '<b>CPF: </b>' + fav.cpf : '<b>CNPJ: </b>' + fav.cnpj}
+                                    </font>
+                                    </td>
+                                </tr>`;
+                    }).join('')}
+
+                        
+                    </table>
+                    <br>
+                    <table border="0" width="774" align="center">
+                        <tr>
+                        <td align="center" bgcolor="8db0db"><font size="4" color="black" face="verdana,arial,helvetica">
+                        <b>VALOR R$ ${valor}</b>
+                        </td>
+                        </tr>
+                        <tr>
+                        <td align="center" bgcolor="8db0db"><font size="4" color="black" face="verdana,arial,helvetica">
+                        <b>${valorExtenso}</b>
+                        </td>
+                        </tr>
+                    </table>
+                    <br>
+                    <table border="0" width="774" align="center">
+                        <tr>
+                        <td class="main"><font size="2" color="black" face="verdana,arial,helvetica">
+                        <p style="text-align: justify;"> Declaração: <b>ALBAN FIANCAS E GARANTIAS S/A</b>, inscrita no CNPJ/MF sob o nº 05.402.543/0001-59, com sede à Avenida Paulista, 2073 - CONJ 1702 HORSA II, bairro Bela Vista, na cidade de São Paulo/Capital, abaixo assinados, declara assumir total responsabilidade como fiador, com amparo jurídico/legal 
+                        e em conformidade com a Lei nº 10.406, de 10 de janeiro de 2002, Arts. 818 a 829, e em consonância com os objetivos sociais, da empresa 
+                        
+                        ${emissaoTomador.map((tom) => {
+                            return `<b>${tom.nome}${tom.nomeFantasia}, 
+                                    ${tom.tipo == 1 ? '<b>CPF: </b>' + tom.cpf : '<b>CNPJ: </b>' + tom.cnpj}</b>
+                                    </b>estabelecida à <b>${tom.logradouro} - ${tom.complemento} - ${tom.bairro} - ${tom.ibge_descri} - ${tom.uf}</b>, `;
+                        }).join('')}
 
 
-                            
-                        </table>
-                        <br>
-                        <table border="0" width="774" align="center">
-                            <tr>
-                            <td align="center" bgcolor="8db0db"><font size="4" color="black" face="verdana,arial,helvetica">
-                            <b>VALOR R$ ${valor}</b>
-                            </td>
-                            </tr>
-                            <tr>
-                            <td align="center" bgcolor="8db0db"><font size="4" color="black" face="verdana,arial,helvetica">
-                            <b>${valorExtenso}</b>
-                            </td>
-                            </tr>
-                        </table>
-                        <br>
-                        <table border="0" width="774" align="center">
-                            <tr>
-                            <td class="main"><font size="2" color="black" face="verdana,arial,helvetica">
-                            <p style="text-align: justify;"> Declaração: <b>ALBAN FIANCAS E GARANTIAS S/A</b>, inscrita no CNPJ/MF sob o nº 05.402.543/0001-59, com sede à Avenida Paulista, 2073 - CONJ 1702 HORSA II, bairro Bela Vista, na cidade de São Paulo/Capital, abaixo assinados, declara assumir total responsabilidade como fiador, com amparo jurídico/legal 
-                            e em conformidade com a Lei nº 10.406, de 10 de janeiro de 2002, Arts. 818 a 829, e em consonância com os objetivos sociais, da empresa 
-                            
-                            ${emissaoTomador.map((tom) => {
-                                return `<b>${tom.nome}${tom.nomeFantasia}, 
-                                        ${tom.tipo = 1 ? '<b>CPF: </b>' + tom.cpf : '<b>CNPJ: </b>' + tom.cnpj}</b>
-                                        </b>estabelecida à <b>${tom.logradouro} - ${tom.complemento} - ${tom.bairro} - ${tom.ibge_descri} - ${tom.uf}</b>, `;
-                            }).join('')}
+                        
+                        na qual figura como afiançado, até o limite máximo contratado, <b>R$ ${valor} - (${valorExtenso}).</b></p>
+                        </td>
+                        </tr>
+                    </table>
+                    <br>
+                    <table border="0" width="774" align="center">
+                        <tr>
+                        <td><font size="2" color="black" face="verdana,arial,helvetica">
+                        <b><p class="main" class="main" style="text-align: justify;">Objeto da Fiança: ${objeto}</b></p>
+                        </td>
+                        </tr>
+                    </table>
+                    <br>
+                    <table border="0" width="774" align="center">
+                        <tr>
+                        <td><font size="2" color="black" face="verdana,arial,helvetica">
+                        <p class="main" style="text-align: justify;">
+                        ${modalidadeTexto}</p>
+                        </td>
+                        </tr>
+                    </table>
 
+                    </body>
 
-                            ${emissaoTomador.map(tom => `
-                            
-                            `).join('')}
-
-                            na qual figura como afiançado, até o limite máximo contratado, <b>R$ ${valor} - (${valorExtenso}).</b></p>
-                            </td>
-                            </tr>
-                        </table>
-                        <br>
-                        <table border="0" width="774" align="center">
-                            <tr>
-                            <td><font size="2" color="black" face="verdana,arial,helvetica">
-                            <b><p class="main" class="main" style="text-align: justify;">Objeto da Fiança: ${objeto}</b></p>
-                            </td>
-                            </tr>
-                        </table>
-                        <br>
-                        <table border="0" width="774" align="center">
-                            <tr>
-                            <td><font size="2" color="black" face="verdana,arial,helvetica">
-                            <p class="main" style="text-align: justify;">
-                            ${modalidadeTexto}</p>
-                            </td>
-                            </tr>
-                        </table>
-
-                        </body>
-
-                    </div>
-                </html>
+                </div>
+            </html>
           `;
 
             try {
