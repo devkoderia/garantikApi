@@ -845,19 +845,19 @@ routes.delete('/corretor_funcionario/:corretorFuncionario_id', celebrate({
 //-------------------------------------------------------------------------------------------------------------
 const corretorProdutorController = require('./src/controllers/corretorProdutorController')
 
-routes.post('/corretor_produtorConta', verificaToken, celebrate({
+routes.post('/corretorProdutorConta', verificaToken, celebrate({
     [Segments.BODY]: Joi.object().keys({
         cliente_id: Joi.number().integer().required(),
     })
 }), corretorProdutorController.count)
 
-routes.post('/corretor_produtorListaTodos', verificaToken, celebrate({
+routes.post('/corretorProdutorListaTodos', verificaToken, celebrate({
     [Segments.BODY]: Joi.object().keys({
         cliente_id: Joi.number().integer().required(),
     })
 }), corretorProdutorController.listaTodos)
 
-routes.post('/corretor_produtorListaUm/:corretorProdutor_id', celebrate({
+routes.post('/corretorProdutorListaUm/:corretorProdutor_id', celebrate({
     [Segments.PARAMS]: Joi.object().keys({
         corretorProdutor_id: Joi.number().integer().required()
     }),
@@ -866,7 +866,7 @@ routes.post('/corretor_produtorListaUm/:corretorProdutor_id', celebrate({
     })
 }), verificaToken, corretorProdutorController.listaUm)
 
-routes.post('/corretor_produtor', celebrate({
+routes.post('/corretorProdutor', celebrate({
     [Segments.BODY]: Joi.object().keys({
         cliente_id: Joi.number().integer().required(),
         corretor_id: Joi.number().integer().required(),
@@ -876,7 +876,7 @@ routes.post('/corretor_produtor', celebrate({
     })
 }), verificaToken, corretorProdutorController.create)
 
-routes.put('/corretor_produtor/:corretorProdutor_id', celebrate({
+routes.put('/corretorProdutor/:corretorProdutor_id', celebrate({
     [Segments.PARAMS]: Joi.object().keys({
         corretorProdutor_id: Joi.number().integer().required()
     }),
@@ -889,7 +889,7 @@ routes.put('/corretor_produtor/:corretorProdutor_id', celebrate({
     })
 }), verificaToken, corretorProdutorController.update)
 
-routes.delete('/corretor_produtor/:corretorProdutor_id', celebrate({
+routes.delete('/corretorProdutor/:corretorProdutor_id', celebrate({
     [Segments.PARAMS]: Joi.object().keys({
         corretorProdutor_id: Joi.number().integer().required()
     }),

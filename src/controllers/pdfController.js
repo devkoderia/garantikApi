@@ -157,7 +157,6 @@ module.exports = {
                                         ${tom.tipo == 1 ? '<b>CPF: </b>' + tom.cpf : '<b>CNPJ: </b>' + tom.cnpj}</b>
                                         </b>estabelecida à <b>${tom.logradouro} - ${tom.complemento} - ${tom.bairro} - ${tom.ibge_descri} - ${tom.uf}</b>, `;
                             }).join('')}
-
                             
                             na qual figura como afiançado, até o limite máximo contratado, <b>R$ ${valor} - (${valorExtenso}).</b></p>
                             </td>
