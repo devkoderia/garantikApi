@@ -85,26 +85,24 @@ module.exports = {
             <html>
                 <head>
                     <style>
-                        
-                        div.marcadagua {
-                        position: relative;
-                        left: 0px;
-                        top: 0px;	
-                        background-image: url("${fundoPath}");
-                        background-repeat: no-repeat;		
-                        width: 950px;
-                        max-width: 950px;
-                        height: 1330px;
-                        max-height: 1330px;
-                        display: inline-block;			
+                        @page { margin: 0mm; }
+                        body {
+                            font-family: Arial, sans-serif;
+                            background-image: url("${fundoPath}");
+                            background-size: cover;
+                            background-repeat: no-repeat;
+                            margin: 0;
+                            padding: 0;
                         }
-                        
-                        
-                        * {
-                        font-family:Verdana;		  
+                        .container {
+                            margin: 5mm;
+                            background: rgba(255, 255, 255, 0.9);
+                            padding: 5px;
                         }
-                        
-                    </style>
+                        h1, h2 { text-align: center; }
+                        ul { list-style-type: none; padding: 0; }
+                        li { margin-bottom: 5px; }
+                        </style>
                 </head>
 
                     <div class="marcadagua">
