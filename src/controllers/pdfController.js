@@ -75,7 +75,7 @@ module.exports = {
                     </style>
                 </head>
 
-                <body>
+                <body class="container">
 
                     <br><br><br><br>
                     <br><br><br><br>
