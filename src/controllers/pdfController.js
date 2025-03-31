@@ -102,10 +102,10 @@ module.exports = {
                         h1, h2 { text-align: center; }
                         ul { list-style-type: none; padding: 0; }
                         li { margin-bottom: 5px; }
-                        </style>
+                    </style>
                 </head>
 
-                    <div class="marcadagua">
+                    <body>
 
                         <br><br><br><br><br>
                         <br><br><br><br><br>
@@ -114,7 +114,7 @@ module.exports = {
                             <tr>
                             <td>
                             <center><font size="3" color="black" face="verdana,arial,helvetica">
-                            <b>Carta de Fiança n. ${emissao.pin}</b>
+                            <b>Carta de Fiança n. ${pin}</b>
                             </td>
                             </tr>
                         </table>
@@ -122,10 +122,10 @@ module.exports = {
                         <table border="0" width="774" align="center">
                             <tr>
                             <td align="left"><font size="3" color="black" face="verdana,arial,helvetica">
-                            <b>Data de emissão: ${emissao.dataEmissao}</b>
+                            <b>Data de emissão: ${dataEmissao}</b>
                             </td>
                             <td align="right"><font size="3" color="black" face="verdana,arial,helvetica">
-                            <b>Data de início: ${emissao.dataInicio}</b>
+                            <b>Data de início: ${dataInicio}</b>
                             </td>
                             </tr>
                             <tr>
@@ -133,7 +133,7 @@ module.exports = {
                             
                             </td>
                             <td align="right"><font size="3" color="black" face="verdana,arial,helvetica">
-                            <b>Data de vencimento: ${emissao.dataVencimento}</b>
+                            <b>Data de vencimento: ${dataVencimento}</b>
                             </td>
                             </tr>
                         </table>
