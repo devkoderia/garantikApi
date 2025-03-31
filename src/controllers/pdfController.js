@@ -139,18 +139,24 @@ module.exports = {
                         </table>
                         <br>
                         <table border="0" width="774" align="center">
-                        ${emissaoFavorecido.map(fav => `
-                            <tr>
+
+                        ${emissaoFavorecido.forEach((favorecido) => {
+                            
+                            `<tr>
                                 <td align="left"><font size="3" color="black" face="verdana,arial,helvetica">
-                                <b>FAVORECIDO/CREDOR: </b>${fav[0].nome}
+                                <b>FAVORECIDO/CREDOR: </b>${favorecido.nome}
                                 </td>
                             </tr>
                             <tr>
                                 <td align="left"><font size="3" color="black" face="verdana,arial,helvetica">
-                                    ${fav.tipo = 1 ? '<b>CPF: </b>' + fav.cpf : '<b>CNPJ: </b>' + fav.cnpj}
+                                    ${favorecido.tipo = 1 ? '<b>CPF: </b>' + favorecido.cpf : '<b>CNPJ: </b>' + favorecido.cnpj}
                                 </td>
-                            </tr>
-                            `).join('')}
+                            </tr>`
+
+                        })}
+
+
+                            
                         </table>
                         <br>
                         <table border="0" width="774" align="center">
