@@ -75,7 +75,7 @@ module.exports = {
                     </style>
                 </head>
 
-                <body class="container">
+                <body>
 
                     <br><br><br><br>
                     <br><br><br><br>
@@ -206,10 +206,10 @@ module.exports = {
                     format: 'A4',
                     printBackground: true,
                     margin: {
-                        top: '20mm',
-                        bottom: '20mm',
-                        left: '20mm',
-                        right: '20mm'
+                        top: '40mm',
+                        bottom: '40mm',
+                        left: '40mm',
+                        right: '40mm'
                     }
                 });
 
