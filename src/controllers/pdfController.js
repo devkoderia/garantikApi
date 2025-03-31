@@ -132,7 +132,7 @@ module.exports = {
 
                         
                     </table>
-                    <br>
+                    
                     <table border="0" width="774" align="center">
                         <tr>
                             <td align="center" bgcolor="8db0db"><font size="4" color="black" face="verdana,arial,helvetica">
@@ -145,7 +145,7 @@ module.exports = {
                             </td>
                         </tr>
                     </table>
-                    <br>
+                    
                     <table border="0" width="774" align="center">
                         <tr>
                             <td class="main"><font size="2" color="black" face="verdana,arial,helvetica">
