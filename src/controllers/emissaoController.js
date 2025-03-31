@@ -29,6 +29,7 @@ module.exports = {
             EMISSAO.valorPago,
             EMISSAO.minuta,
             EMISSAO.garantia,
+            EMISSAO.trabalhista,
             CONVERT(VARCHAR, EMISSAO.ad_new, 103) + ' ' + CONVERT(VARCHAR, EMISSAO.ad_new, 8) as ad_new,
             CONVERT(VARCHAR, EMISSAO.ad_upd, 103) + ' ' + CONVERT(VARCHAR, EMISSAO.ad_upd, 8) as ad_upd,
             EMISSAO.ad_usr,

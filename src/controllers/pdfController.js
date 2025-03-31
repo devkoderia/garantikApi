@@ -83,55 +83,129 @@ module.exports = {
             const htmlContent = `
             <!DOCTYPE html>
             <html>
-              <head>
-                <meta charset="utf-8">
-                <title>Emissão ${pin}</title>
-                <style>
-                  @page { margin: 10mm; }
-                  body {
-                    font-family: Arial, sans-serif;
-                    background-image: url("${fundoPath}");
-                    background-size: cover;
-                    background-repeat: repeat;
-                    margin: 0;
-                    padding: 0;
-                  }
-                  .container {
-                    margin: 10mm;
-                    background: rgba(255, 255, 255, 0.9);
-                    padding: 10px;
-                  }
-                  h1, h2 { text-align: center; }
-                  ul { list-style-type: none; padding: 0; }
-                  li { margin-bottom: 5px; }
-                </style>
-              </head>
-              <body>
-                <div class="container">
-                  <h1>Carta de Fiança n. ${pin}</h1>
-                  <p><strong>Data de Emissão:</strong> ${dataEmissao}</p>
-                  <p><strong>Valor:</strong> ${valor} - ${valorExtenso}</p>
-                  <h2>Favorecidos</h2>
-                  <ul>
-                    ${emissaoFavorecido.map(fav => `
-                      <li>
-                        <strong>${fav.nome}</strong> 
-                        (${fav.cpf || fav.cnpj}) - ${fav.razaoSocial || fav.nome}
-                      </li>
-                    `).join('')}
-                  </ul>
-                  <h2>Tomadores</h2>
-                  <ul>
-                    ${emissaoTomador.map(tom => `
-                      <li>
-                        <strong>${tom.nome}</strong> 
-                        (${tom.cpf || tom.cnpj}) - ${tom.razaoSocial || tom.nome})
-                      </li>
-                    `).join('')}
-                  </ul>
-                </div>
-              </body>
-            </html>
+                <head>
+                    <style>
+                        
+                        div.marcadagua {
+                        position: relative;
+                        left: 0px;
+                        top: 0px;	
+                        background-image: url("${fundoPath}");
+                        background-repeat: no-repeat;		
+                        width: 950px;
+                        max-width: 950px;
+                        height: 1330px;
+                        max-height: 1330px;
+                        display: inline-block;			
+                        }
+                        
+                        
+                        * {
+                        font-family:Verdana;		  
+                        }
+                        
+                    </style>
+                </head>
+
+                    <div class="marcadagua">
+
+                        <br><br><br><br><br>
+                        <br><br><br><br><br>
+
+                        <table border="0" width="774" align="center">
+                            <tr>
+                            <td>
+                            <center><font size="3" color="black" face="verdana,arial,helvetica">
+                            <b>Carta de Fiança n. ${emissao.pin}</b>
+                            </td>
+                            </tr>
+                        </table>
+                        <br><br>
+                        <table border="0" width="774" align="center">
+                            <tr>
+                            <td align="left"><font size="3" color="black" face="verdana,arial,helvetica">
+                            <b>Data de emissão: ${emissao.dataEmissao}</b>
+                            </td>
+                            <td align="right"><font size="3" color="black" face="verdana,arial,helvetica">
+                            <b>Data de início: ${emissao.dataInicio}</b>
+                            </td>
+                            </tr>
+                            <tr>
+                            <td align="left"><font size="3" color="black" face="verdana,arial,helvetica">
+                            
+                            </td>
+                            <td align="right"><font size="3" color="black" face="verdana,arial,helvetica">
+                            <b>Data de vencimento: ${emissao.dataVencimento}</b>
+                            </td>
+                            </tr>
+                        </table>
+                        <br>
+                        <table border="0" width="774" align="center">
+                        ${emissaoFavorecido.map(fav => `
+                            <tr>
+                                <td align="left"><font size="3" color="black" face="verdana,arial,helvetica">
+                                <b>FAVORECIDO/CREDOR: </b>${fav.nome}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="left"><font size="3" color="black" face="verdana,arial,helvetica">
+                                    ${fav.tipo = 1 ? '<b>CPF: </b>' + fav_cpf : '<b>CNPJ: </b>' + fav_cnpj}
+                                </td>
+                            </tr>
+                            `).join('')}
+                        </table>
+                        <br>
+                        <table border="0" width="774" align="center">
+                            <tr>
+                            <td align="center" bgcolor="8db0db"><font size="4" color="black" face="verdana,arial,helvetica">
+                            <b>VALOR R$ ${emissao.valor}</b>
+                            </td>
+                            </tr>
+                            <tr>
+                            <td align="center" bgcolor="8db0db"><font size="4" color="black" face="verdana,arial,helvetica">
+                            <b>${emissao.valorExtenso}</b>
+                            </td>
+                            </tr>
+                        </table>
+                        <br>
+                        <table border="0" width="774" align="center">
+                            <tr>
+                            <td class="main"><font size="2" color="black" face="verdana,arial,helvetica">
+                            <p style="text-align: justify;"> Declaração: <b>ALBAN FIANCAS E GARANTIAS S/A</b>, inscrita no CNPJ/MF sob o nº 05.402.543/0001-59, com sede à Avenida Paulista, 2073 - CONJ 1702 HORSA II, bairro Bela Vista, na cidade de São Paulo/Capital, abaixo assinados, declara assumir total responsabilidade como fiador, com amparo jurídico/legal 
+                            e em conformidade com a Lei nº 10.406, de 10 de janeiro de 2002, Arts. 818 a 829, e em consonância com os objetivos sociais, da empresa 
+                            
+                            ${emissaoTomador.map(tom => `
+                            <b>${tom.nome}${tom.nomeFantasia}, 
+                            ${tom.tipo = 1 ? '<b>CPF: </b>' + tom.cpf : '<b>CNPJ: </b>' + tom.cnpj}</b>
+                            </b>estabelecida à <b>${tom.logradouro} - ${tom.complemento} - ${tom.bairro} - ${tom.ibge_descri} - ${tom.uf}</b>, 
+                            `).join('')}
+
+                            na qual figura como afiançado, até o limite máximo contratado, <b>R$ ${emissao.valor} - (${emissao.valorExtenso}).</b></p>
+                            </td>
+                            </tr>
+                        </table>
+                        <br>
+                        <table border="0" width="774" align="center">
+                            <tr>
+                            <td><font size="2" color="black" face="verdana,arial,helvetica">
+                            <b><p class="main" class="main" style="text-align: justify;">Objeto da Fiança: ${emissao.objeto}</b></p>
+                            </td>
+                            </tr>
+                        </table>
+                        <br>
+                        <table border="0" width="774" align="center">
+                            <tr>
+                            <td><font size="2" color="black" face="verdana,arial,helvetica">
+                            <p class="main" style="text-align: justify;">
+                            ${emissao.modalidadeTexto}</p>
+                            </td>
+                            </tr>
+                        </table>
+
+                        </body>
+
+                    </div>
+                </html>
           `;
 
             try {
