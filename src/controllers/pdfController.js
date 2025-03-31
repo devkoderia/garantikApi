@@ -78,6 +78,8 @@ module.exports = {
 
             const fundoPath = `https://cdn.garantik.com.br/${cliente_id}/fundo_garantia.jpg`;
 
+            console.log(`cliente_id: ${fundoPath}`);
+
             const htmlContent = `
             <!DOCTYPE html>
             <html>
