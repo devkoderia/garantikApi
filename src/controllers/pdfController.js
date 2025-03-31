@@ -46,39 +46,9 @@ module.exports = {
             const ad_new = emissao[0].ad_new;
             const ad_upd = emissao[0].ad_upd;
 
-            // Exibe logs para favorecidos e tomadores
-            emissaoFavorecido.forEach((favorecido) => {
-                console.log('Favorecido ID:', favorecido.favorecido_id);
-                console.log('Tipo:', favorecido.tipo);
-                console.log('CPF:', favorecido.cpf);
-                console.log('CNPJ:', favorecido.cnpj);
-                console.log('Nome:', favorecido.nome);
-                console.log('Nome Fantasia:', favorecido.nomeFantasia);
-                console.log('Razão Social:', favorecido.razaoSocial);
-                console.log('IBGE Descrição:', favorecido.ibge_descri);
-                console.log('UF:', favorecido.uf);
-            });
-
-            emissaoTomador.forEach((tomador) => {
-                console.log('Tomador ID:', tomador.tomador_id);
-                console.log('Tipo:', tomador.tipo);
-                console.log('CPF:', tomador.cpf);
-                console.log('CNPJ:', tomador.cnpj);
-                console.log('Nome:', tomador.nome);
-                console.log('Nome Fantasia:', tomador.nomeFantasia);
-                console.log('Razão Social:', tomador.razaoSocial);
-                console.log('CEP:', tomador.cep);
-                console.log('IBGE Descrição:', tomador.ibge_descri);
-                console.log('UF:', tomador.uf);
-                console.log('Logradouro:', tomador.logradouro);
-                console.log('Número:', tomador.numero);
-                console.log('Complemento:', tomador.complemento);
-                console.log('Bairro:', tomador.bairro);
-            });
-
             const fundoPath = `https://cdn.garantik.com.br/${cliente_id}/fundo_garantia.jpg`;
 
-            console.log(`cliente_id: ${fundoPath}`);
+            console.log(`fundoPath: ${fundoPath}`);
 
             const htmlContent = `
             <!DOCTYPE html>
@@ -107,8 +77,8 @@ module.exports = {
 
                     <body>
 
-                        <br><br><br><br><br>
-                        <br><br><br><br><br>
+                        <br><br><br><br>
+                        <br><br><br><br>
 
                         <table border="0" width="774" align="center">
                             <tr>
@@ -140,20 +110,22 @@ module.exports = {
                         <br>
                         <table border="0" width="774" align="center">
 
-                        ${emissaoFavorecido.forEach((favorecido) => {
-                            
-                            `<tr>
-                                <td align="left"><font size="3" color="black" face="verdana,arial,helvetica">
-                                <b>FAVORECIDO/CREDOR: </b>${favorecido.nome}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td align="left"><font size="3" color="black" face="verdana,arial,helvetica">
-                                    ${favorecido.tipo = 1 ? '<b>CPF: </b>' + favorecido.cpf : '<b>CNPJ: </b>' + favorecido.cnpj}
-                                </td>
-                            </tr>`
-
-                        })}
+                        ${emissaoFavorecido.map((fav) => {
+                            return `<tr>
+                                      <td align="left">
+                                        <font size="3" color="black" face="verdana,arial,helvetica">
+                                          <b>FAVORECIDO/CREDOR: </b>${fav.nome}
+                                        </font>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td align="left">
+                                        <font size="3" color="black" face="verdana,arial,helvetica">
+                                          ${fav.tipo == 1 ? '<b>CPF: </b>' + fav.cpf : '<b>CNPJ: </b>' + fav.cnpj}
+                                        </font>
+                                      </td>
+                                    </tr>`;
+                          }).join('')}
 
 
                             
@@ -162,12 +134,12 @@ module.exports = {
                         <table border="0" width="774" align="center">
                             <tr>
                             <td align="center" bgcolor="8db0db"><font size="4" color="black" face="verdana,arial,helvetica">
-                            <b>VALOR R$ ${emissao.valor}</b>
+                            <b>VALOR R$ ${valor}</b>
                             </td>
                             </tr>
                             <tr>
                             <td align="center" bgcolor="8db0db"><font size="4" color="black" face="verdana,arial,helvetica">
-                            <b>${emissao.valorExtenso}</b>
+                            <b>${valorExtenso}</b>
                             </td>
                             </tr>
                         </table>
@@ -178,13 +150,18 @@ module.exports = {
                             <p style="text-align: justify;"> Declaração: <b>ALBAN FIANCAS E GARANTIAS S/A</b>, inscrita no CNPJ/MF sob o nº 05.402.543/0001-59, com sede à Avenida Paulista, 2073 - CONJ 1702 HORSA II, bairro Bela Vista, na cidade de São Paulo/Capital, abaixo assinados, declara assumir total responsabilidade como fiador, com amparo jurídico/legal 
                             e em conformidade com a Lei nº 10.406, de 10 de janeiro de 2002, Arts. 818 a 829, e em consonância com os objetivos sociais, da empresa 
                             
+                            ${emissaoTomador.map((tom) => {
+                                return `<b>${tom.nome}${tom.nomeFantasia}, 
+                                        ${tom.tipo = 1 ? '<b>CPF: </b>' + tom.cpf : '<b>CNPJ: </b>' + tom.cnpj}</b>
+                                        </b>estabelecida à <b>${tom.logradouro} - ${tom.complemento} - ${tom.bairro} - ${tom.ibge_descri} - ${tom.uf}</b>, `;
+                            }).join('')}
+
+
                             ${emissaoTomador.map(tom => `
-                            <b>${tom.nome}${tom.nomeFantasia}, 
-                            ${tom.tipo = 1 ? '<b>CPF: </b>' + tom.cpf : '<b>CNPJ: </b>' + tom.cnpj}</b>
-                            </b>estabelecida à <b>${tom.logradouro} - ${tom.complemento} - ${tom.bairro} - ${tom.ibge_descri} - ${tom.uf}</b>, 
+                            
                             `).join('')}
 
-                            na qual figura como afiançado, até o limite máximo contratado, <b>R$ ${emissao.valor} - (${emissao.valorExtenso}).</b></p>
+                            na qual figura como afiançado, até o limite máximo contratado, <b>R$ ${valor} - (${valorExtenso}).</b></p>
                             </td>
                             </tr>
                         </table>
@@ -192,7 +169,7 @@ module.exports = {
                         <table border="0" width="774" align="center">
                             <tr>
                             <td><font size="2" color="black" face="verdana,arial,helvetica">
-                            <b><p class="main" class="main" style="text-align: justify;">Objeto da Fiança: ${emissao.objeto}</b></p>
+                            <b><p class="main" class="main" style="text-align: justify;">Objeto da Fiança: ${objeto}</b></p>
                             </td>
                             </tr>
                         </table>
@@ -201,7 +178,7 @@ module.exports = {
                             <tr>
                             <td><font size="2" color="black" face="verdana,arial,helvetica">
                             <p class="main" style="text-align: justify;">
-                            ${emissao.modalidadeTexto}</p>
+                            ${modalidadeTexto}</p>
                             </td>
                             </tr>
                         </table>
