@@ -2,7 +2,7 @@ const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
 const moment = require('moment-timezone');
-const { executeQuery } = require('../services/generalFunctions');
+const { executeQuery, formatToReais } = require('../services/generalFunctions');
 const { listaEmissao } = require('./emissaoController');
 const { listaEmissaoFavorecido } = require('./emissaoFavorecidoController');
 const { listaEmissaoTomador } = require('./emissaoTomadorController');
@@ -113,7 +113,7 @@ module.exports = {
                     ${emissaoFavorecido.map((fav) => {
 
                         console.log(fav.nomeFantasia)
-                        
+
                         return `<tr>
                                     <td align="left">
                                     <font size="3" color="black" face="verdana,arial,helvetica">
@@ -135,14 +135,14 @@ module.exports = {
                     <br>
                     <table border="0" width="774" align="center">
                         <tr>
-                        <td align="center" bgcolor="8db0db"><font size="4" color="black" face="verdana,arial,helvetica">
-                        <b>VALOR R$ ${valor}</b>
-                        </td>
+                            <td align="center" bgcolor="8db0db"><font size="4" color="black" face="verdana,arial,helvetica">
+                                <b>VALOR R$ ${formatToReais(valor)}</b>
+                            </td>
                         </tr>
                         <tr>
-                        <td align="center" bgcolor="8db0db"><font size="4" color="black" face="verdana,arial,helvetica">
-                        <b>${valorExtenso}</b>
-                        </td>
+                            <td align="center" bgcolor="8db0db"><font size="4" color="black" face="verdana,arial,helvetica">
+                                <b>${valorExtenso}</b>
+                            </td>
                         </tr>
                     </table>
                     <br>

@@ -95,8 +95,15 @@ const sendEmail = async (usuario_id, tipo) => {
 
 
 
-module.exports = { 
-    
+module.exports = {
+
+    async formatToReais(value) {
+        const number = parseFloat(value);
+        if (isNaN(number)) {
+            throw new Error("Valor inválido");
+        }
+        return number.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    },
 
 
     async escapeString(str) {
@@ -104,7 +111,7 @@ module.exports = {
         if (typeof str !== "string") {
             return str;
         }
-    
+
         return str
             .replace(/\\/g, "\\\\")
             .replace(/\x00/g, "\\0")
@@ -116,24 +123,20 @@ module.exports = {
             .replace(/\x08/g, "\\b")
             .replace(/\t/g, "\\t")
             .replace(/%/g, "\\%");
-    
-    
-        },
-    
-    
+
+    },
 
 
-        async executeQuery(strsql) {
-            try {
-                const pool = await poolPromise;
-                const result = await pool.request().query(strsql);
-                return result.recordset;
-            } catch (err) {
-                console.log(err);
-                throw err;
-            }
-        },
+    async executeQuery(strsql) {
+        try {
+            const pool = await poolPromise;
+            const result = await pool.request().query(strsql);
+            return result.recordset;
+        } catch (err) {
+            console.log(err);
+            throw err;
+        }
+    },
 
 
-        
- }
+}
