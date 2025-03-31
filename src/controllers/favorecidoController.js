@@ -247,7 +247,7 @@ module.exports = {
             deletado
         ) VALUES (
             ${cliente_id},
-            ${tipo},
+            '${tipo}',
             ${cpf},
             ${cnpj},
             '${nome}',
@@ -330,7 +330,7 @@ module.exports = {
     
         const strsql = `update FAVORECIDO set 
             cliente_id = ${cliente_id},
-            tipo = ${tipo},
+            tipo = '${tipo}',
             cpf = ${cpf},
             cnpj = ${cnpj},
             nome = '${nome}',

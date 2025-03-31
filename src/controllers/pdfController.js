@@ -124,7 +124,7 @@ module.exports = {
                                 <tr>
                                     <td align="left">
                                     <font size="3" color="black" face="verdana,arial,helvetica">
-                                        ${fav.tipo == 1 ? '<b>CPF: </b>' + fav.cpf : '<b>CNPJ: </b>' + fav.cnpj}
+                                        ${fav.tipo == 'F' ? '<b>CPF: </b>' + fav.cpf : '<b>CNPJ: </b>' + fav.cnpj}
                                     </font>
                                     </td>
                                 </tr>`;
@@ -154,7 +154,7 @@ module.exports = {
                             
                             ${emissaoTomador.map((tom) => {
                                 return `<b>${tom.nome}${tom.nomeFantasia}, 
-                                        ${tom.tipo == 1 ? '<b>CPF: </b>' + tom.cpf : '<b>CNPJ: </b>' + tom.cnpj}</b>
+                                        ${tom.tipo == 'F' ? '<b>CPF: </b>' + tom.cpf : '<b>CNPJ: </b>' + tom.cnpj}</b>
                                         </b>estabelecida à <b>${tom.logradouro} - ${tom.complemento} - ${tom.bairro} - ${tom.ibge_descri} - ${tom.uf}</b>, `;
                             }).join('')}
                             

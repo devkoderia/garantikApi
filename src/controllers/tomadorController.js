@@ -262,7 +262,7 @@ module.exports = {
             deletado
         ) OUTPUT INSERTED.tomador_id VALUES (
             ${cliente_id},
-            ${tipo},
+            '${tipo}',
             '${cpf}',
             '${cnpj}',
             '${nome}',
@@ -353,7 +353,7 @@ module.exports = {
         const ad_upd = moment().format('YYYY-MM-DD HH:MM:ss');
 
         const strsql = `update TOMADOR set             
-            tipo = ${tipo},
+            tipo = '${tipo}',
             cpf = '${cpf}',
             cnpj = '${cnpj}',
             nome = '${nome}',

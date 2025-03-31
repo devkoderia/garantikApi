@@ -299,7 +299,7 @@ module.exports = {
                 bloqueado
             ) OUTPUT INSERTED.corretor_id VALUES (
                 ${cliente_id},
-                ${tipo},
+                '${tipo}',
                 '${cpf}',
                 '${cnpj}',
                 '${nome.toUpperCase()}',
@@ -402,7 +402,7 @@ module.exports = {
 
         const strsql = `update CORRETOR set 
                 CORRETOR.cliente_id = ${cliente_id},
-                CORRETOR.tipo = ${tipo},
+                CORRETOR.tipo = '${tipo}',
                 CORRETOR.cpf = '${cpf}',
                 CORRETOR.cnpj = '${cnpj}',
                 CORRETOR.nome = '${nome.toUpperCase()}',

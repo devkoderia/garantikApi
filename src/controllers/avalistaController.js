@@ -235,7 +235,7 @@ module.exports = {
                 deletado
             ) OUTPUT INSERTED.avalista_id VALUES (
                 ${cliente_id},
-                ${tipo},
+                '${tipo}',
                 '${cpf}',
                 '${cnpj}',
                 '${outroDocumento}',
@@ -334,7 +334,7 @@ module.exports = {
 
         const strsql = `update AVALISTA set 
                 AVALISTA.cliente_id = ${cliente_id},
-                AVALISTA.tipo = ${tipo},
+                AVALISTA.tipo = '${tipo}',
                 AVALISTA.cpf = '${cpf}',
                 AVALISTA.cnpj = '${cnpj}',
                 AVALISTA.outroDocumento = '${outroDocumento}',

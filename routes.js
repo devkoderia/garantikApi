@@ -142,7 +142,7 @@ routes.post('/avalistaListaUm/:avalista_id', celebrate({
 routes.post('/avalista', celebrate({
     [Segments.BODY]: Joi.object().keys({
         cliente_id: Joi.number().integer().required(),
-        tipo: Joi.number().integer().required(),
+        tipo: Joi.string().required().length(1),
         cpf: Joi.string().allow(null).allow('').length(11),
         cnpj: Joi.string().allow(null).allow('').length(14),
         outroDocumento: Joi.string().allow(null).allow('').max(150),
@@ -193,7 +193,7 @@ routes.put('/avalista/:avalista_id', celebrate({
     }),
     [Segments.BODY]: Joi.object().keys({
         cliente_id: Joi.number().integer().required(),
-        tipo: Joi.number().integer().required(),
+        tipo: Joi.string().required().length(1),
         cpf: Joi.string().allow(null).allow('').length(11),
         cnpj: Joi.string().allow(null).allow('').length(14),
         outroDocumento: Joi.string().allow(null).allow('').max(150),
@@ -674,7 +674,7 @@ routes.post('/corretorListaUm/:corretor_id', celebrate({
 routes.post('/corretor', celebrate({
     [Segments.BODY]: Joi.object().keys({
         cliente_id: Joi.number().integer().required(),
-        tipo: Joi.number().integer().required(),
+        tipo: Joi.string().required().length(1),
         cpf: Joi.string().allow(null).allow('').length(11),
         cnpj: Joi.string().allow(null).allow('').length(14),
         nome: Joi.string().allow(null).allow('').max(250),
@@ -722,7 +722,7 @@ routes.put('/corretor/:corretor_id', celebrate({
     }),
     [Segments.BODY]: Joi.object().keys({
         cliente_id: Joi.number().integer().required(),
-        tipo: Joi.number().integer().required(),
+        tipo: Joi.string().required().length(1),
         cpf: Joi.string().allow(null).allow('').length(11),
         cnpj: Joi.string().allow(null).allow('').length(14),
         nome: Joi.string().allow(null).allow('').max(250),
@@ -1408,7 +1408,7 @@ routes.post('/favorecidoListaUm/:favorecido_id', celebrate({
 routes.post('/favorecido', celebrate({
     [Segments.BODY]: Joi.object().keys({
         cliente_id: Joi.number().integer().required(),
-        tipo: Joi.number().integer().required(),
+        tipo: Joi.string().required().length(1),
         cpf: Joi.string().allow(null).allow('').length(11),
         cnpj: Joi.string().allow(null).allow('').length(14),
         nome: Joi.string().allow(null).allow('').max(250),
@@ -1453,7 +1453,7 @@ routes.put('/favorecido/:favorecido_id', celebrate({
     }),
     [Segments.BODY]: Joi.object().keys({
         cliente_id: Joi.number().integer().required(),
-        tipo: Joi.number().integer().required(),
+        tipo: Joi.string().required().length(1),
         cpf: Joi.string().allow(null).allow('').length(11),
         cnpj: Joi.string().allow(null).allow('').length(14),
         nome: Joi.string().allow(null).allow('').max(250),
@@ -1921,7 +1921,7 @@ routes.post('/produtorListaUm/:produtor_id', celebrate({
 routes.post('/produtor', celebrate({
     [Segments.BODY]: Joi.object().keys({
         cliente_id: Joi.number().integer().required(),
-        tipo: Joi.number().integer().required(),
+        tipo: Joi.string().required().length(1),
         cpf: Joi.string().allow(null).allow('').length(11),
         cnpj: Joi.string().allow(null).allow('').length(14),
         nome: Joi.string().allow(null).allow('').max(250),
@@ -1970,7 +1970,7 @@ routes.put('/produtor/:produtor_id', celebrate({
     }),
     [Segments.BODY]: Joi.object().keys({
         cliente_id: Joi.number().integer().required(),
-        tipo: Joi.number().integer().required(),
+        tipo: Joi.string().required().length(1),
         cpf: Joi.string().allow(null).allow('').length(11),
         cnpj: Joi.string().allow(null).allow('').length(14),
         nome: Joi.string().allow(null).allow('').max(250),
@@ -2070,7 +2070,7 @@ routes.post('/tomadorListaUm/:tomador_id', celebrate({
 routes.post('/tomador', celebrate({
     [Segments.BODY]: Joi.object().keys({
         cliente_id: Joi.number().integer().required(),
-        tipo: Joi.number().integer().required(),
+        tipo: Joi.string().required().length(1),
         cpf: Joi.string().allow(null).allow('').length(11),
         cnpj: Joi.string().allow(null).allow('').length(14),
         nome: Joi.string().allow(null).allow('').max(250),
@@ -2118,7 +2118,7 @@ routes.put('/tomador/:tomador_id', celebrate({
     }),
     [Segments.BODY]: Joi.object().keys({
         cliente_id: Joi.number().integer().required(),
-        tipo: Joi.number().integer().required(),
+        tipo: Joi.string().required().length(1),
         cpf: Joi.string().allow(null).allow('').length(11),
         cnpj: Joi.string().allow(null).allow('').length(14),
         nome: Joi.string().allow(null).allow('').max(250),
