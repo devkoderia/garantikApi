@@ -149,7 +149,7 @@ module.exports = {
                             </tr>
                             <tr>
                                 <td align="left"><font size="3" color="black" face="verdana,arial,helvetica">
-                                    ${fav.tipo = 1 ? '<b>CPF: </b>' + fav_cpf : '<b>CNPJ: </b>' + fav_cnpj}
+                                    ${fav.tipo = 1 ? '<b>CPF: </b>' + fav.cpf : '<b>CNPJ: </b>' + fav.cnpj}
                                 </td>
                             </tr>
                             `).join('')}
