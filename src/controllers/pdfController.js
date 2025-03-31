@@ -170,7 +170,7 @@ module.exports = {
                 }
 
                 // Define o caminho completo do arquivo PDF
-                const filePath = path.join(dirPath, `emissao-${pin}.pdf`);
+                const filePath = path.join(dirPath, `${pin}.pdf`);
 
                 // Salva o PDF no diretório
                 fs.writeFileSync(filePath, pdfBuffer);
