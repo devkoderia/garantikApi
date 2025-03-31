@@ -142,7 +142,7 @@ module.exports = {
                         ${emissaoFavorecido.map(fav => `
                             <tr>
                                 <td align="left"><font size="3" color="black" face="verdana,arial,helvetica">
-                                <b>FAVORECIDO/CREDOR: </b>${fav.nome}
+                                <b>FAVORECIDO/CREDOR: </b>${fav[0].nome}
                                 </td>
                             </tr>
                             <tr>
