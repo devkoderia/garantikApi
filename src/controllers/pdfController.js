@@ -136,7 +136,7 @@ module.exports = {
                     <table border="0" width="774" align="center">
                         <tr>
                             <td align="center" bgcolor="8db0db"><font size="4" color="black" face="verdana,arial,helvetica">
-                                <b>VALOR R$ ${formatToReais(valor)}</b>
+                                <b>VALOR R$ ${await formatToReais(valor)}</b>
                             </td>
                         </tr>
                         <tr>
