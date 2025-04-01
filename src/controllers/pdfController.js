@@ -45,6 +45,7 @@ module.exports = {
             const garantia = emissao[0].garantia;
             const ad_new = emissao[0].ad_new;
             const ad_upd = emissao[0].ad_upd;
+            const simbolo = emissao[0].simbolo;
 
             const fundoPath = `https://cdn.garantik.com.br/${cliente_id}/fundo_garantia.jpg`;
 
@@ -110,25 +111,25 @@ module.exports = {
                     <br>
                     <table border="0" width="774" align="center">
 
-                    ${emissaoFavorecido.map((fav) => {
+                        ${emissaoFavorecido.map((fav) => {
 
-                        console.log(fav.nomeFantasia)
+                            console.log(fav.nomeFantasia)
 
-                        return `<tr>
-                                    <td align="left">
-                                    <font size="3" color="black" face="verdana,arial,helvetica">
-                                        <b>FAVORECIDO/CREDOR: </b>${fav.nome}${fav.nomeFantasia}
-                                    </font>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td align="left">
-                                    <font size="3" color="black" face="verdana,arial,helvetica">
-                                        ${fav.tipo == 'F' ? '<b>CPF: </b>' + fav.cpf : '<b>CNPJ: </b>' + fav.cnpj}
-                                    </font>
-                                    </td>
-                                </tr>`;
-                    }).join('')}
+                            return `<tr>
+                                        <td align="left">
+                                        <font size="3" color="black" face="verdana,arial,helvetica">
+                                            <b>FAVORECIDO/CREDOR: </b>${fav.nome}${fav.nomeFantasia}
+                                        </font>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td align="left">
+                                        <font size="3" color="black" face="verdana,arial,helvetica">
+                                            ${fav.tipo == 'F' ? '<b>CPF: </b>' + fav.cpf : '<b>CNPJ: </b>' + fav.cnpj}
+                                        </font>
+                                        </td>
+                                    </tr>`;
+                        }).join('')}
 
                         
                     </table>
@@ -136,7 +137,7 @@ module.exports = {
                     <table border="0" width="774" align="center">
                         <tr>
                             <td align="center" bgcolor="8db0db"><font size="4" color="black" face="verdana,arial,helvetica">
-                                <b>VALOR R$ ${await formatToReais(valor)}</b>
+                                <b>VALOR ${simbolo} ${await formatToReais(valor)}</b>
                             </td>
                         </tr>
                         <tr>
@@ -152,11 +153,11 @@ module.exports = {
                             <p style="text-align: justify;"> Declaração: <b>ALBAN FIANCAS E GARANTIAS S/A</b>, inscrita no CNPJ/MF sob o nº 05.402.543/0001-59, com sede à Avenida Paulista, 2073 - CONJ 1702 HORSA II, bairro Bela Vista, na cidade de São Paulo/Capital, abaixo assinados, declara assumir total responsabilidade como fiador, com amparo jurídico/legal 
                             e em conformidade com a Lei nº 10.406, de 10 de janeiro de 2002, Arts. 818 a 829, e em consonância com os objetivos sociais, da empresa 
                             
-                            ${emissaoTomador.map((tom) => {
-                                return `<b>${tom.nome}${tom.nomeFantasia}, 
-                                        ${tom.tipo == 'F' ? '<b>CPF: </b>' + tom.cpf : '<b>CNPJ: </b>' + tom.cnpj}</b>
-                                        </b>estabelecida à <b>${tom.logradouro} - ${tom.complemento} - ${tom.bairro} - ${tom.ibge_descri} - ${tom.uf}</b>, `;
-                            }).join('')}
+                                ${emissaoTomador.map((tom) => {
+                                    return `<b>${tom.nome}${tom.nomeFantasia}, 
+                                            ${tom.tipo == 'F' ? '<b>CPF: </b>' + tom.cpf : '<b>CNPJ: </b>' + tom.cnpj}</b>
+                                            </b>estabelecida à <b>${tom.logradouro} - ${tom.complemento} - ${tom.bairro} - ${tom.ibge_descri} - ${tom.uf}</b>, `;
+                                }).join('')}
                             
                             na qual figura como afiançado, até o limite máximo contratado, <b>R$ ${valor} - (${valorExtenso}).</b></p>
                             </td>
@@ -165,18 +166,18 @@ module.exports = {
 
                     <table border="0" width="774" align="center">
                         <tr>
-                        <td><font size="2" color="black" face="verdana,arial,helvetica">
-                        <b><p class="main" class="main" style="text-align: justify;">Objeto da Fiança: ${objeto}</b></p>
-                        </td>
+                            <td><font size="2" color="black" face="verdana,arial,helvetica">
+                                <p class="main" class="main" style="text-align: justify;"><b>Objeto da Fiança: ${objeto}</b></p>
+                            </td>
                         </tr>
                     </table>
                     
                     <table border="0" width="774" align="center">
                         <tr>
-                        <td><font size="2" color="black" face="verdana,arial,helvetica">
-                        <p class="main" style="text-align: justify;">
-                        ${modalidadeTexto}</p>
-                        </td>
+                            <td>
+                                <font size="2" color="black" face="verdana,arial,helvetica">
+                                <p class="main" style="text-align: justify;">${modalidadeTexto}</p>
+                            </td>
                         </tr>
                     </table>
 

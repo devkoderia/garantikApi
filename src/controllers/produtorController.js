@@ -30,7 +30,7 @@ module.exports = {
     async count(request, response) {
 
         const { cliente_id } = request.body;
-        
+
         const strsql = `select count(*) as total from PRODUTOR where (deletado = 0 or deletado is null) and cliente_id = ${cliente_id}`;
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
@@ -70,6 +70,9 @@ module.exports = {
             PRODUTOR.telefoneFixo,
             PRODUTOR.telefoneCelular,
             PRODUTOR.email,
+            PRODUTOR.nacionalidade,
+            PRODUTOR.estadoCivil,
+            PRODUTOR.profissao,
             PRODUTOR.pessoaContato,
             PRODUTOR.emailPessoaContato,
             PRODUTOR.telefoneFixoPessoaContato,
@@ -126,6 +129,9 @@ module.exports = {
             PRODUTOR.telefoneFixo,
             PRODUTOR.telefoneCelular,
             PRODUTOR.email,
+            PRODUTOR.nacionalidade,
+            PRODUTOR.estadoCivil,
+            PRODUTOR.profissao,
             PRODUTOR.pessoaContato,
             PRODUTOR.emailPessoaContato,
             PRODUTOR.telefoneFixoPessoaContato,
@@ -160,7 +166,7 @@ module.exports = {
     },
 
     async create(request, response) {
-        
+
         const {
             cliente_id,
             tipo,
@@ -179,6 +185,9 @@ module.exports = {
             telefoneFixo,
             telefoneCelular,
             email,
+            nacionalidade,
+            estadoCivil,
+            profissao,
             pessoaContato,
             emailPessoaContato,
             telefoneFixoPessoaContato,
@@ -225,6 +234,9 @@ module.exports = {
             telefoneFixo,
             telefoneCelular,
             email,
+            nacionalidade,
+            estadoCivil,
+            profissao,
             pessoaContato,
             emailPessoaContato,
             telefoneFixoPessoaContato,
@@ -268,6 +280,9 @@ module.exports = {
             '${telefoneFixo}',
             '${telefoneCelular}',
             '${email}',
+            '${nacionalidade}',
+            '${estadoCivil}',
+            '${profissao}',
             '${pessoaContato}',
             '${emailPessoaContato}',
             '${telefoneFixoPessoaContato}',
@@ -321,6 +336,9 @@ module.exports = {
             telefoneFixo,
             telefoneCelular,
             email,
+            nacionalidade,
+            estadoCivil,
+            profissao,
             pessoaContato,
             emailPessoaContato,
             telefoneFixoPessoaContato,
@@ -369,6 +387,9 @@ module.exports = {
             telefoneFixo = '${telefoneFixo}',
             telefoneCelular = '${telefoneCelular}',
             email = '${email}',
+            nacionalidade = '${nacionalidade}',
+            estadoCivil = '${estadoCivil}',
+            profissao = '${profissao}',
             pessoaContato = '${pessoaContato}',
             emailPessoaContato = '${emailPessoaContato}',
             telefoneFixoPessoaContato = '${telefoneFixoPessoaContato}',

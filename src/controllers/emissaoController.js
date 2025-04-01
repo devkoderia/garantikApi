@@ -14,6 +14,7 @@ module.exports = {
             CONVERT(VARCHAR, EMISSAO.dataVencimento, 103) as dataVencimento,
             EMISSAO.dias,
             EMISSAO.dataVencimentoIndeterminado,
+            EMISSAO.moeda_id,
             EMISSAO.valor,
             EMISSAO.valorExtenso,
             EMISSAO.modalidade_id,
@@ -33,9 +34,17 @@ module.exports = {
             CONVERT(VARCHAR, EMISSAO.ad_new, 103) + ' ' + CONVERT(VARCHAR, EMISSAO.ad_new, 8) as ad_new,
             CONVERT(VARCHAR, EMISSAO.ad_upd, 103) + ' ' + CONVERT(VARCHAR, EMISSAO.ad_upd, 8) as ad_upd,
             EMISSAO.ad_usr,
-            EMISSAO.deletado
+            EMISSAO.deletado,
+            MOEDA.descricao,
+			MOEDA.descricaoExtenso,
+			MOEDA.descricaoExtensoDecimal,
+			MOEDA.simbolo
             from EMISSAO
-            where (EMISSAO.deletado = 0 or EMISSAO.deletado is null) and emissao_id = ${emissao_id} and cliente_id = ${cliente_id}`;
+			inner join MOEDA on MOEDA.moeda_id = EMISSAO.moeda_id
+            where (EMISSAO.deletado = 0 or EMISSAO.deletado is null) and 
+            EMISSAO.emissao_id = ${emissao_id} and 
+            EMISSAO.cliente_id = ${cliente_id} and 
+            MOEDA.ativo = 1`;
 
         const resultado = await executeQuery(strsql);
 
