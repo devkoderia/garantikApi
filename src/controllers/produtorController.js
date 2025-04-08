@@ -73,6 +73,13 @@ module.exports = {
             PRODUTOR.nacionalidade,
             PRODUTOR.estadoCivil,
             PRODUTOR.profissao,
+
+            PRODUTOR.banco_id,
+            PRODUTOR.agencia,
+            PRODUTOR.numeroConta,
+            PRODUTOR.tipoConta,
+            PRODUTOR.chavePix,
+            
             PRODUTOR.pessoaContato,
             PRODUTOR.emailPessoaContato,
             PRODUTOR.telefoneFixoPessoaContato,
@@ -132,6 +139,13 @@ module.exports = {
             PRODUTOR.nacionalidade,
             PRODUTOR.estadoCivil,
             PRODUTOR.profissao,
+
+            PRODUTOR.banco_id,
+            PRODUTOR.agencia,
+            PRODUTOR.numeroConta,
+            PRODUTOR.tipoConta,
+            PRODUTOR.chavePix,
+
             PRODUTOR.pessoaContato,
             PRODUTOR.emailPessoaContato,
             PRODUTOR.telefoneFixoPessoaContato,
@@ -165,6 +179,34 @@ module.exports = {
         response.status(200).send(resultado);
     },
 
+
+    async listaSelect(request, response) {
+
+        const { cliente_id } = request.body;
+
+        const strsql = `SELECT 
+                    PRODUTOR.produtor_id,
+                    CASE 
+                        WHEN PRODUTOR.tipo = 'F' THEN PRODUTOR.nome + ' - ' + PRODUTOR.cpf
+                        WHEN PRODUTOR.tipo = 'J' THEN PRODUTOR.nomeFantasia + ' - ' + PRODUTOR.cnpj
+                        ELSE NULL
+                    END AS nomeConcatenado
+                FROM PRODUTOR
+                WHERE (PRODUTOR.deletado = 0 OR PRODUTOR.deletado IS NULL)
+                AND cliente_id = ${cliente_id}
+                ORDER BY 
+                    CASE 
+                        WHEN PRODUTOR.tipo = 'F' THEN PRODUTOR.nome
+                        WHEN PRODUTOR.tipo = 'J' THEN PRODUTOR.nomeFantasia
+                        ELSE ''
+                    END;
+                `;
+
+        const resultado = await executeQuery(strsql);
+        response.status(200).send(resultado);
+    },
+
+
     async create(request, response) {
 
         const {
@@ -188,6 +230,11 @@ module.exports = {
             nacionalidade,
             estadoCivil,
             profissao,
+            banco_id,
+            agencia,
+            numeroConta,
+            tipoConta,
+            chavePix,
             pessoaContato,
             emailPessoaContato,
             telefoneFixoPessoaContato,
@@ -237,6 +284,11 @@ module.exports = {
             nacionalidade,
             estadoCivil,
             profissao,
+            banco_id,
+            agencia,
+            numeroConta,
+            tipoConta,
+            chavePix,
             pessoaContato,
             emailPessoaContato,
             telefoneFixoPessoaContato,
@@ -283,6 +335,11 @@ module.exports = {
             '${nacionalidade}',
             '${estadoCivil}',
             '${profissao}',
+             ${banco_id},
+            '${agencia},
+            '${numeroConta},
+            '${tipoConta},
+            '${chavePix},
             '${pessoaContato}',
             '${emailPessoaContato}',
             '${telefoneFixoPessoaContato}',
@@ -339,6 +396,11 @@ module.exports = {
             nacionalidade,
             estadoCivil,
             profissao,
+            banco_id,
+            agencia,
+            numeroConta,
+            tipoConta,
+            chavePix,
             pessoaContato,
             emailPessoaContato,
             telefoneFixoPessoaContato,
@@ -390,6 +452,13 @@ module.exports = {
             nacionalidade = '${nacionalidade}',
             estadoCivil = '${estadoCivil}',
             profissao = '${profissao}',
+
+            banco_id = ${banco_id},
+            agencia = '${agencia}',
+            numeroConta = '${numeroConta}',
+            tipoConta = '${tipoConta}',
+            chavePix = '${chavePix}',
+
             pessoaContato = '${pessoaContato}',
             emailPessoaContato = '${emailPessoaContato}',
             telefoneFixoPessoaContato = '${telefoneFixoPessoaContato}',

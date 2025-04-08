@@ -48,9 +48,11 @@ module.exports = {
         const { cliente_id } = request.body;
 
         const strsql = `select 
+                
                 CORRETOR.corretor_id,
                 CORRETOR.cliente_id,
-                CORRETOR.tipo,
+                CORRETOR.produtor_id,
+                CORRETOR.tipoJuridico,
                 CORRETOR.cpf,
                 CORRETOR.cnpj,
                 CORRETOR.nome,
@@ -80,9 +82,18 @@ module.exports = {
                 CORRETOR.telefoneFixo,
                 CORRETOR.telefoneCelular,
                 CORRETOR.email,
-                CORRETOR.nacionalidade,
+                CORRETOR.nacionalidade_id,
                 CORRETOR.estadoCivil,
                 CORRETOR.profissao,
+
+                CORRETOR.banco_id,
+                CORRETOR.agencia,
+                CORRETOR.numeroConta,
+                CORRETOR.tipoConta,
+                CORRETOR.chavePix,
+                CORRETOR.cpfCorrentista,
+                CORRETOR.cnpjCorrentista,
+
                 CORRETOR.pessoaContato,
                 CORRETOR.emailPessoaContato,
                 CORRETOR.telefoneFixoPessoaContato,
@@ -112,7 +123,8 @@ module.exports = {
         const strsql = `select 
                 CORRETOR.corretor_id,
                 CORRETOR.cliente_id,
-                CORRETOR.tipo,
+                CORRETOR.produtor_id,
+                CORRETOR.tipoJuridico,
                 CORRETOR.cpf,
                 CORRETOR.cnpj,
                 CORRETOR.nome,
@@ -129,9 +141,18 @@ module.exports = {
                 CORRETOR.telefoneFixo,
                 CORRETOR.telefoneCelular,
                 CORRETOR.email,
-                CORRETOR.nacionalidade,
+                CORRETOR.nacionalidade_id,
                 CORRETOR.estadoCivil,
                 CORRETOR.profissao,
+
+                CORRETOR.banco_id,
+                CORRETOR.agencia,
+                CORRETOR.numeroConta,
+                CORRETOR.tipoConta,
+                CORRETOR.chavePix,
+                CORRETOR.cpfCorrentista,
+                CORRETOR.cnpjCorrentista,
+
                 CORRETOR.pessoaContato,
                 CORRETOR.emailPessoaContato,
                 CORRETOR.telefoneFixoPessoaContato,
@@ -208,7 +229,8 @@ module.exports = {
 
         const {
             cliente_id,
-            tipo,
+            produtor_id,
+            tipoJuridico,
             cpf,
             cnpj,
             nome,
@@ -225,9 +247,18 @@ module.exports = {
             telefoneFixo,
             telefoneCelular,
             email,
-            nacionalidade,
+            nacionalidade_id,
             estadoCivil,
             profissao,
+
+            banco_id,
+            agencia,
+            numeroConta,
+            tipoConta,
+            chavePix,
+            cpfCorrentista,
+            cnpjCorrentista,
+
             pessoaContato,
             emailPessoaContato,
             telefoneFixoPessoaContato,
@@ -256,14 +287,17 @@ module.exports = {
         const ad_upd = ad_new;
 
         // Resolve errors
+        /*
         if (!cpf) cpf = null;
         if (!cnpj) cnpj = null;
         if (!premioMinimo) {premioMinimo = 0}
         if (!comissaoPorcentagem) {comissaoPorcentagem = 0}
+        */
 
         const strsql = `insert into CORRETOR (
                 cliente_id,
-                tipo,
+                produtor_id,
+                tipoJuridico,
                 cpf,
                 cnpj,
                 nome,
@@ -280,9 +314,18 @@ module.exports = {
                 telefoneFixo,
                 telefoneCelular,
                 email,
-                nacionalidade,
+                nacionalidade_id,
                 estadoCivil,
                 profissao,
+
+                banco_id,
+                agencia,
+                numeroConta,
+                tipoConta,
+                chavePix,
+                cpfCorrentista,
+                cnpjCorrentista,
+
                 pessoaContato,
                 emailPessoaContato,
                 telefoneFixoPessoaContato,
@@ -311,9 +354,10 @@ module.exports = {
                 bloqueado
             ) OUTPUT INSERTED.corretor_id VALUES (
                 ${cliente_id},
-                '${tipo}',
-                '${cpf}',
-                '${cnpj}',
+                ${produtor_id},
+                '${tipoJuridico}',
+                ${cpf ? `'${cpf}'` : null},
+                ${cnpj ? `'${cnpj}'` : null},
                 '${nome.toUpperCase()}',
                 '${nomeFantasia.toUpperCase()}',
                 '${razaoSocial.toUpperCase()}',
@@ -328,9 +372,16 @@ module.exports = {
                 '${telefoneFixo}',
                 '${telefoneCelular}',
                 '${email}',
-                '${nacionalidade}',
+                ${nacionalidade_id},
                 '${estadoCivil}',
                 '${profissao}',
+                ${banco_id},
+                '${agencia}',
+                '${numeroConta}',
+                '${tipoConta}',
+                '${chavePix}',
+                ${cpfCorrentista ? `'${cpfCorrentista}'` : null},
+                ${cnpjCorrentista ? `'${cnpjCorrentista}'` : null},
                 '${pessoaContato}',
                 '${emailPessoaContato}',
                 '${telefoneFixoPessoaContato}',
@@ -358,6 +409,10 @@ module.exports = {
                 0,
                 0
             )`;
+
+        console.log(strsql)
+        //return false
+
         const result = await executeQuery(strsql);
         response.status(200).json([{ status: 'ok', corretor_id: result[0].corretor_id }]);
     },
@@ -365,9 +420,11 @@ module.exports = {
     async update(request, response) {
         
         const { corretor_id } = request.params;
+
         const {
             cliente_id,
-            tipo,
+            produtor_id,
+            tipoJuridico,
             cpf,
             cnpj,
             nome,
@@ -384,9 +441,18 @@ module.exports = {
             telefoneFixo,
             telefoneCelular,
             email,
-            nacionalidade,
+            nacionalidade_id,
             estadoCivil,
             profissao,
+
+            banco_id,
+            agencia,
+            numeroConta,
+            tipoConta,
+            chavePix,
+            cpfCorrentista,
+            cnpjCorrentista,
+
             pessoaContato,
             emailPessoaContato,
             telefoneFixoPessoaContato,
@@ -420,7 +486,8 @@ module.exports = {
 
         const strsql = `update CORRETOR set 
                 CORRETOR.cliente_id = ${cliente_id},
-                CORRETOR.tipo = '${tipo}',
+                CORRETOR.produtor_id = ${produtor_id},
+                CORRETOR.tipoJuridico = '${tipoJuridico}',
                 CORRETOR.cpf = '${cpf}',
                 CORRETOR.cnpj = '${cnpj}',
                 CORRETOR.nome = '${nome.toUpperCase()}',
@@ -437,9 +504,18 @@ module.exports = {
                 CORRETOR.telefoneFixo = '${telefoneFixo}',
                 CORRETOR.telefoneCelular = '${telefoneCelular}',
                 CORRETOR.email = '${email}',
-                CORRETOR.nacionalidade = '${nacionalidade}',
+                CORRETOR.nacionalidade_id = ${nacionalidade_id},
                 CORRETOR.estadoCivil = '${estadoCivil}',
                 CORRETOR.profissao = '${profissao}',
+
+                CORRETOR.banco_id = ${banco_id},
+                CORRETOR.agencia = '${agencia}',
+                CORRETOR.numeroConta = '${numeroConta}',
+                CORRETOR.tipoConta = '${tipoConta}',
+                CORRETOR.chavePix = '${chavePix}',
+                CORRETOR.cpfCorrentista = '${cpfCorrentista}',
+                CORRETOR.cnpjCorrentista = '${cnpjCorrentista}',
+
                 CORRETOR.pessoaContato = '${pessoaContato}',
                 CORRETOR.emailPessoaContato = '${emailPessoaContato}',
                 CORRETOR.telefoneFixoPessoaContato = '${telefoneFixoPessoaContato}',
@@ -466,6 +542,8 @@ module.exports = {
                 CORRETOR.ad_usr = ${ad_usr}
             where corretor_id = ${corretor_id} and cliente_id = ${cliente_id}`;
 
+        console.log(strsql)
+        
         await executeQuery(strsql);
         response.status(200).json([{ status: 'ok' }]);
     },

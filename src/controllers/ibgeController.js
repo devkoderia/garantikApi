@@ -29,14 +29,29 @@ module.exports = {
         response.status(200).send(resultado);
     },
 
-    async listaTodos(_, response) {
-        const strsql = `select 
-            IBGE.ibge_codigo,
-            IBGE.ibge_descri,
+    async listaUf(_, response) {
+
+        const strsql = `select distinct
             IBGE.uf_codigo,
             IBGE.uf_descri
             from IBGE
-            where (IBGE.deletado = 0 or IBGE.deletado is null)`;
+            order by uf_codigo`;
+
+        const resultado = await executeQuery(strsql);
+        response.status(200).send(resultado);
+    },
+
+    async listaMunicipios(request, response) {
+
+        const { uf_codigo } = request.params;
+
+        const strsql = `select 
+            IBGE.ibge_codigo,
+            IBGE.ibge_descri
+            from IBGE
+            where uf_codigo = '${uf_codigo}'
+            order by ibge_descri`;
+
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
     },

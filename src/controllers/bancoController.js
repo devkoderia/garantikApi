@@ -33,12 +33,10 @@ module.exports = {
     async listaTodos(_, response) {
         const strsql = `select 
                 BANCO.banco_id,
-                BANCO.numero,
-                BANCO.descricao,
-                BANCO.ispb,
-                BANCO.deletado
+                BANCO.numero + ' - ' + BANCO.descricao as descricao
             from BANCO
-            where (BANCO.deletado = 0 or BANCO.deletado is null)`;
+            where (BANCO.deletado = 0 or BANCO.deletado is null)
+			order by descricao`;
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
     },
