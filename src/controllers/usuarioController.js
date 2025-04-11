@@ -87,7 +87,7 @@ module.exports = {
 
         const strsql = `update USUARIO set deletado = 1 where usuario_id = ${usuario_id} and cliente_id = ${cliente_id}`;
         await executeQuery(strsql);
-        response.status(200).json([{ status: 'ok' }]);
+        response.status(200).json({ status: 'ok' });
     },
 
     async listaCpf(request, response) {
@@ -298,7 +298,7 @@ module.exports = {
 
         await executeQuery(strsqlCliente);
 
-        response.status(200).json([{ status: 'ok' }]);
+        response.status(200).json({ status: 'ok' });
     },
 
     async update(request, response) {
@@ -341,7 +341,7 @@ module.exports = {
             `
 
         await executeQuery(strsql);
-        response.status(200).json([{ status: 'ok' }]);
+        response.status(200).json({ status: 'ok' });
 
     },
 
@@ -360,7 +360,7 @@ module.exports = {
             where usuario_id = ${usuario_id}`;
 
         await executeQuery(strsql);
-        response.status(200).json([{ status: 'ok' }]);
+        response.status(200).json({ status: 'ok' });
     },
 
     async recuperaSenha(request, response) {
@@ -388,7 +388,7 @@ module.exports = {
             where usuario_id = ${usuario_id}`;
 
         await executeQuery(strsql);
-        response.status(200).json([{ status: 'ok' }]);
+        response.status(200).json({ status: 'ok' });
 
     },
 
@@ -399,7 +399,7 @@ module.exports = {
 
         sendEmail(usuario_id, tipo)
 
-        response.status(200).json([{ status: 'ok' }]);
+        response.status(200).json({ status: 'ok' });
 
 
     },
@@ -439,6 +439,6 @@ module.exports = {
             `;
 
         await executeQuery(strsql);
-        response.status(200).json([{ status: 'ok' }]);
+        response.status(200).json({ status: 'ok' });
     },
 };

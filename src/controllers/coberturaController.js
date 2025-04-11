@@ -21,7 +21,7 @@ module.exports = {
         const strsql = `update COBERTURA set deletado = 1 where cobertura_id = ${cobertura_id} and cliente_id = ${cliente_id}`;
 
         await executeQuery(strsql);
-        response.status(200).json([{ status: 'ok' }]);
+        response.status(200).json({ status: 'ok' });
     },
 
     async listaUm(request, response) {
@@ -121,7 +121,7 @@ module.exports = {
             where cobertura_id = ${cobertura_id} and cliente_id = ${cliente_id}`;
             
         await executeQuery(strsql);
-        response.status(200).json([{ status: 'ok' }]);
+        response.status(200).json({ status: 'ok' });
         
     },
 };

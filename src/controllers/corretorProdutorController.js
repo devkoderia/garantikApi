@@ -21,7 +21,7 @@ module.exports = {
         const strsql = `update CORRETOR_PRODUTOR set deletado = 1 where corretorProdutor_id = ${corretorProdutor_id} and cliente_id = ${cliente_id}`;
 
         await executeQuery(strsql);
-        response.status(200).json([{ status: 'ok' }]);
+        response.status(200).json({ status: 'ok' });
     },
 
     async listaUm(request, response) {
@@ -120,6 +120,6 @@ module.exports = {
                 CORRETOR_PRODUTOR.ad_usr = ${ad_usr}
             where corretorProdutor_id = ${corretorProdutor_id} and cliente_id = ${cliente_id}`;
         await executeQuery(strsql);
-        response.status(200).json([{ status: 'ok' }]);
+        response.status(200).json({ status: 'ok' });
     },
 };

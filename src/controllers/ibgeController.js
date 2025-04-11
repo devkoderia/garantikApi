@@ -13,7 +13,7 @@ module.exports = {
         const { ibge_codigo } = request.params;
         const strsql = `update IBGE set deletado = 1 where ibge_codigo = ${ibge_codigo}`;
         await executeQuery(strsql);
-        response.status(200).json([{ status: 'ok' }]);
+        response.status(200).json({ status: 'ok' });
     },
 
     async listaUm(request, response) {
@@ -74,7 +74,7 @@ module.exports = {
         )`;
 
         await executeQuery(strsql);
-        response.status(200).json([{ status: 'ok' }]);
+        response.status(200).json({ status: 'ok' });
     },
 
     async update(request, response) {
@@ -95,6 +95,6 @@ module.exports = {
             where ibge_codigo = ${ibge_codigo}`;
 
         await executeQuery(strsql);
-        response.status(200).json([{ status: 'ok' }]);
+        response.status(200).json({ status: 'ok' });
     }
 };

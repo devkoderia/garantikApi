@@ -19,7 +19,7 @@ module.exports = {
 
         const strsql = `update PERFIL set deletado = 1 where perfil_id = ${perfil_id} and cliente_id = ${cliente_id}`;
         await executeQuery(strsql);
-        response.status(200).json([{ status: 'ok' }]);
+        response.status(200).json({ status: 'ok' });
     },
 
     async listaUm(request, response) {
@@ -85,7 +85,7 @@ module.exports = {
         )`;
 
         await executeQuery(strsql);
-        response.status(200).json([{ status: 'ok' }]);
+        response.status(200).json({ status: 'ok' });
     },
 
     async update(request, response) {
@@ -106,6 +106,6 @@ module.exports = {
             where perfil_id = ${perfil_id} and cliente_id = ${cliente_id}`;
 
         await executeQuery(strsql);
-        response.status(200).json([{ status: 'ok' }]);
+        response.status(200).json({ status: 'ok' });
     }
 };

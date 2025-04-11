@@ -71,7 +71,7 @@ module.exports = {
 
             await expira(convite_id)
 
-            response.status(200).json([{ status: 'ok' }]);
+            response.status(200).json({ status: 'ok' });
 
         } else { //se deu errado, retorna erro.
 

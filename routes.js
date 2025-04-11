@@ -28,6 +28,23 @@ routes.get('/', function (_, res) {
 })
 
 
+//SERVIÇOS EXTERNOS
+//-------------------------------------------------------------------------------------------------------------
+
+const consultaCNPJService = require('./src/services/consultaCNPJService')
+
+routes.get('/consultaCNPJ/:cnpj', celebrate({
+
+    [Segments.PARAMS]: Joi.object().keys({
+
+        cnpj: Joi.string().required().max(14),
+
+    })
+
+}), verificaToken, consultaCNPJService.consultaCNPJ)
+
+
+
 //AUTO CADASTRO
 //-------------------------------------------------------------------------------------------------------------
 const autoCadastroController = require('./src/controllers/autoCadastroController')
@@ -102,7 +119,7 @@ routes.post('/acesso', celebrate({
         usuario_id: Joi.number().integer().allow(null, ''),
         cpf: Joi.string().allow(null, '').length(11),
         tipoJuridico: Joi.string().required().max(50),
-        ip: Joi.string().allow(null, '').max(150),        
+        ip: Joi.string().allow(null, '').max(150),
         senha: Joi.string().allow(null, '').max(150),
     })
 }), verificaToken, acessoController.create)
@@ -164,22 +181,22 @@ routes.post('/avalista', celebrate({
         observacao: Joi.string().allow(null, '').max(1000),
         rg: Joi.string().allow(null, '').max(50),
         nacionalidade_id: Joi.string().allow(null, '').max(150),
-        estadoCivil_id: Joi.number().integer().allow(null, ''),
+        estadoCivil: Joi.string().allow(null, '').max(50),
         expedicao_id: Joi.number().integer().allow(null, ''),
         profissao: Joi.string().allow(null, '').max(150),
         cnae: Joi.string().allow(null, '').max(50),
         cnaeDescricao: Joi.string().allow(null, '').max(250),
-        capitalSocial: Joi.string().allow(null, '').max(50),
+        capitalSocial: Joi.number().allow(null, ''),
         naturezaJuridica: Joi.string().allow(null, '').max(250),
         situacao: Joi.string().allow(null, '').max(150),
-        dataAbertura: Joi.string().allow(null, '').max(50),
-        dataUltimaAtualizacao: Joi.string().allow(null, '').max(50),
+        dataAbertura: Joi.date().allow(null, ''),
+        dataUltimaAtualizacao: Joi.date().allow(null, ''),
         tipoEmpresa: Joi.string().allow(null, '').max(50),
         porte: Joi.string().allow(null, '').max(250),
-        dataSituacao: Joi.string().allow(null, '').max(50),
+        dataSituacao: Joi.date().allow(null, ''),
         motivoSituacao: Joi.string().allow(null, '').max(250),
         situacaoEspecial: Joi.string().allow(null, '').max(250),
-        dataSituacaoEspecial: Joi.string().allow(null, '').max(50),
+        dataSituacaoEspecial: Joi.date().allow(null, ''),
         representanteLegal: Joi.number().integer().allow(null, ''),
         avalista: Joi.number().integer().allow(null, ''),
         ad_usr: Joi.number().integer().required(),
@@ -215,22 +232,22 @@ routes.put('/avalista/:avalista_id', celebrate({
         observacao: Joi.string().allow(null, '').max(1000),
         rg: Joi.string().allow(null, '').max(50),
         nacionalidade_id: Joi.string().allow(null, '').max(150),
-        estadoCivil_id: Joi.number().integer().allow(null, ''),
+        estadoCivil: Joi.string().allow(null, '').max(50),
         expedicao_id: Joi.number().integer().allow(null, ''),
         profissao: Joi.string().allow(null, '').max(150),
         cnae: Joi.string().allow(null, '').max(50),
         cnaeDescricao: Joi.string().allow(null, '').max(250),
-        capitalSocial: Joi.string().allow(null, '').max(50),
+        capitalSocial: Joi.number().allow(null, ''),
         naturezaJuridica: Joi.string().allow(null, '').max(250),
         situacao: Joi.string().allow(null, '').max(150),
-        dataAbertura: Joi.string().allow(null, '').max(50),
-        dataUltimaAtualizacao: Joi.string().allow(null, '').max(50),
+        dataAbertura: Joi.date().allow(null, ''),
+        dataUltimaAtualizacao: Joi.date().allow(null, ''),
         tipoEmpresa: Joi.string().allow(null, '').max(50),
         porte: Joi.string().allow(null, '').max(250),
-        dataSituacao: Joi.string().allow(null, '').max(50),
+        dataSituacao: Joi.date().allow(null, ''),
         motivoSituacao: Joi.string().allow(null, '').max(250),
         situacaoEspecial: Joi.string().allow(null, '').max(250),
-        dataSituacaoEspecial: Joi.string().allow(null, '').max(50),
+        dataSituacaoEspecial: Joi.date().allow(null, ''),
         representanteLegal: Joi.number().integer().allow(null, ''),
         avalista: Joi.number().integer().allow(null, ''),
         ad_usr: Joi.number().integer().required(),
@@ -441,17 +458,17 @@ routes.post('/cliente', celebrate({
         observacao: Joi.string().allow(null, '').max(1000),
         cnae: Joi.string().allow(null, '').max(50),
         cnaeDescricao: Joi.string().allow(null, '').max(250),
-        capitalSocial: Joi.string().allow(null, '').max(50),
+        capitalSocial: Joi.number().allow(null, ''),
         naturezaJuridica: Joi.string().allow(null, '').max(250),
         situacao: Joi.string().allow(null, '').max(150),
-        dataAbertura: Joi.string().allow(null, '').max(50),
-        dataUltimaAtualizacao: Joi.string().allow(null, '').max(50),
+        dataAbertura: Joi.date().allow(null, ''),
+        dataUltimaAtualizacao: Joi.date().allow(null, ''),
         tipoEmpresa: Joi.string().allow(null, '').max(50),
         porte: Joi.string().allow(null, '').max(250),
-        dataSituacao: Joi.string().allow(null, '').max(50),
+        dataSituacao: Joi.date().allow(null, ''),
         motivoSituacao: Joi.string().allow(null, '').max(250),
         situacaoEspecial: Joi.string().allow(null, '').max(250),
-        dataSituacaoEspecial: Joi.string().allow(null, '').max(50),
+        dataSituacaoEspecial: Joi.date().allow(null, ''),
         ad_usr: Joi.number().integer().required(),
     })
 }), verificaToken, clienteController.create)
@@ -478,18 +495,18 @@ routes.put('/cliente/:cliente_id', celebrate({
         observacao: Joi.string().allow(null, '').max(1000),
         cnae: Joi.string().allow(null, '').max(50),
         cnaeDescricao: Joi.string().allow(null, '').max(250),
-        capitalSocial: Joi.string().allow(null, '').max(50),
+        capitalSocial: Joi.number().allow(null, ''),
         naturezaJuridica: Joi.string().allow(null, '').max(250),
         situacao: Joi.string().allow(null, '').max(150),
-        dataAbertura: Joi.string().allow(null, '').max(50),
-        dataUltimaAtualizacao: Joi.string().allow(null, '').max(50),
+        dataAbertura: Joi.date().allow(null, ''),
+        dataUltimaAtualizacao: Joi.date().allow(null, ''),
         tipoEmpresa: Joi.string().allow(null, '').max(50),
         porte: Joi.string().allow(null, '').max(250),
-        dataSituacao: Joi.string().allow(null, '').max(50),
+        dataSituacao: Joi.date().allow(null, ''),
         motivoSituacao: Joi.string().allow(null, '').max(250),
         situacaoEspecial: Joi.string().allow(null, '').max(250),
-        dataSituacaoEspecial: Joi.string().allow(null, '').max(50),
-        bloqueado: Joi.number().integer().allow(null, ''),
+        dataSituacaoEspecial: Joi.date().allow(null, ''),
+        bloqueado: Joi.boolean().allow(null),
         ad_usr: Joi.number().integer().required(),
     })
 }), verificaToken, clienteController.update)
@@ -671,7 +688,7 @@ routes.post('/corretor', celebrate({
     [Segments.BODY]: Joi.object().keys({
         cliente_id: Joi.number().integer().required(),
         produtor_id: Joi.number().integer().required(),
-        nacionalidade_id: Joi.number().integer().allow('', null),
+        nacionalidade_id: Joi.number().integer().allow(null),
         tipoJuridico: Joi.string().required().length(1),
         cpf: Joi.string().allow(null, '').length(11),
         cnpj: Joi.string().allow(null, '').length(14),
@@ -689,14 +706,14 @@ routes.post('/corretor', celebrate({
         telefoneFixo: Joi.string().allow(null, '').max(100),
         telefoneCelular: Joi.string().allow(null, '').max(100),
         email: Joi.string().allow(null, '').max(100),
-        nacionalidade_id: Joi.number().integer().allow(null, ''),
-        estadoCivil: Joi.string().allow(null, '').max(100),
+        estadoCivil: Joi.string().allow(null, '').max(50),
         profissao: Joi.string().allow(null, '').max(150),
         banco_id: Joi.number().integer().allow(null, ''),
         agencia: Joi.string().allow(null, '').max(50),
         numeroConta: Joi.string().allow(null, '').max(50),
         tipoConta: Joi.string().allow(null, '').max(50),
         chavePix: Joi.string().allow(null, '').max(100),
+        nomeCorrentista: Joi.string().allow(null, '').max(150),
         cpfCorrentista: Joi.string().allow(null, '').length(11),
         cnpjCorrentista: Joi.string().allow(null, '').length(14),
         pessoaContato: Joi.string().allow(null, '').max(150),
@@ -708,17 +725,17 @@ routes.post('/corretor', celebrate({
         premioMinimo: Joi.number().allow(null, ''),
         cnae: Joi.string().allow(null, '').max(50),
         cnaeDescricao: Joi.string().allow(null, '').max(250),
-        capitalSocial: Joi.string().allow(null, '').max(50),
+        capitalSocial: Joi.number().allow(null, ''),
         naturezaJuridica: Joi.string().allow(null, '').max(250),
         situacao: Joi.string().allow(null, '').max(150),
-        dataAbertura: Joi.string().allow(null, '').max(50),
-        dataUltimaAtualizacao: Joi.string().allow(null, '').max(50),
+        dataAbertura: Joi.date().allow(null, ''),
+        dataUltimaAtualizacao: Joi.date().allow(null, ''),
         tipoEmpresa: Joi.string().allow(null, '').max(50),
         porte: Joi.string().allow(null, '').max(250),
-        dataSituacao: Joi.string().allow(null, '').max(50),
+        dataSituacao: Joi.date().allow(null, ''),
         motivoSituacao: Joi.string().allow(null, '').max(250),
         situacaoEspecial: Joi.string().allow(null, '').max(250),
-        dataSituacaoEspecial: Joi.string().allow(null, '').max(50),
+        dataSituacaoEspecial: Joi.date().allow(null, ''),
         susep: Joi.string().allow(null, '').max(50),
         ad_usr: Joi.number().integer().allow(null, ''),
     })
@@ -748,15 +765,15 @@ routes.put('/corretor/:corretor_id', celebrate({
         telefoneFixo: Joi.string().allow(null, '').max(100),
         telefoneCelular: Joi.string().allow(null, '').max(100),
         email: Joi.string().allow(null, '').max(100),
-        nacionalidade_id: Joi.string().allow(null, '').max(100),
-        estadoCivil: Joi.string().allow(null, '').max(100),
+        nacionalidade_id: Joi.number().integer().allow(null, ''),
+        estadoCivil: Joi.string().allow(null, '').max(50),
         profissao: Joi.string().allow(null, '').max(150),
-
         banco_id: Joi.number().integer().allow(null, ''),
         agencia: Joi.string().allow(null, '').max(50),
         numeroConta: Joi.string().allow(null, '').max(50),
         tipoConta: Joi.string().allow(null, '').max(50),
         chavePix: Joi.string().allow(null, '').max(100),
+        nomeCorrentista: Joi.string().allow(null, '').max(150),
         cpfCorrentista: Joi.string().allow(null, '').length(11),
         cnpjCorrentista: Joi.string().allow(null, '').length(14),
         pessoaContato: Joi.string().allow(null, '').max(150),
@@ -768,19 +785,19 @@ routes.put('/corretor/:corretor_id', celebrate({
         premioMinimo: Joi.number().allow(null, ''),
         cnae: Joi.string().allow(null, '').max(50),
         cnaeDescricao: Joi.string().allow(null, '').max(250),
-        capitalSocial: Joi.string().allow(null, '').max(50),
+        capitalSocial: Joi.number().allow(null, ''),
         naturezaJuridica: Joi.string().allow(null, '').max(250),
         situacao: Joi.string().allow(null, '').max(150),
-        dataAbertura: Joi.string().allow(null, '').max(50),
-        dataUltimaAtualizacao: Joi.string().allow(null, '').max(50),
+        dataAbertura: Joi.date().allow(null, ''),
+        dataUltimaAtualizacao: Joi.date().allow(null, ''),
         tipoEmpresa: Joi.string().allow(null, '').max(50),
         porte: Joi.string().allow(null, '').max(250),
-        dataSituacao: Joi.string().allow(null, '').max(50),
+        dataSituacao: Joi.date().allow(null, ''),
         motivoSituacao: Joi.string().allow(null, '').max(250),
         situacaoEspecial: Joi.string().allow(null, '').max(250),
-        dataSituacaoEspecial: Joi.string().allow(null, '').max(50),
+        dataSituacaoEspecial: Joi.date().allow(null, ''),
         susep: Joi.string().allow(null, '').max(50),
-        bloqueado: Joi.number().integer().allow(null, ''),
+        bloqueado: Joi.boolean().allow(null),
         ad_usr: Joi.number().integer().allow(null, ''),
     })
 }), verificaToken, corretorController.update)
@@ -998,31 +1015,30 @@ routes.post('/emissaoListaTodos', verificaToken, celebrate({
 routes.post('/emissao', celebrate({
     [Segments.BODY]: Joi.object().keys({
         cliente_id: Joi.number().integer().required(),
-        pin: Joi.string().allow(null, '').max(50),
-        dataEmissao: Joi.string().allow(null, ''),
-        dataInicio: Joi.string().allow(null, ''),
-        dataVencimento: Joi.string().allow(null, ''),
+        dataEmissao: Joi.date().required(),
+        dataInicio: Joi.date().required(),
+        dataVencimento: Joi.date().allow(null, ''),
         dias: Joi.number().integer().allow(null, ''),
-        dataVencimentoIndeterminado: Joi.number().integer().allow(null, ''),
-        valor: Joi.number().allow(null, ''),
-        valorExtenso: Joi.string().allow(null, '').max(200),
-        modalidade_id: Joi.number().integer().allow(null, ''),
-        modalidadeTexto: Joi.string().allow(null, '').max(5000),
-        objeto: Joi.string().allow(null, '').max(5000),
-        textoFianca: Joi.string().allow(null, ''),
-        documento: Joi.string().allow(null, '').max(3000),
-        sinistro: Joi.number().integer().allow(null, ''),
-        bloqueada: Joi.number().integer().allow(null, ''),
-        taxa: Joi.string().allow(null, '').max(50),
-        premio: Joi.string().allow(null, '').max(50),
-        pago: Joi.number().integer().allow(null, ''),
-        valorPago: Joi.number().allow(null, ''),
-        minuta: Joi.number().integer().allow(null, ''),
-        garantia: Joi.number().integer().allow(null, ''),
-        ad_usr: Joi.number().integer().required(),
-
+        dataVencimentoIndeterminado: Joi.boolean().allow(null),
+        moeda_id: Joi.number().integer().required(),
+        valor: Joi.number().required(),        
+        objeto: Joi.string().required(),
+        modalidade_id: Joi.number().required(),
+        modalidadeTexto: Joi.string().required(),
+        taxa: Joi.number().allow(null),
+        premio: Joi.number().allow(null),
+        pago: Joi.boolean().allow(null),
+        valorPago: Joi.number().allow(null),
+        minuta: Joi.boolean().allow(null),
+        garantia: Joi.boolean().allow(null),
+        trabalhista: Joi.boolean().allow(null),
+        fiscal: Joi.boolean().allow(null),
+        textoTrabalhista: Joi.string().allow(null, ''),
+        textoFiscal: Joi.string().allow(null, ''),
+        ad_usr: Joi.number().integer().required()
     })
-}), verificaToken, emissaoController.create)
+}), verificaToken, emissaoController.create);
+
 
 routes.put('/emissao/:emissao_id', celebrate({
     [Segments.PARAMS]: Joi.object().keys({
@@ -1030,29 +1046,30 @@ routes.put('/emissao/:emissao_id', celebrate({
     }),
     [Segments.BODY]: Joi.object().keys({
         cliente_id: Joi.number().integer().required(),
-        pin: Joi.string().allow(null, '').max(50),
-        dataEmissao: Joi.string().allow(null, ''),
-        dataInicio: Joi.string().allow(null, ''),
-        dataVencimento: Joi.string().allow(null, ''),
+        dataEmissao: Joi.date().required(),
+        dataInicio: Joi.date().required(),
+        dataVencimento: Joi.date().allow(null, ''),
         dias: Joi.number().integer().allow(null, ''),
-        dataVencimentoIndeterminado: Joi.number().integer().allow(null, ''),
-        valor: Joi.number().allow(null, ''),
-        valorExtenso: Joi.string().allow(null, '').max(200),
-        modalidade_id: Joi.number().integer().allow(null, ''),
-        modalidadeTexto: Joi.string().allow(null, '').max(5000),
-        objeto: Joi.string().allow(null, '').max(5000),
-        textoFianca: Joi.string().allow(null, ''),
-        documento: Joi.string().allow(null, '').max(3000),
-        sinistro: Joi.number().integer().allow(null, ''),
-        bloqueada: Joi.number().integer().allow(null, ''),
-        taxa: Joi.string().allow(null, '').max(50),
-        premio: Joi.string().allow(null, '').max(50),
-        pago: Joi.number().integer().allow(null, ''),
-        valorPago: Joi.number().allow(null, ''),
-        minuta: Joi.number().integer().allow(null, ''),
-        garantia: Joi.number().integer().allow(null, ''),
+        dataVencimentoIndeterminado: Joi.boolean().allow(null),
+        moeda_id: Joi.number().integer().required(),
+        valor: Joi.number().required(),        
+        objeto: Joi.string().required(),
+        modalidade_id: Joi.number().required(),
+        modalidadeTexto: Joi.string().required(),
+        taxa: Joi.number().allow(null),
+        premio: Joi.number().allow(null),
+        pago: Joi.boolean().allow(null),
+        valorPago: Joi.number().allow(null),
+        minuta: Joi.boolean().allow(null),
+        garantia: Joi.boolean().allow(null),
+        trabalhista: Joi.boolean().allow(null),
+        fiscal: Joi.boolean().allow(null),
+        textoTrabalhista: Joi.string().allow(null, ''),
+        textoFiscal: Joi.string().allow(null, ''),
+        sinistro: Joi.boolean().allow(null),
+        bloqueada: Joi.boolean().allow(null),
         ad_usr: Joi.number().integer().required(),
-
+                
     })
 }), verificaToken, emissaoController.update)
 
@@ -1289,55 +1306,6 @@ routes.delete('/emissao_tomador/:emissaoTomador_id', celebrate({
 
 
 
-//ESTADO_CIVIL
-//-------------------------------------------------------------------------------------------------------------
-const estadoCivilController = require('./src/controllers/estadoCivilController')
-
-routes.post('/estado_civilConta', verificaToken, celebrate({
-    [Segments.BODY]: Joi.object().keys({
-        cliente_id: Joi.number().integer().required(),
-    })
-}), estadoCivilController.count)
-
-routes.post('/estado_civilListaTodos', verificaToken, celebrate({
-    [Segments.BODY]: Joi.object().keys({
-        cliente_id: Joi.number().integer().required(),
-    })
-}), estadoCivilController.listaTodos)
-
-routes.post('/estado_civilListaUm/:estadoCivil_id', celebrate({
-    [Segments.PARAMS]: Joi.object().keys({
-        estadoCivil_id: Joi.number().integer().required()
-    }),
-    [Segments.BODY]: Joi.object().keys({
-        cliente_id: Joi.number().integer().required(),
-    })
-}), verificaToken, estadoCivilController.listaUm)
-
-routes.post('/estado_civil', celebrate({
-    [Segments.BODY]: Joi.object().keys({
-        descricao: Joi.string().required().max(50),
-    })
-}), verificaToken, estadoCivilController.create)
-
-routes.put('/estado_civil/:estadoCivil_id', celebrate({
-    [Segments.PARAMS]: Joi.object().keys({
-        estadoCivil_id: Joi.number().integer().required()
-    }),
-    [Segments.BODY]: Joi.object().keys({
-        descricao: Joi.string().required().max(50),
-    })
-}), verificaToken, estadoCivilController.update)
-
-routes.delete('/estado_civil/:estadoCivil_id', celebrate({
-    [Segments.PARAMS]: Joi.object().keys({
-        estadoCivil_id: Joi.number().integer().required()
-    }),
-}), verificaToken, estadoCivilController.destroy)
-
-
-
-
 //EXPEDICAO
 //-------------------------------------------------------------------------------------------------------------
 const expedicaoController = require('./src/controllers/expedicaoController')
@@ -1442,6 +1410,9 @@ routes.post('/favorecido', celebrate({
         numero: Joi.string().allow(null, '').max(150),
         complemento: Joi.string().allow(null, '').max(100),
         bairro: Joi.string().allow(null, '').max(150),
+        estadoCivil: Joi.string().allow(null, '').max(50),
+        profissao: Joi.string().allow(null, '').max(150),
+        nacionalidade_id: Joi.number().integer().allow(null),
         telefoneFixo: Joi.string().allow(null, '').max(100),
         telefoneCelular: Joi.string().allow(null, '').max(100),
         email: Joi.string().allow(null, '').max(100),
@@ -1452,17 +1423,20 @@ routes.post('/favorecido', celebrate({
         observacao: Joi.string().allow(null, '').max(1000),
         cnae: Joi.string().allow(null, '').max(50),
         cnaeDescricao: Joi.string().allow(null, '').max(250),
-        capitalSocial: Joi.string().allow(null, '').max(50),
+        capitalSocial: Joi.number().allow(null),
         naturezaJuridica: Joi.string().allow(null, '').max(250),
         situacao: Joi.string().allow(null, '').max(150),
-        dataAbertura: Joi.string().allow(null, '').max(50),
-        dataUltimaAtualizacao: Joi.string().allow(null, '').max(50),
+        dataAbertura: Joi.date().allow(null, ''),
+        dataUltimaAtualizacao: Joi.date().allow(null, ''),
         tipoEmpresa: Joi.string().allow(null, '').max(50),
         porte: Joi.string().allow(null, '').max(250),
-        dataSituacao: Joi.string().allow(null, '').max(50),
+        dataSituacao: Joi.date().allow(null, ''),
         motivoSituacao: Joi.string().allow(null, '').max(250),
         situacaoEspecial: Joi.string().allow(null, '').max(250),
-        dataSituacaoEspecial: Joi.string().allow(null, '').max(50),
+        dataSituacaoEspecial: Joi.date().allow(null, ''),
+        outroDocumento: Joi.string().allow(null, '').max(150),
+        outroDocumentoDescricao: Joi.string().allow(null, '').max(150),
+        bloqueado: Joi.boolean().allow(null),
         ad_usr: Joi.number().integer().required(),
     })
 }), verificaToken, favorecidoController.create)
@@ -1487,6 +1461,9 @@ routes.put('/favorecido/:favorecido_id', celebrate({
         numero: Joi.string().allow(null, '').max(150),
         complemento: Joi.string().allow(null, '').max(100),
         bairro: Joi.string().allow(null, '').max(150),
+        estadoCivil: Joi.string().allow(null, '').max(50),
+        profissao: Joi.string().allow(null, '').max(150),
+        nacionalidade_id: Joi.number().integer().allow(null),
         telefoneFixo: Joi.string().allow(null, '').max(100),
         telefoneCelular: Joi.string().allow(null, '').max(100),
         email: Joi.string().allow(null, '').max(100),
@@ -1497,18 +1474,20 @@ routes.put('/favorecido/:favorecido_id', celebrate({
         observacao: Joi.string().allow(null, '').max(1000),
         cnae: Joi.string().allow(null, '').max(50),
         cnaeDescricao: Joi.string().allow(null, '').max(250),
-        capitalSocial: Joi.string().allow(null, '').max(50),
+        capitalSocial: Joi.number().allow(null, ''),
         naturezaJuridica: Joi.string().allow(null, '').max(250),
         situacao: Joi.string().allow(null, '').max(150),
-        dataAbertura: Joi.string().allow(null, '').max(50),
-        dataUltimaAtualizacao: Joi.string().allow(null, '').max(50),
+        dataAbertura: Joi.date().allow(null, ''),
+        dataUltimaAtualizacao: Joi.date().allow(null, ''),
         tipoEmpresa: Joi.string().allow(null, '').max(50),
         porte: Joi.string().allow(null, '').max(250),
-        dataSituacao: Joi.string().allow(null, '').max(50),
+        dataSituacao: Joi.date().allow(null, ''),
         motivoSituacao: Joi.string().allow(null, '').max(250),
-        situacaoEspecial: Joi.string().allow(null, '').max(250),
-        dataSituacaoEspecial: Joi.string().allow(null, '').max(50),
-        bloqueado: Joi.number().integer().allow(null, ''),
+        situacaoEspecial: Joi.string().allow(null, '').max(250),        
+        dataSituacaoEspecial: Joi.date().allow(null, ''),
+        outroDocumento: Joi.string().allow(null, '').max(150),
+        outroDocumentoDescricao: Joi.string().allow(null, '').max(150),
+        bloqueado: Joi.boolean().allow(null),
         ad_usr: Joi.number().integer().required(),
     })
 }), verificaToken, favorecidoController.update)
@@ -1973,14 +1952,17 @@ routes.post('/produtor', celebrate({
         telefoneFixo: Joi.string().allow(null, '').max(100),
         telefoneCelular: Joi.string().allow(null, '').max(100),
         email: Joi.string().allow(null, '').max(100),
-        nacionalidade_id: Joi.string().allow(null, '').max(100),
-        estadoCivil: Joi.string().allow(null, '').max(100),
+        nacionalidade_id: Joi.number().allow(null),
+        estadoCivil: Joi.string().allow(null, '').max(50),
         profissao: Joi.string().allow(null, '').max(150),
         banco_id: Joi.number().integer().allow(null, ''),
         agencia: Joi.string().allow(null, '').max(50),
         numeroConta: Joi.string().allow(null, '').max(50),
         tipoConta: Joi.string().allow(null, '').max(50),
         chavePix: Joi.string().allow(null, '').max(100),
+        nomeCorrentista: Joi.string().allow(null, '').max(150),
+        cpfCorrentista: Joi.string().allow(null, '').length(11),
+        cnpjCorrentista: Joi.string().allow(null, '').length(14),
         pessoaContato: Joi.string().allow(null, '').max(150),
         emailPessoaContato: Joi.string().allow(null, '').max(150),
         telefoneFixoPessoaContato: Joi.string().allow(null, '').max(100),
@@ -1990,19 +1972,19 @@ routes.post('/produtor', celebrate({
         premioMinimo: Joi.number().allow(null, ''),
         cnae: Joi.string().allow(null, '').max(50),
         cnaeDescricao: Joi.string().allow(null, '').max(250),
-        capitalSocial: Joi.string().allow(null, '').max(50),
+        capitalSocial: Joi.number().allow(null, ''),
         naturezaJuridica: Joi.string().allow(null, '').max(250),
         situacao: Joi.string().allow(null, '').max(150),
-        dataAbertura: Joi.string().allow(null, '').max(50),
-        dataUltimaAtualizacao: Joi.string().allow(null, '').max(50),
+        dataAbertura: Joi.date().allow(null, ''),
+        dataUltimaAtualizacao: Joi.date().allow(null, ''),
         tipoEmpresa: Joi.string().allow(null, '').max(50),
         porte: Joi.string().allow(null, '').max(250),
-        dataSituacao: Joi.string().allow(null, '').max(50),
+        dataSituacao: Joi.date().allow(null, ''),
         motivoSituacao: Joi.string().allow(null, '').max(250),
         situacaoEspecial: Joi.string().allow(null, '').max(250),
-        dataSituacaoEspecial: Joi.string().allow(null, '').max(50),
+        dataSituacaoEspecial: Joi.date().allow(null, ''),
         susep: Joi.string().allow(null, '').max(50),
-        bloqueado: Joi.number().integer().allow(null, ''),
+        bloqueado: Joi.boolean().allow(null),
         ad_usr: Joi.number().integer().required(),
     })
 }), verificaToken, produtorController.create)
@@ -2030,14 +2012,17 @@ routes.put('/produtor/:produtor_id', celebrate({
         telefoneFixo: Joi.string().allow(null, '').max(100),
         telefoneCelular: Joi.string().allow(null, '').max(100),
         email: Joi.string().allow(null, '').max(100),
-        nacionalidade_id: Joi.string().allow(null, '').max(100),
-        estadoCivil: Joi.string().allow(null, '').max(100),
+        nacionalidade_id: Joi.number().allow(null),
+        estadoCivil: Joi.string().allow(null, '').max(50),
         profissao: Joi.string().allow(null, '').max(150),
         banco_id: Joi.number().integer().allow(null, ''),
         agencia: Joi.string().allow(null, '').max(50),
         numeroConta: Joi.string().allow(null, '').max(50),
         tipoConta: Joi.string().allow(null, '').max(50),
         chavePix: Joi.string().allow(null, '').max(100),
+        nomeCorrentista: Joi.string().allow(null, '').max(150),
+        cpfCorrentista: Joi.string().allow(null, '').length(11),
+        cnpjCorrentista: Joi.string().allow(null, '').length(14),
         pessoaContato: Joi.string().allow(null, '').max(150),
         emailPessoaContato: Joi.string().allow(null, '').max(150),
         telefoneFixoPessoaContato: Joi.string().allow(null, '').max(100),
@@ -2047,19 +2032,19 @@ routes.put('/produtor/:produtor_id', celebrate({
         premioMinimo: Joi.number().allow(null, ''),
         cnae: Joi.string().allow(null, '').max(50),
         cnaeDescricao: Joi.string().allow(null, '').max(250),
-        capitalSocial: Joi.string().allow(null, '').max(50),
+        capitalSocial: Joi.number().allow(null, ''),
         naturezaJuridica: Joi.string().allow(null, '').max(250),
         situacao: Joi.string().allow(null, '').max(150),
-        dataAbertura: Joi.string().allow(null, '').max(50),
-        dataUltimaAtualizacao: Joi.string().allow(null, '').max(50),
+        dataAbertura: Joi.date().allow(null, ''),
+        dataUltimaAtualizacao: Joi.date().allow(null, ''),
         tipoEmpresa: Joi.string().allow(null, '').max(50),
         porte: Joi.string().allow(null, '').max(250),
-        dataSituacao: Joi.string().allow(null, '').max(50),
+        dataSituacao: Joi.date().allow(null, ''),
         motivoSituacao: Joi.string().allow(null, '').max(250),
         situacaoEspecial: Joi.string().allow(null, '').max(250),
-        dataSituacaoEspecial: Joi.string().allow(null, '').max(50),
+        dataSituacaoEspecial: Joi.date().allow(null, ''),
         susep: Joi.string().allow(null, '').max(50),
-        bloqueado: Joi.number().integer().allow(null, ''),
+        bloqueado: Joi.boolean().allow(null),
         ad_usr: Joi.number().integer().required(),
     })
 }), verificaToken, produtorController.update)
@@ -2133,6 +2118,9 @@ routes.post('/tomador', celebrate({
         numero: Joi.string().allow(null, '').max(150),
         complemento: Joi.string().allow(null, '').max(100),
         bairro: Joi.string().allow(null, '').max(150),
+        estadoCivil: Joi.string().allow(null, '').max(50),
+        profissao: Joi.string().allow(null, '').max(150),
+        nacionalidade_id: Joi.number().integer().allow(null),
         telefoneFixo: Joi.string().allow(null, '').max(100),
         telefoneCelular: Joi.string().allow(null, '').max(100),
         email: Joi.string().allow(null, '').max(100),
@@ -2143,19 +2131,34 @@ routes.post('/tomador', celebrate({
         observacao: Joi.string().allow(null, '').max(1000),
         cnae: Joi.string().allow(null, '').max(50),
         cnaeDescricao: Joi.string().allow(null, '').max(250),
-        capitalSocial: Joi.string().allow(null, '').max(50),
+        capitalSocial: Joi.number().allow(null, ''),
         naturezaJuridica: Joi.string().allow(null, '').max(250),
         situacao: Joi.string().allow(null, '').max(150),
-        dataAbertura: Joi.string().allow(null, '').max(50),
-        dataUltimaAtualizacao: Joi.string().allow(null, '').max(50),
+        dataAbertura: Joi.date().allow(null, ''),
+        dataUltimaAtualizacao: Joi.date().allow(null, ''),
         tipoEmpresa: Joi.string().allow(null, '').max(50),
         porte: Joi.string().allow(null, '').max(250),
-        dataSituacao: Joi.string().allow(null, '').max(50),
+        dataSituacao: Joi.date().allow(null, ''),
         motivoSituacao: Joi.string().allow(null, '').max(250),
         situacaoEspecial: Joi.string().allow(null, '').max(250),
-        dataSituacaoEspecial: Joi.string().allow(null, '').max(50),
-        restricao: Joi.number().integer().allow(null, ''),
-        bloqueado: Joi.number().integer().allow(null, ''),
+        dataSituacaoEspecial: Joi.date().allow(null, ''),
+        limiteGeral: Joi.number().allow(null),
+        limiteTomado: Joi.number().allow(null),
+        limiteTradicional: Joi.number().allow(null),
+        taxaTradicional: Joi.number().allow(null),
+        limiteRecursal: Joi.number().allow(null),
+        taxaRecursal: Joi.number().allow(null),
+        limiteFinanceira: Joi.number().allow(null),
+        taxaFinanceira: Joi.number().allow(null),
+        limiteJudicial: Joi.number().allow(null),
+        taxaJudicial: Joi.number().allow(null),
+        limiteEstruturada: Joi.number().allow(null),
+        taxaEstruturada: Joi.number().allow(null),
+        restricao: Joi.boolean().allow(null),
+        aprovado: Joi.boolean().allow(null),
+        bloqueado: Joi.boolean().allow(null),
+        outroDocumento: Joi.string().allow(null, '').max(150),
+        outroDocumentoDescricao: Joi.string().allow(null, '').max(150),
         ad_usr: Joi.number().integer().required(),
 
     })
@@ -2181,6 +2184,9 @@ routes.put('/tomador/:tomador_id', celebrate({
         numero: Joi.string().allow(null, '').max(150),
         complemento: Joi.string().allow(null, '').max(100),
         bairro: Joi.string().allow(null, '').max(150),
+        estadoCivil: Joi.string().allow(null, '').max(50),
+        profissao: Joi.string().allow(null, '').max(150),
+        nacionalidade_id: Joi.number().integer().allow(null),
         telefoneFixo: Joi.string().allow(null, '').max(100),
         telefoneCelular: Joi.string().allow(null, '').max(100),
         email: Joi.string().allow(null, '').max(100),
@@ -2191,19 +2197,34 @@ routes.put('/tomador/:tomador_id', celebrate({
         observacao: Joi.string().allow(null, '').max(1000),
         cnae: Joi.string().allow(null, '').max(50),
         cnaeDescricao: Joi.string().allow(null, '').max(250),
-        capitalSocial: Joi.string().allow(null, '').max(50),
+        capitalSocial: Joi.number().allow(null, ''),
         naturezaJuridica: Joi.string().allow(null, '').max(250),
         situacao: Joi.string().allow(null, '').max(150),
-        dataAbertura: Joi.string().allow(null, '').max(50),
-        dataUltimaAtualizacao: Joi.string().allow(null, '').max(50),
+        dataAbertura: Joi.date().allow(null, ''),
+        dataUltimaAtualizacao: Joi.date().allow(null, ''),
         tipoEmpresa: Joi.string().allow(null, '').max(50),
         porte: Joi.string().allow(null, '').max(250),
-        dataSituacao: Joi.string().allow(null, '').max(50),
+        dataSituacao: Joi.date().allow(null, ''),
         motivoSituacao: Joi.string().allow(null, '').max(250),
         situacaoEspecial: Joi.string().allow(null, '').max(250),
-        dataSituacaoEspecial: Joi.string().allow(null, '').max(50),
-        restricao: Joi.number().integer().allow(null, ''),
-        bloqueado: Joi.number().integer().allow(null, ''),
+        dataSituacaoEspecial: Joi.date().allow(null, ''),
+        limiteGeral: Joi.number().allow(null),
+        limiteTomado: Joi.number().allow(null),
+        limiteTradicional: Joi.number().allow(null),
+        taxaTradicional: Joi.number().allow(null),
+        limiteRecursal: Joi.number().allow(null),
+        taxaRecursal: Joi.number().allow(null),
+        limiteFinanceira: Joi.number().allow(null),
+        taxaFinanceira: Joi.number().allow(null),
+        limiteJudicial: Joi.number().allow(null),
+        taxaJudicial: Joi.number().allow(null),
+        limiteEstruturada: Joi.number().allow(null),
+        taxaEstruturada: Joi.number().allow(null),
+        restricao: Joi.boolean().allow(null),
+        aprovado: Joi.boolean().allow(null),
+        bloqueado: Joi.boolean().allow(null),
+        outroDocumento: Joi.string().allow(null, '').max(150),
+        outroDocumentoDescricao: Joi.string().allow(null, '').max(150),
         ad_usr: Joi.number().integer().required(),
 
     })
@@ -2313,9 +2334,9 @@ routes.post('/usuarioListaCpf/:cpf', celebrate({
 routes.post('/usuario', celebrate({
     [Segments.BODY]: Joi.object().keys({
         cliente_id: Joi.number().integer().required(),
-        perfil_id: Joi.number().integer().required(),        
+        perfil_id: Joi.number().integer().required(),
         cpf: Joi.string().required().length(11),
-        nome: Joi.string().required().max(150),        
+        nome: Joi.string().required().max(150),
         senha: Joi.string().required().max(50),
         ad_usr: Joi.number().integer().required(),
     })
@@ -2327,9 +2348,9 @@ routes.put('/usuario/:usuario_id', celebrate({
     }),
     [Segments.BODY]: Joi.object().keys({
         cliente_id: Joi.number().integer().required(),
-        perfil_id: Joi.number().integer().required(),        
+        perfil_id: Joi.number().integer().required(),
         nome: Joi.string().required().max(150),
-        bloqueado: Joi.number().integer().allow(null, ''),
+        bloqueado: Joi.boolean().allow(null),
         ad_usr: Joi.number().integer().required(),
 
     })

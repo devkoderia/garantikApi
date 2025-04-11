@@ -13,7 +13,7 @@ module.exports = {
         const { banco_id } = request.params;
         const strsql = `update BANCO set deletado = 1 where banco_id = ${banco_id}`;
         await executeQuery(strsql);
-        response.status(200).json([{ status: 'ok' }]);
+        response.status(200).json({ status: 'ok' });
     },
 
     async listaUm(request, response) {
@@ -79,6 +79,6 @@ module.exports = {
                 BANCO.ispb = '${ispb}'
             where banco_id = ${banco_id}`;
         await executeQuery(strsql);
-        response.status(200).json([{ status: 'ok' }]);
+        response.status(200).json({ status: 'ok' });
     },
 };

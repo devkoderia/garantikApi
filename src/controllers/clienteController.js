@@ -18,7 +18,7 @@ module.exports = {
         const strsql = `update CLIENTE set deletado = 1 where cliente_id = ${cliente_id}`;
 
         await executeQuery(strsql);
-        response.status(200).json([{ status: 'ok' }]);
+        response.status(200).json({ status: 'ok' });
     },
 
     async listaUm(request, response) {
@@ -71,38 +71,13 @@ module.exports = {
                 CLIENTE.cliente_id,
                 CLIENTE.cnpj,
                 CLIENTE.nomeFantasia,
-                CLIENTE.razaoSocial,
-                CLIENTE.cep,
-                CLIENTE.ibge_codigo,
-                CLIENTE.uf,
-                CLIENTE.logradouro,
-                CLIENTE.numero,
-                CLIENTE.complemento,
-                CLIENTE.bairro,
-                CLIENTE.telefoneFixo,
-                CLIENTE.telefoneCelular,
-                CLIENTE.email,
-                CLIENTE.observacao,
-                CLIENTE.cnae,
-                CLIENTE.cnaeDescricao,
-                CLIENTE.capitalSocial,
-                CLIENTE.naturezaJuridica,
-                CLIENTE.situacao,
-                CLIENTE.dataAbertura,
-                CLIENTE.dataUltimaAtualizacao,
-                CLIENTE.tipoEmpresa,
-                CLIENTE.porte,
-                CLIENTE.dataSituacao,
-                CLIENTE.motivoSituacao,
-                CLIENTE.situacaoEspecial,
-                CLIENTE.dataSituacaoEspecial,
+                CLIENTE.razaoSocial,                
                 CLIENTE.bloqueado,
-                CONVERT(VARCHAR, CLIENTE.ad_new, 103) + ' ' + CONVERT(VARCHAR, CLIENTE.ad_new, 8) as ad_new,
-                CONVERT(VARCHAR, CLIENTE.ad_upd, 103) + ' ' + CONVERT(VARCHAR, CLIENTE.ad_upd, 8) as ad_upd,
-                CLIENTE.ad_usr,
-                CLIENTE.deletado
+                CONVERT(VARCHAR, CLIENTE.ad_new, 103) + ' ' + CONVERT(VARCHAR, CLIENTE.ad_new, 8) as ad_new
+                
             from CLIENTE
-            where (CLIENTE.deletado = 0 or CLIENTE.deletado is null)`;
+            where (CLIENTE.deletado = 0 or CLIENTE.deletado is null)
+            order by CLIENTE.nomeFantasia`;
 
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
@@ -309,6 +284,6 @@ module.exports = {
             where cliente_id = ${cliente_id}`;
 
         await executeQuery(strsql);
-        response.status(200).json([{ status: 'ok' }]);
+        response.status(200).json({ status: 'ok' });
     },
 };

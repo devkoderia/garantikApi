@@ -20,7 +20,7 @@ module.exports = {
         const strsql = `update CCG set deletado = 1 where ccg_id = ${ccg_id} and cliente_id = ${cliente_id}`;
 
         await executeQuery(strsql);
-        response.status(200).json([{ status: 'ok' }]);
+        response.status(200).json({ status: 'ok' });
     },
 
     async listaUm(request, response) {
@@ -127,6 +127,6 @@ module.exports = {
             where ccg_id = ${ccg_id} and cliente_id = ${cliente_id}`;
 
         await executeQuery(strsql);
-        response.status(200).json([{ status: 'ok' }]);
+        response.status(200).json({ status: 'ok' });
     },
 };

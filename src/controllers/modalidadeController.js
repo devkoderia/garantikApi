@@ -20,7 +20,7 @@ module.exports = {
 
         const strsql = `update MODALIDADE set deletado = 1 where modalidade_id = ${modalidade_id} and cliente_id = ${cliente_id}`;
         await executeQuery(strsql);
-        response.status(200).json([{ status: 'ok' }]);
+        response.status(200).json({ status: 'ok' });
 
     },
 
@@ -104,7 +104,7 @@ module.exports = {
         )`;
 
         await executeQuery(strsql);
-        response.status(200).json([{ status: 'ok' }]);
+        response.status(200).json({ status: 'ok' });
 
     },
 
@@ -131,7 +131,7 @@ module.exports = {
             where modalidade_id = ${modalidade_id} and cliente_id = ${cliente_id}`;
 
         await executeQuery(strsql);
-        response.status(200).json([{ status: 'ok' }]);
+        response.status(200).json({ status: 'ok' });
 
     }
 };

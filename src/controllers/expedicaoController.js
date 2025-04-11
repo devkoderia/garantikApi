@@ -13,7 +13,7 @@ module.exports = {
         const { expedicao_id } = request.params;
         const strsql = `update EXPEDICAO set deletado = 1 where expedicao_id = ${expedicao_id}`;
         await executeQuery(strsql);
-        response.status(200).json([{ status: 'ok' }]);
+        response.status(200).json({ status: 'ok' });
     },
 
     async listaUm(request, response) {
@@ -51,7 +51,7 @@ module.exports = {
         )`;
 
         await executeQuery(strsql);
-        response.status(200).json([{ status: 'ok' }]);
+        response.status(200).json({ status: 'ok' });
     },
 
     async update(request, response) {
@@ -65,6 +65,6 @@ module.exports = {
             where expedicao_id = ${expedicao_id}`;
 
         await executeQuery(strsql);
-        response.status(200).json([{ status: 'ok' }]);
+        response.status(200).json({ status: 'ok' });
     }
 };

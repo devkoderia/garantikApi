@@ -19,7 +19,7 @@ module.exports = {
 
         const strsql = `update EMISSAO_COBERTURA set deletado = 1 where emissaoCobertura_id = ${emissaoCobertura_id} and cliente_id = ${cliente_id}`;
         await executeQuery(strsql);
-        response.status(200).json([{ status: 'ok' }]);
+        response.status(200).json({ status: 'ok' });
     },
 
     async listaUm(request, response) {
@@ -113,6 +113,6 @@ module.exports = {
                 EMISSAO_COBERTURA.ad_usr = ${ad_usr}
             where emissaoCobertura_id = ${emissaoCobertura_id} and cliente_id = ${cliente_id}`;
         await executeQuery(strsql);
-        response.status(200).json([{ status: 'ok' }]);
+        response.status(200).json({ status: 'ok' });
     },
 };
