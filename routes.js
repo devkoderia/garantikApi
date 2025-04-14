@@ -1362,7 +1362,7 @@ const favorecidoController = require('./src/controllers/favorecidoController')
 routes.post('/favorecidoBusca', verificaToken, celebrate({
     [Segments.BODY]: Joi.object().keys({
         cliente_id: Joi.number().integer().required(),
-        descricao: Joi.string().min(3).max(100)
+        descricao: Joi.string(),
     })
 }), favorecidoController.busca)
 
