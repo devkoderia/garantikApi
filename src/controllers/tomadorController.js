@@ -3,6 +3,36 @@ const { executeQuery } = require('../services/generalFunctions');
 
 module.exports = {
 
+
+    async find(request, response) {
+
+        var { tomador, cliente_id } = request.body
+
+        var strsql = `
+        
+        select 
+        top 5
+        tomador_id, 
+        cpf,
+        cnpj,
+        nome,
+        tipoJuridico,
+        nomeFantasia
+        from TOMADOR
+        where cliente_id = ${cliente_id}
+        and 
+        (TOMADOR.cpf like ${`'%${tomador}%'`} or TOMADOR.cnpj like ${`'%${tomador}%'`} or TOMADOR.nome like ${`'%${tomador}%'`} or TOMADOR.nomeFantasia like ${`'%${tomador}%'`})
+        and (deletado = 0 or deletado is null)
+                
+        `
+
+        var resultado = await executeQuery(strsql)
+        response.status(200).send(resultado)
+
+
+    },
+
+
     async verificaDuplicidade(request, response) {
         const { cliente_id, documento } = request.body;
 

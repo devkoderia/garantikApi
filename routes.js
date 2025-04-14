@@ -2060,6 +2060,17 @@ routes.delete('/produtor/:produtor_id', celebrate({
 //-------------------------------------------------------------------------------------------------------------
 const tomadorController = require('./src/controllers/tomadorController')
 
+routes.post('/buscaTomador', verificaToken, celebrate({
+
+    [Segments.BODY]: Joi.object().keys({
+
+        tomador: Joi.string().required(),
+        cliente_id: Joi.number().integer().required(),
+
+    }),
+
+}), tomadorController.find)
+
 routes.post('/tomadorVerificaDuplicidade', verificaToken, celebrate({
     [Segments.BODY]: Joi.object().keys({
         cliente_id: Joi.number().integer().required(),

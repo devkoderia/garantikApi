@@ -8,8 +8,12 @@ module.exports = {
         const { cliente_id, descricao } = request.body;
 
         const strsql = `select 
-            FAVORECIDO.favorecido_id as id,
-            concat(FAVORECIDO.nome, FAVORECIDO.razaoSocial) + ' - ' + concat(FAVORECIDO.cpf, FAVORECIDO.cnpj) as descricao            
+            FAVORECIDO.favorecido_id,
+            FAVORECIDO.nome, 
+            FAVORECIDO.nomeFantasia,
+            FAVORECIDO.cnpj,
+            FAVORECIDO.cpf,
+            FAVORECIDO.tipoJuridico
             from FAVORECIDO
             where (FAVORECIDO.deletado = 0 or FAVORECIDO.deletado is null) and cliente_id = ${cliente_id} and
             (
@@ -20,6 +24,7 @@ module.exports = {
                 cnpj like '%${descricao}%'
             )`;
 
+        //console.log(strsql)
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
     },
