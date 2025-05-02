@@ -1686,6 +1686,7 @@ routes.post('/modalidade', celebrate({
         textoPre: Joi.string().required(),
         texto: Joi.string().required(),
         ad_usr: Joi.number().integer().required(),
+        status: Joi.string().required().max(1),
 
     })
 }), verificaToken, modalidadeController.create)
@@ -1700,6 +1701,7 @@ routes.put('/modalidade/:modalidade_id', celebrate({
         textoPre: Joi.string().required(),
         texto: Joi.string().required(),
         ad_usr: Joi.number().integer().required(),
+        status: Joi.string().required().max(1),
 
     })
 }), verificaToken, modalidadeController.update)

@@ -35,10 +35,8 @@ module.exports = {
             MODALIDADE.descricao,
             MODALIDADE.textoPre,
             MODALIDADE.texto,
-            CONVERT(VARCHAR, MODALIDADE.ad_new, 103) + ' ' + CONVERT(VARCHAR, MODALIDADE.ad_new, 8) as ad_new,
-            CONVERT(VARCHAR, MODALIDADE.ad_upd, 103) + ' ' + CONVERT(VARCHAR, MODALIDADE.ad_upd, 8) as ad_upd,
-            MODALIDADE.ad_usr,
-            MODALIDADE.deletado
+            MODALIDADE.status
+            
             from MODALIDADE
             where (MODALIDADE.deletado = 0 or MODALIDADE.deletado is null) and modalidade_id = ${modalidade_id} and cliente_id = ${cliente_id}`;
 
@@ -57,10 +55,8 @@ module.exports = {
             MODALIDADE.descricao,
             MODALIDADE.textoPre,
             MODALIDADE.texto,
-            CONVERT(VARCHAR, MODALIDADE.ad_new, 103) + ' ' + CONVERT(VARCHAR, MODALIDADE.ad_new, 8) as ad_new,
-            CONVERT(VARCHAR, MODALIDADE.ad_upd, 103) + ' ' + CONVERT(VARCHAR, MODALIDADE.ad_upd, 8) as ad_upd,
-            MODALIDADE.ad_usr,
-            MODALIDADE.deletado
+            MODALIDADE.status
+            
             from MODALIDADE
             where (MODALIDADE.deletado = 0 or MODALIDADE.deletado is null) and cliente_id = ${cliente_id}`;
 
@@ -76,7 +72,8 @@ module.exports = {
             descricao,
             textoPre,
             texto,
-            ad_usr
+            ad_usr,
+            status,
         } = request.body;
 
         const ad_new = moment().format('YYYY-MM-DD HH:MM:ss');
@@ -91,7 +88,8 @@ module.exports = {
             ad_new,
             ad_upd,
             ad_usr,
-            deletado
+            deletado,
+            status
         ) VALUES (
             ${cliente_id},
             '${descricao}',
@@ -100,7 +98,8 @@ module.exports = {
             '${ad_new}',
             '${ad_upd}',
             ${ad_usr},
-            ${deletado}
+            ${deletado},
+            '${status}'
         )`;
 
         await executeQuery(strsql);
@@ -117,7 +116,8 @@ module.exports = {
             descricao,
             textoPre,
             texto,
-            ad_usr
+            ad_usr,
+            status,
         } = request.body;
 
         const ad_upd = moment().format('YYYY-MM-DD HH:MM:ss');
@@ -127,7 +127,8 @@ module.exports = {
             textoPre = '${textoPre}',
             texto = '${texto}',
             ad_upd = '${ad_upd}',
-            ad_usr = ${ad_usr}
+            ad_usr = ${ad_usr},
+            status = '${status}'
             where modalidade_id = ${modalidade_id} and cliente_id = ${cliente_id}`;
 
         await executeQuery(strsql);
