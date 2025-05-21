@@ -113,9 +113,9 @@ module.exports = {
 
                         ${emissaoFavorecido.map((fav) => {
 
-                            console.log(fav.nomeFantasia)
+                console.log(fav.nomeFantasia)
 
-                            return `<tr>
+                return `<tr>
                                         <td align="left">
                                         <font size="3" color="black" face="verdana,arial,helvetica">
                                             <b>FAVORECIDO/CREDOR: </b>${fav.nome}${fav.nomeFantasia}
@@ -129,7 +129,7 @@ module.exports = {
                                         </font>
                                         </td>
                                     </tr>`;
-                        }).join('')}
+            }).join('')}
 
                         
                     </table>
@@ -154,10 +154,10 @@ module.exports = {
                             e em conformidade com a Lei nº 10.406, de 10 de janeiro de 2002, Arts. 818 a 829, e em consonância com os objetivos sociais, da empresa 
                             
                                 ${emissaoTomador.map((tom) => {
-                                    return `<b>${tom.nome}${tom.nomeFantasia}, 
+                return `<b>${tom.nome}${tom.nomeFantasia}, 
                                             ${tom.tipo == 'F' ? '<b>CPF: </b>' + tom.cpf : '<b>CNPJ: </b>' + tom.cnpj}</b>
                                             </b>estabelecida à <b>${tom.logradouro} - ${tom.complemento} - ${tom.bairro} - ${tom.ibge_descri} - ${tom.uf}</b>, `;
-                                }).join('')}
+            }).join('')}
                             
                             na qual figura como afiançado, até o limite máximo contratado, <b>R$ ${valor} - (${valorExtenso}).</b></p>
                             </td>
@@ -187,62 +187,56 @@ module.exports = {
             </html>
           `;
 
-            try {
-                // Inicia o browser com Puppeteer
-                const browser = await puppeteer.launch({
-                    executablePath: '/snap/bin/chromium',
-                    args: [
-                        '--no-sandbox',
-                        '--disable-setuid-sandbox',
-                        '--disable-dev-shm-usage'
-                    ]
-                });
-                const page = await browser.newPage();
+            // Inicia o browser com Puppeteer
+            const browser = await puppeteer.launch({
+                executablePath: '/snap/bin/chromium',
+                args: [
+                    '--no-sandbox',
+                    '--disable-setuid-sandbox',
+                    '--disable-dev-shm-usage'
+                ]
+            });
+            const page = await browser.newPage();
 
-                console.log('htmlContent: ' + htmlContent);
-                // Define o conteúdo da página com o HTML acima
-                await page.setContent(htmlContent, { waitUntil: 'domcontentloaded' });
+            console.log('htmlContent: ' + htmlContent);
+            // Define o conteúdo da página com o HTML acima
+            await page.setContent(htmlContent, { waitUntil: 'domcontentloaded' });
 
-                // Gera o PDF
-                const pdfBuffer = await page.pdf({
-                    format: 'A4',
-                    printBackground: true,
-                    margin: {
-                        top: '40mm',
-                        bottom: '40mm',
-                        left: '40mm',
-                        right: '40mm'
-                    }
-                });
-
-                await browser.close();
-
-                // Define o diretório de destino e cria se não existir
-                const dirPath = path.join(__dirname, `../../public/${cliente_id}`);
-                if (!fs.existsSync(dirPath)) {
-                    fs.mkdirSync(dirPath, { recursive: true });
+            // Gera o PDF
+            const pdfBuffer = await page.pdf({
+                format: 'A4',
+                printBackground: true,
+                margin: {
+                    top: '40mm',
+                    bottom: '40mm',
+                    left: '40mm',
+                    right: '40mm'
                 }
+            });
 
-                console.log('dirPath:'+ dirPath); // Adicione esta linha para verificar o valor da variável dirPath
-                console.log('pin:'+ pin); // Adicione esta linha para verificar o valor da variável dirPath
-                console.log('cliente_id:'+ cliente_id); // Adicione esta linha para verificar o valor da variável dirPath   
+            await browser.close();
 
-                // Define o caminho completo do arquivo PDF
-                const filePath = path.join(dirPath, `${pin}.pdf`);
-
-                // Salva o PDF no diretório
-                fs.writeFileSync(filePath, pdfBuffer);
-
-                return response.json({
-                    status: 'sucesso',
-                    descricao: 'PDF gerado e salvo com sucesso.',
-                    file: filePath
-                });
-
-            } catch (err) {
-                console.error('Erro ao gerar PDF:', err);
-                return response.status(201).json([{ status: 'erro', descricao: 'Erro ao gerar o PDF.' }]);
+            // Define o diretório de destino e cria se não existir
+            const dirPath = path.join(__dirname, `../../public/${cliente_id}`);
+            if (!fs.existsSync(dirPath)) {
+                fs.mkdirSync(dirPath, { recursive: true });
             }
+
+            console.log('dirPath:' + dirPath); // Adicione esta linha para verificar o valor da variável dirPath
+            console.log('pin:' + pin); // Adicione esta linha para verificar o valor da variável dirPath
+            console.log('cliente_id:' + cliente_id); // Adicione esta linha para verificar o valor da variável dirPath   
+
+            // Define o caminho completo do arquivo PDF
+            const filePath = path.join(dirPath, `${pin}.pdf`);
+
+            // Salva o PDF no diretório
+            fs.writeFileSync(filePath, pdfBuffer);
+
+            return response.json({
+                status: 'sucesso',
+                descricao: 'PDF gerado e salvo com sucesso.',
+                file: filePath
+            });
 
         } else {
             return response.status(201).json([{ status: 'erro', descricao: 'Erro ao selecionar a emissão.' }]);
