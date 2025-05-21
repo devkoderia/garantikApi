@@ -49,7 +49,9 @@ module.exports = {
 
             const fundoPath = path.resolve(__dirname, `../../public/${cliente_id}/fundo_garantia.jpg`);
             const fundoBase64 = fs.readFileSync(fundoPath, { encoding: 'base64' });
-            const fundoDataUrl = `data:image/jpeg;base64,${fundoBase64}`;
+            const fundoMime = 'image/jpeg';
+            const fundoUrl = `data:${fundoMime};base64,${fundoBase64}`;
+
 
 
             // Cria o HTML com os dados da emissão
@@ -62,7 +64,7 @@ module.exports = {
                         @page { margin: 0mm; }
                         body {
                             font-family: Arial, sans-serif;
-                            background-image: url("${fundoDataUrl}");
+                            background-image: url("${fundoUrl}");
                             background-size: cover;
                             background-repeat: no-repeat;
                             margin: 0;
