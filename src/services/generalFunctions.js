@@ -1,5 +1,7 @@
 const sql = require('mssql');
 const connection = require('../database/connection');
+const moment = require('moment');
+
 //const nodemailer = require('nodemailer');
 //const jwt = require('jsonwebtoken');
 
@@ -96,8 +98,7 @@ const sendEmail = async (usuario_id, tipo) => {
 
 
 module.exports = {
-
-    async formatToReais(value) {
+    formatToReais(value) {
         const number = parseFloat(value);
         if (isNaN(number)) {
             throw new Error("Valor inválido");
@@ -105,29 +106,12 @@ module.exports = {
         return number.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     },
 
-
-    async escapeString(str) {
-
-        if (typeof str !== "string") {
-            return str;
-        }
-
-        return str
-            .replace(/\\/g, "\\\\")
-            .replace(/\x00/g, "\\0")
-            .replace(/\n/g, "\\n")
-            .replace(/\r/g, "\\r")
-            .replace(/\x1a/g, "\\Z")
-            .replace(/'/g, "''")
-            .replace(/"/g, '\\"')
-            .replace(/\x08/g, "\\b")
-            .replace(/\t/g, "\\t")
-            .replace(/%/g, "\\%");
-
+    escapeString(str) {
+        if (typeof str !== "string") return str;
+        return str.replace(/'/g, "''");
     },
 
-
-    async executeQuery(strsql) {
+    executeQuery: async function (strsql) {
         try {
             const pool = await poolPromise;
             const result = await pool.request().query(strsql);
@@ -138,5 +122,22 @@ module.exports = {
         }
     },
 
+    formatDate(date) {
+        return date ? `'${moment(date).utc().format('YYYY-MM-DD')}'` : 'NULL';
+    },
 
-}
+    formatNumber(num) {
+        return (num !== null && num !== '' && typeof num !== 'undefined')
+            ? num.toString().replaceAll('.', '').replaceAll(',', '.')
+            : 'NULL';
+    },
+
+    formatString(str) {
+        return str ? `'${str.replace(/'/g, "''")}'` : 'NULL';
+    },
+
+    formatBool(val) {
+        return val === true ? 1 : val === false ? 0 : 'NULL';
+    }
+};
+

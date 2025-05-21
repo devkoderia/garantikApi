@@ -1,6 +1,51 @@
 const moment = require('moment-timezone');
+const extenso = require('extenso');
 const escapeString = require('sql-escape-string')
-const { executeQuery } = require('../services/generalFunctions');
+const {
+    executeQuery,
+    formatDate,
+    formatNumber,
+    formatString,
+    formatBool
+} = require('../services/generalFunctions');
+
+function montarValorExtenso(valor, moeda_id) {
+    let tipoMoeda;
+
+    switch (moeda_id) {
+        case 18:
+            tipoMoeda = 'BRL';
+            break;
+        case 42:
+            tipoMoeda = 'EUR';
+            break;
+        case 160:
+            tipoMoeda = 'USD';
+            break;
+        default:
+            throw new Error(`Moeda não suportada: ${moeda_id}`);
+    }
+
+    console.log(valor, moeda_id)
+
+    return extenso(valor, {
+        mode: 'currency',
+        currency: { type: tipoMoeda }
+    }).toUpperCase();
+}
+
+async function montarPin(cliente_id) {
+    const strsql = `SELECT pin FROM CLIENTE WHERE cliente_id = ${cliente_id}`;
+    const resultado = await executeQuery(strsql);
+
+    if (!resultado.length) {
+        throw new Error(`Cliente ${cliente_id} não encontrado.`);
+    }
+
+    const basePin = resultado[0].pin;
+    const ts = moment().format('YYYYMMDDHHmmss');
+    return basePin + ts;
+}
 
 module.exports = {
 
@@ -89,7 +134,7 @@ module.exports = {
     async listaTodos(request, response) {
 
         const { cliente_id } = request.body;
-    
+
         const strsql = `SELECT 
                 EMISSAO.emissao_id,
                 EMISSAO.cliente_id,
@@ -124,13 +169,14 @@ module.exports = {
             FROM EMISSAO
             WHERE (EMISSAO.deletado = 0 OR EMISSAO.deletado IS NULL)
               AND EMISSAO.cliente_id = ${cliente_id}`;
-    
+
         const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
     },
-    
+
 
     async create(request, response) {
+
         const {
             cliente_id,
             dataEmissao,
@@ -153,83 +199,149 @@ module.exports = {
             fiscal,
             textoTrabalhista,
             textoFiscal,
-            ad_usr
+            ad_usr,
+            observacoesCorretor,
+            observacoesSubscritor,
+            valorComissao,
+            percentualComissao,
+            valorSpread,
+            favorecidos,
+            tomadores,
         } = request.body;
-    
+
+
         const ad_new = moment().format('YYYY-MM-DD HH:mm:ss');
         const ad_upd = ad_new;
         const deletado = 0;
 
-        var valorExtenso = '';
-        var pin = '';
-    
+        const valorExtenso = await montarValorExtenso(valor, moeda_id)
+        const pin = await montarPin(cliente_id)
+
         const strsql = `INSERT INTO EMISSAO (
+                    cliente_id,
+                    pin,
+                    dataEmissao,
+                    dataInicio,
+                    dataVencimento,
+                    dias,
+                    dataVencimentoIndeterminado,
+                    moeda_id,
+                    valor,
+                    valorExtenso,
+                    objeto,
+                    modalidade_id,
+                    modalidadeTexto,
+                    taxa,
+                    premio,
+                    pago,
+                    valorPago,
+                    minuta,
+                    garantia,
+                    trabalhista,
+                    fiscal,
+                    textoTrabalhista,
+                    textoFiscal,
+                    ad_new,
+                    ad_upd,
+                    ad_usr,
+                    deletado,
+                    observacoesCorretor,
+                    observacoesSubscritor,
+                    valorComissao,
+                    percentualComissao,
+                    valorSpread
+                ) output inserted.emissao_id VALUES (
+                    ${cliente_id},
+                    '${pin}',
+                    ${formatDate(dataEmissao)},
+                    ${formatDate(dataInicio)},
+                    ${formatDate(dataVencimento)},
+                    ${dias != null && dias !== '' ? dias : 'NULL'},
+                    ${formatBool(dataVencimentoIndeterminado)},
+                    ${typeof moeda_id === 'number' ? moeda_id : 'NULL'},
+                    ${formatNumber(valor)},
+                    '${valorExtenso}',
+                    ${formatString(objeto)},
+                    ${typeof modalidade_id === 'number' ? modalidade_id : 'NULL'},
+                    ${formatString(modalidadeTexto)},
+                    ${formatNumber(taxa)},
+                    ${formatNumber(premio)},
+                    ${formatBool(pago)},
+                    ${formatNumber(valorPago)},
+                    ${formatBool(minuta)},
+                    ${formatBool(garantia)},
+                    ${formatBool(trabalhista)},
+                    ${formatBool(fiscal)},
+                    ${formatString(textoTrabalhista)},
+                    ${formatString(textoFiscal)},
+                    '${ad_new}',
+                    '${ad_upd}',
+                    ${ad_usr},
+                    ${deletado},
+                    ${formatString(observacoesCorretor)},
+                    ${formatString(observacoesSubscritor)},
+                    ${formatNumber(valorComissao)},
+                    ${formatNumber(percentualComissao)},
+                    ${formatNumber(valorSpread)}
+                )`;
+
+        console.log(strsql)
+
+        const resultado = await executeQuery(strsql);
+        const emissao_id = resultado[0].emissao_id;
+
+        for (const favorecido_id of favorecidos) {
+            const insertFav = `INSERT INTO EMISSAO_FAVORECIDO (
+                    cliente_id,
+                    emissao_id,
+                    favorecido_id,
+                    ad_new,
+                    ad_upd,
+                    ad_usr,
+                    deletado
+                ) VALUES (
+                    ${cliente_id},
+                    ${emissao_id},
+                    ${favorecido_id},
+                    '${ad_new}',
+                    '${ad_upd}',
+                    ${ad_usr},
+                    ${deletado}
+                )`;
+
+            await executeQuery(insertFav);
+        }
+
+        // 3. Insere os tomadores
+        for (const tomador_id of tomadores) {
+            const insertTom = `INSERT INTO EMISSAO_TOMADOR (
                 cliente_id,
-                pin,
-                dataEmissao,
-                dataInicio,
-                dataVencimento,
-                dias,
-                dataVencimentoIndeterminado,
-                moeda_id,
-                valor,
-                valorExtenso,
-                objeto,
-                modalidade_id,
-                modalidadeTexto,
-                taxa,
-                premio,
-                pago,
-                valorPago,
-                minuta,
-                garantia,
-                trabalhista,
-                fiscal,
-                textoTrabalhista,
-                textoFiscal,
+                emissao_id,
+                tomador_id,
                 ad_new,
                 ad_upd,
                 ad_usr,
                 deletado
             ) VALUES (
                 ${cliente_id},
-                '${pin}',
-                ${dataEmissao ? `'${moment(dataEmissao).utc().format('YYYY-MM-DD')}'` : 'NULL'},
-                ${dataInicio ? `'${moment(dataInicio).utc().format('YYYY-MM-DD')}'` : 'NULL'},
-                ${dataVencimento ? `'${moment(dataVencimento).utc().format('YYYY-MM-DD')}'` : 'NULL'},
-                ${dias != '' && dias != null ? `'${dias}'` : 'NULL'},
-                ${dataVencimentoIndeterminado == true ? 1 : dataVencimentoIndeterminado == false ? 0 : 'NULL'},
-                ${typeof moeda_id == 'number' ? moeda_id : 'NULL'},
-                ${valor ? valor.toString().replaceAll('.', '').replaceAll(',', '.') : null},
-                '${valorExtenso}',
-                ${objeto != '' && objeto != null ? `'${escapeString(objeto)}'` : 'NULL'},
-                ${typeof modalidade_id == 'number' ? modalidade_id : 'NULL'},
-                ${modalidadeTexto != '' && modalidadeTexto != null ? `'${escapeString(modalidadeTexto)}'` : 'NULL'},
-                ${taxa ? taxa.toString().replaceAll('.', '').replaceAll(',', '.') : null},
-                ${premio ? premio.toString().replaceAll('.', '').replaceAll(',', '.') : null},
-                ${pago == true ? 1 : pago == false ? 0 : 'NULL'},
-                ${valorPago ? valorPago.toString().replaceAll('.', '').replaceAll(',', '.') : null},
-                ${minuta == true ? 1 : minuta == false ? 0 : 'NULL'},
-                ${garantia == true ? 1 : garantia == false ? 0 : 'NULL'},
-                ${trabalhista == true ? 1 : trabalhista == false ? 0 : 'NULL'},
-                ${fiscal == true ? 1 : fiscal == false ? 0 : 'NULL'},
-                ${textoTrabalhista != '' && textoTrabalhista != null ? `'${escapeString(textoTrabalhista)}'` : 'NULL'},
-                ${textoFiscal != '' && textoFiscal != null ? `'${escapeString(textoFiscal)}'` : 'NULL'},
+                ${emissao_id},
+                ${tomador_id},
                 '${ad_new}',
                 '${ad_upd}',
                 ${ad_usr},
                 ${deletado}
             )`;
-    
-        await executeQuery(strsql);
+            await executeQuery(insertTom);
+        }
+
         response.status(200).json({ status: 'ok' });
+
     },
-    
 
     async update(request, response) {
 
         const { emissao_id } = request.params;
-    
+        
         const {
             cliente_id,
             dataEmissao,
@@ -242,8 +354,6 @@ module.exports = {
             objeto,
             modalidade_id,
             modalidadeTexto,
-            sinistro,
-            bloqueada,
             taxa,
             premio,
             pago,
@@ -254,45 +364,103 @@ module.exports = {
             fiscal,
             textoTrabalhista,
             textoFiscal,
-            ad_usr
+            ad_usr,
+            observacoesCorretor,
+            observacoesSubscritor,
+            valorComissao,
+            percentualComissao,
+            valorSpread,
+            favorecidos,
+            tomadores,
         } = request.body;
 
-        var valorExtenso = '';
-        var pin = '';
-    
         const ad_upd = moment().format('YYYY-MM-DD HH:mm:ss');
-    
-        const strsql = `UPDATE EMISSAO SET 
-        pin = '${pin}',
-        dataEmissao = ${dataEmissao ? `'${moment(dataEmissao).utc().format('YYYY-MM-DD')}'` : 'NULL'},
-        dataInicio = ${dataInicio ? `'${moment(dataInicio).utc().format('YYYY-MM-DD')}'` : 'NULL'},
-        dataVencimento = ${dataVencimento ? `'${moment(dataVencimento).utc().format('YYYY-MM-DD')}'` : 'NULL'},
-        dias = ${dias != '' && dias != null ? `'${dias}'` : 'NULL'},
-        dataVencimentoIndeterminado = ${dataVencimentoIndeterminado == true ? 1 : dataVencimentoIndeterminado == false ? 0 : 'NULL'},
-        typeof = ${typeof moeda_id == 'number' ? moeda_id : 'NULL'},
-        valor = ${valor ? valor.toString().replaceAll('.', '').replaceAll(',', '.') : null},
-        valorExtenso = '${valorExtenso}',
-        objeto = ${objeto != '' && objeto != null ? `'${escapeString(objeto)}'` : 'NULL'},
-        typeof = ${typeof modalidade_id == 'number' ? modalidade_id : 'NULL'},
-        modalidadeTexto = ${modalidadeTexto != '' && modalidadeTexto != null ? `'${escapeString(modalidadeTexto)}'` : 'NULL'},
-        taxa = ${taxa ? taxa.toString().replaceAll('.', '').replaceAll(',', '.') : null},
-        premio = ${premio ? premio.toString().replaceAll('.', '').replaceAll(',', '.') : null},
-        pago = ${pago == true ? 1 : pago == false ? 0 : 'NULL'},
-        valorPago = ${valorPago ? valorPago.toString().replaceAll('.', '').replaceAll(',', '.') : null},
-        minuta = ${minuta == true ? 1 : minuta == false ? 0 : 'NULL'},
-        garantia = ${garantia == true ? 1 : garantia == false ? 0 : 'NULL'},
-        trabalhista = ${trabalhista == true ? 1 : trabalhista == false ? 0 : 'NULL'},
-        fiscal = ${fiscal == true ? 1 : fiscal == false ? 0 : 'NULL'},
-        sinistro = ${sinistro == true ? 1 : sinistro == false ? 0 : 'NULL'},
-        bloqueada = ${bloqueada == true ? 1 : bloqueada == false ? 0 : 'NULL'},
-        textoTrabalhista = ${textoTrabalhista != '' && textoTrabalhista != null ? `'${escapeString(textoTrabalhista)}'` : 'NULL'},
-        textoFiscal = ${textoFiscal != '' && textoFiscal != null ? `'${escapeString(textoFiscal)}'` : 'NULL'},
-        ad_upd = '${ad_upd}',
-        ad_usr = ${ad_usr}
-        WHERE emissao_id = ${emissao_id} AND cliente_id = ${cliente_id}`;
-    
-        await executeQuery(strsql);
+
+        const valorExtenso = await montarValorExtenso(valor, moeda_id);
+
+        const strsqlUpdate = `UPDATE EMISSAO SET
+            dataEmissao = ${formatDate(dataEmissao)},
+            dataInicio = ${formatDate(dataInicio)},
+            dataVencimento = ${formatDate(dataVencimento)},
+            dias = ${dias != null && dias !== '' ? dias : 'NULL'},
+            dataVencimentoIndeterminado = ${formatBool(dataVencimentoIndeterminado)},
+            moeda_id = ${typeof moeda_id === 'number' ? moeda_id : 'NULL'},
+            valor = ${formatNumber(valor)},
+            valorExtenso = '${valorExtenso}',
+            objeto = ${formatString(objeto)},
+            modalidade_id = ${typeof modalidade_id === 'number' ? modalidade_id : 'NULL'},
+            modalidadeTexto = ${formatString(modalidadeTexto)},
+            taxa = ${formatNumber(taxa)},
+            premio = ${formatNumber(premio)},
+            pago = ${formatBool(pago)},
+            valorPago = ${formatNumber(valorPago)},
+            minuta = ${formatBool(minuta)},
+            garantia = ${formatBool(garantia)},
+            trabalhista = ${formatBool(trabalhista)},
+            fiscal = ${formatBool(fiscal)},
+            textoTrabalhista = ${formatString(textoTrabalhista)},
+            textoFiscal = ${formatString(textoFiscal)},
+            ad_upd = '${ad_upd}',
+            ad_usr = ${ad_usr},
+            observacoesCorretor = ${formatString(observacoesCorretor)},
+            observacoesSubscritor = ${formatString(observacoesSubscritor)},
+            valorComissao = ${formatNumber(valorComissao)},
+            percentualComissao = ${formatNumber(percentualComissao)},
+            valorSpread = ${formatNumber(valorSpread)}
+        WHERE emissao_id = ${emissao_id}`;
+
+        await executeQuery(strsqlUpdate);
+
+        // Remove registros antigos de favorecidos e tomadores
+        await executeQuery(`update EMISSAO_FAVORECIDO set deletado = 1 where emissao_id = ${emissao_id}`);
+        await executeQuery(`update EMISSAO_TOMADOR set deletado = 1 where emissao_id = ${emissao_id}`);
+
+        // Reinsere favorecidos
+        for (const favorecido_id of favorecidos) {
+            const insertFav = `INSERT INTO EMISSAO_FAVORECIDO (
+            cliente_id,
+            emissao_id,
+            favorecido_id,
+            ad_new,
+            ad_upd,
+            ad_usr,
+            deletado
+        ) VALUES (
+            ${cliente_id},
+            ${emissao_id},
+            ${favorecido_id},
+            '${ad_upd}',
+            '${ad_upd}',
+            ${ad_usr},
+            0
+        )`;
+            await executeQuery(insertFav);
+        }
+
+        // Reinsere tomadores
+        for (const tomador_id of tomadores) {
+            const insertTom = `INSERT INTO EMISSAO_TOMADOR (
+            cliente_id,
+            emissao_id,
+            tomador_id,
+            ad_new,
+            ad_upd,
+            ad_usr,
+            deletado
+        ) VALUES (
+            ${cliente_id},
+            ${emissao_id},
+            ${tomador_id},
+            '${ad_upd}',
+            '${ad_upd}',
+            ${ad_usr},
+            0
+        )`;
+            await executeQuery(insertTom);
+        }
+
         response.status(200).json({ status: 'ok' });
-    }
-    
+    },
+
+
 };

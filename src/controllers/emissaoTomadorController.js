@@ -8,7 +8,7 @@ module.exports = {
         const strsql = `select 
             TOMADOR.tomador_id,
             TOMADOR.cliente_id,
-            TOMADOR.tipo,
+            TOMADOR.tipoJuridico,
             TOMADOR.cpf,
             TOMADOR.cnpj,
             TOMADOR.nome,

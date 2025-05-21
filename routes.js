@@ -1021,7 +1021,7 @@ routes.post('/emissao', celebrate({
         dias: Joi.number().integer().allow(null, ''),
         dataVencimentoIndeterminado: Joi.boolean().allow(null),
         moeda_id: Joi.number().integer().required(),
-        valor: Joi.number().required(),        
+        valor: Joi.number().required(),
         objeto: Joi.string().required(),
         modalidade_id: Joi.number().required(),
         modalidadeTexto: Joi.string().required(),
@@ -1035,9 +1035,18 @@ routes.post('/emissao', celebrate({
         fiscal: Joi.boolean().allow(null),
         textoTrabalhista: Joi.string().allow(null, ''),
         textoFiscal: Joi.string().allow(null, ''),
-        ad_usr: Joi.number().integer().required()
+        ad_usr: Joi.number().integer().required(),
+        observacoesCorretor: Joi.string().allow(null, ''),
+        observacoesSubscritor: Joi.string().allow(null, ''),
+        valorComissao: Joi.number().allow(null),
+        percentualComissao: Joi.number().allow(null),
+        valorSpread: Joi.number().allow(null),
+
+        favorecidos: Joi.array().items(Joi.number().integer()).min(1).required(),
+        tomadores: Joi.array().items(Joi.number().integer()).min(1).required(),
     })
 }), verificaToken, emissaoController.create);
+
 
 
 routes.put('/emissao/:emissao_id', celebrate({
@@ -1052,7 +1061,7 @@ routes.put('/emissao/:emissao_id', celebrate({
         dias: Joi.number().integer().allow(null, ''),
         dataVencimentoIndeterminado: Joi.boolean().allow(null),
         moeda_id: Joi.number().integer().required(),
-        valor: Joi.number().required(),        
+        valor: Joi.number().required(),
         objeto: Joi.string().required(),
         modalidade_id: Joi.number().required(),
         modalidadeTexto: Joi.string().required(),
@@ -1066,10 +1075,15 @@ routes.put('/emissao/:emissao_id', celebrate({
         fiscal: Joi.boolean().allow(null),
         textoTrabalhista: Joi.string().allow(null, ''),
         textoFiscal: Joi.string().allow(null, ''),
-        sinistro: Joi.boolean().allow(null),
-        bloqueada: Joi.boolean().allow(null),
         ad_usr: Joi.number().integer().required(),
-                
+        observacoesCorretor: Joi.string().allow(null, ''),
+        observacoesSubscritor: Joi.string().allow(null, ''),
+        valorComissao: Joi.number().allow(null),
+        percentualComissao: Joi.number().allow(null),
+        valorSpread: Joi.number().allow(null),
+
+        favorecidos: Joi.array().items(Joi.number().integer()).min(1).required(),
+        tomadores: Joi.array().items(Joi.number().integer()).min(1).required(),
     })
 }), verificaToken, emissaoController.update)
 
@@ -1483,7 +1497,7 @@ routes.put('/favorecido/:favorecido_id', celebrate({
         porte: Joi.string().allow(null, '').max(250),
         dataSituacao: Joi.date().allow(null, ''),
         motivoSituacao: Joi.string().allow(null, '').max(250),
-        situacaoEspecial: Joi.string().allow(null, '').max(250),        
+        situacaoEspecial: Joi.string().allow(null, '').max(250),
         dataSituacaoEspecial: Joi.date().allow(null, ''),
         outroDocumento: Joi.string().allow(null, '').max(150),
         outroDocumentoDescricao: Joi.string().allow(null, '').max(150),
@@ -1683,7 +1697,6 @@ routes.post('/modalidade', celebrate({
     [Segments.BODY]: Joi.object().keys({
         cliente_id: Joi.number().integer().required(),
         descricao: Joi.string().required().max(150),
-        textoPre: Joi.string().required(),
         texto: Joi.string().required(),
         ad_usr: Joi.number().integer().required(),
         status: Joi.string().required().max(1),
@@ -1698,7 +1711,6 @@ routes.put('/modalidade/:modalidade_id', celebrate({
     [Segments.BODY]: Joi.object().keys({
         cliente_id: Joi.number().integer().required(),
         descricao: Joi.string().required().max(150),
-        textoPre: Joi.string().required(),
         texto: Joi.string().required(),
         ad_usr: Joi.number().integer().required(),
         status: Joi.string().required().max(1),

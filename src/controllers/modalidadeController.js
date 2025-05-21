@@ -33,7 +33,6 @@ module.exports = {
             MODALIDADE.modalidade_id,
             MODALIDADE.cliente_id,
             MODALIDADE.descricao,
-            MODALIDADE.textoPre,
             MODALIDADE.texto,
             MODALIDADE.status
             
@@ -53,7 +52,6 @@ module.exports = {
             MODALIDADE.modalidade_id,
             MODALIDADE.cliente_id,
             MODALIDADE.descricao,
-            MODALIDADE.textoPre,
             MODALIDADE.texto,
             MODALIDADE.status
             
@@ -70,7 +68,6 @@ module.exports = {
         const {
             cliente_id,
             descricao,
-            textoPre,
             texto,
             ad_usr,
             status,
@@ -83,7 +80,6 @@ module.exports = {
         const strsql = `insert into MODALIDADE (
             cliente_id,
             descricao,
-            textoPre,
             texto,
             ad_new,
             ad_upd,
@@ -93,7 +89,6 @@ module.exports = {
         ) VALUES (
             ${cliente_id},
             '${descricao}',
-            '${textoPre}',
             '${texto}',
             '${ad_new}',
             '${ad_upd}',
@@ -114,7 +109,6 @@ module.exports = {
         const {
             cliente_id,
             descricao,
-            textoPre,
             texto,
             ad_usr,
             status,
@@ -124,7 +118,6 @@ module.exports = {
 
         const strsql = `update MODALIDADE set 
             descricao = '${descricao}',
-            textoPre = '${textoPre}',
             texto = '${texto}',
             ad_upd = '${ad_upd}',
             ad_usr = ${ad_usr},

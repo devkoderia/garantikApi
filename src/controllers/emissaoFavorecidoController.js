@@ -8,7 +8,7 @@ module.exports = {
         const strsql = `select 
             FAVORECIDO.favorecido_id,
             FAVORECIDO.cliente_id,
-            FAVORECIDO.tipo,
+            FAVORECIDO.tipoJuridico,
             FAVORECIDO.cpf,
             FAVORECIDO.cnpj,
             FAVORECIDO.nome,
