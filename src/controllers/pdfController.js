@@ -62,7 +62,7 @@ module.exports = {
                         @page { margin: 0mm; }
                         body {
                             font-family: Arial, sans-serif;
-                            background-image: url("${fundoPath}");
+                            background-image: url("${fundoUrl}");
                             background-size: cover;
                             background-repeat: no-repeat;
                             margin: 0;
