@@ -71,9 +71,9 @@ module.exports = {
                                             padding: 0;
                                         }
                                         .container {
-                                            margin: 10mm;
-                                            background: rgba(255, 255, 255, 0.95);
-                                            padding: 10px;
+                                            margin: 14mm;
+                                            background: transparent;
+                                            padding: 14px;
                                         }
                                         .center { text-align: center; }
                                         .left { text-align: left; }
