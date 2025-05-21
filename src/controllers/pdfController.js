@@ -81,7 +81,7 @@ module.exports = {
                                         .justify { text-align: justify; }
                                         .bold { font-weight: bold; }
                                         .section-title {
-                                            background-color: #8db0db;
+                                            background-color: #e7e7e7;
                                             text-align: center;
                                             font-size: 10pt;
                                             font-weight: bold;
