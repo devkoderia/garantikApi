@@ -199,6 +199,7 @@ module.exports = {
                 });
                 const page = await browser.newPage();
 
+                console.log('htmlContent: ' + htmlContent);
                 // Define o conteúdo da página com o HTML acima
                 await page.setContent(htmlContent, { waitUntil: 'domcontentloaded' });
 
@@ -222,6 +223,10 @@ module.exports = {
                     fs.mkdirSync(dirPath, { recursive: true });
                 }
 
+                console.log('dirPath:'+ dirPath); // Adicione esta linha para verificar o valor da variável dirPath
+                console.log('pin:'+ pin); // Adicione esta linha para verificar o valor da variável dirPath
+                console.log('cliente_id:'+ cliente_id); // Adicione esta linha para verificar o valor da variável dirPath   
+
                 // Define o caminho completo do arquivo PDF
                 const filePath = path.join(dirPath, `${pin}.pdf`);
 
@@ -236,7 +241,7 @@ module.exports = {
 
             } catch (err) {
                 console.error('Erro ao gerar PDF:', err);
-                return response.status(500).json([{ status: 'erro', descricao: 'Erro ao gerar o PDF.' }]);
+                return response.status(201).json([{ status: 'erro', descricao: 'Erro ao gerar o PDF.' }]);
             }
 
         } else {
