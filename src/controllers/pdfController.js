@@ -48,7 +48,9 @@ module.exports = {
             const simbolo = emissao[0].simbolo;
 
             const fundoPath = path.resolve(__dirname, `../../public/${cliente_id}/fundo_garantia.jpg`);
-            const fundoUrl = `file://${fundoPath.replace(/\\/g, '/')}`; // Compatível com Linux/Windows
+            const fundoBase64 = fs.readFileSync(fundoPath, { encoding: 'base64' });
+            const fundoDataUrl = `data:image/jpeg;base64,${fundoBase64}`;
+
 
             console.log(`fundoPath: ${fundoUrl}`);
 
@@ -62,7 +64,7 @@ module.exports = {
                         @page { margin: 0mm; }
                         body {
                             font-family: Arial, sans-serif;
-                            background-image: url("../../public/${cliente_id}/fundo_garantia.jpg");
+                            background-image: url("${fundoDataUrl}");
                             background-size: cover;
                             background-repeat: no-repeat;
                             margin: 0;
