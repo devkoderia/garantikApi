@@ -62,7 +62,7 @@ module.exports = {
                         @page { margin: 0mm; }
                         body {
                             font-family: Arial, sans-serif;
-                            background-image: url("${fundoUrl}");
+                            background-image: url("../../public/${cliente_id}/fundo_garantia.jpg");
                             background-size: cover;
                             background-repeat: no-repeat;
                             margin: 0;
