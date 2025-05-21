@@ -56,140 +56,93 @@ module.exports = {
 
             // Cria o HTML com os dados da emissão
 
-            const htmlContent = `
-            <!DOCTYPE html>
-            <html>
-                <head>
-                    <style>
-                        @page { margin: 0mm; }
-                        body {
-                            font-family: Arial, sans-serif;
-                            background-image: url("${fundoUrl}");
-                            background-size: cover;
-                            background-repeat: no-repeat;
-                            margin: 0;
-                            padding: 0;
-                        }
-                        .container {
-                            margin: 10mm;
-                            background: rgba(255, 255, 255, 0.9);
-                            padding: 10px;
-                        }
-                        h1, h2 { text-align: center; }
-                        ul { list-style-type: none; padding: 0; }
-                        li { margin-bottom: 5px; }
-                    </style>
-                </head>
+            const htmlContent = `<!DOCTYPE html>
+                                    <html>
+                                    <head>
+                                        <style>
+                                        @page { margin: 0mm; }
+                                        body {
+                                            font-family: Arial, sans-serif;
+                                            font-size: 9pt;
+                                            background-image: url("${fundoUrl}");
+                                            background-size: cover;
+                                            background-repeat: no-repeat;
+                                            margin: 0;
+                                            padding: 0;
+                                        }
+                                        .container {
+                                            margin: 10mm;
+                                            background: rgba(255, 255, 255, 0.95);
+                                            padding: 10px;
+                                        }
+                                        .center { text-align: center; }
+                                        .left { text-align: left; }
+                                        .right { text-align: right; }
+                                        .justify { text-align: justify; }
+                                        .bold { font-weight: bold; }
+                                        .section-title {
+                                            background-color: #8db0db;
+                                            text-align: center;
+                                            font-size: 10pt;
+                                            font-weight: bold;
+                                            padding: 3px;
+                                        }
+                                        table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+                                        td { padding: 3px; vertical-align: top; }
+                                        </style>
+                                    </head>
 
-                <body>
+                                    <body>
+                                        <div class="container">
+                                        <br><br><br><br><br><br><br><br>
 
-                    <br><br><br><br>
-                    <br><br><br><br>
+                                        <table>
+                                            <tr>
+                                            <td class="center bold">Carta de Fiança n. ${pin}</td>
+                                            </tr>
+                                        </table>
 
-                    <table border="0" width="774" align="center">
-                        <tr>
-                        <td>
-                        <center><font size="3" color="black" face="verdana,arial,helvetica">
-                        <b>Carta de Fiança n. ${pin}</b>
-                        </td>
-                        </tr>
-                    </table>
-                    <br><br>
-                    <table border="0" width="774" align="center">
-                        <tr>
-                        <td align="left"><font size="3" color="black" face="verdana,arial,helvetica">
-                        <b>Data de emissão: ${dataEmissao}</b>
-                        </td>
-                        <td align="right"><font size="3" color="black" face="verdana,arial,helvetica">
-                        <b>Data de início: ${dataInicio}</b>
-                        </td>
-                        </tr>
-                        <tr>
-                        <td align="left"><font size="3" color="black" face="verdana,arial,helvetica">
-                        
-                        </td>
-                        <td align="right"><font size="3" color="black" face="verdana,arial,helvetica">
-                        <b>Data de vencimento: ${dataVencimento}</b>
-                        </td>
-                        </tr>
-                    </table>
-                    <br>
-                    <table border="0" width="774" align="center">
+                                        <table>
+                                            <tr>
+                                            <td class="left bold">Data de emissão: ${dataEmissao}</td>
+                                            <td class="right bold">Data de início: ${dataInicio}</td>
+                                            </tr>
+                                            <tr>
+                                            <td></td>
+                                            <td class="right bold">Data de vencimento: ${dataVencimento}</td>
+                                            </tr>
+                                        </table>
 
-                        ${emissaoFavorecido.map((fav) => {
+                                        ${emissaoFavorecido.map((fav) => `
+                                            <table>
+                                            <tr>
+                                                <td class="left bold">FAVORECIDO/CREDOR:</td>
+                                                <td class="left">${fav.nome}${fav.nomeFantasia}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="left">${fav.tipo === 'F' ? 'CPF:' : 'CNPJ:'}</td>
+                                                <td class="left">${fav.tipo === 'F' ? fav.cpf : fav.cnpj}</td>
+                                            </tr>
+                                            </table>
+                                        `).join('')}
 
-                console.log(fav.nomeFantasia)
+                                        <div class="section-title">VALOR ${simbolo} ${await formatToReais(valor)}</div>
+                                        <div class="section-title">${valorExtenso}</div>
 
-                return `<tr>
-                                        <td align="left">
-                                        <font size="3" color="black" face="verdana,arial,helvetica">
-                                            <b>FAVORECIDO/CREDOR: </b>${fav.nome}${fav.nomeFantasia}
-                                        </font>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td align="left">
-                                        <font size="3" color="black" face="verdana,arial,helvetica">
-                                            ${fav.tipo == 'F' ? '<b>CPF: </b>' + fav.cpf : '<b>CNPJ: </b>' + fav.cnpj}
-                                        </font>
-                                        </td>
-                                    </tr>`;
-            }).join('')}
+                                        <p class="justify">
+                                            Declaração: <b>ALBAN FIANCAS E GARANTIAS S/A</b>, inscrita no CNPJ/MF sob o nº 05.402.543/0001-59, com sede à Avenida Paulista, 2073 - CONJ 1702 HORSA II, bairro Bela Vista, na cidade de São Paulo/Capital, abaixo assinados, declara assumir total responsabilidade como fiador, com amparo jurídico/legal e em conformidade com a Lei nº 10.406, de 10 de janeiro de 2002, Arts. 818 a 829, e em consonância com os objetivos sociais, da empresa
+                                            ${emissaoTomador.map((tom) => `
+                                            <b>${tom.nome}${tom.nomeFantasia}</b>, ${tom.tipo === 'F' ? 'CPF: ' + tom.cpf : 'CNPJ: ' + tom.cnpj}, estabelecida à <b>${tom.logradouro} - ${tom.complemento} - ${tom.bairro} - ${tom.ibge_descri} - ${tom.uf}</b>
+                                            `).join('')}
+                                            na qual figura como afiançado, até o limite máximo contratado, <b>R$ ${valor} - (${valorExtenso})</b>.
+                                        </p>
 
-                        
-                    </table>
-                    
-                    <table border="0" width="774" align="center">
-                        <tr>
-                            <td align="center" bgcolor="8db0db"><font size="4" color="black" face="verdana,arial,helvetica">
-                                <b>VALOR ${simbolo} ${await formatToReais(valor)}</b>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td align="center" bgcolor="8db0db"><font size="4" color="black" face="verdana,arial,helvetica">
-                                <b>${valorExtenso}</b>
-                            </td>
-                        </tr>
-                    </table>
-                    
-                    <table border="0" width="774" align="center">
-                        <tr>
-                            <td class="main"><font size="2" color="black" face="verdana,arial,helvetica">
-                            <p style="text-align: justify;"> Declaração: <b>ALBAN FIANCAS E GARANTIAS S/A</b>, inscrita no CNPJ/MF sob o nº 05.402.543/0001-59, com sede à Avenida Paulista, 2073 - CONJ 1702 HORSA II, bairro Bela Vista, na cidade de São Paulo/Capital, abaixo assinados, declara assumir total responsabilidade como fiador, com amparo jurídico/legal 
-                            e em conformidade com a Lei nº 10.406, de 10 de janeiro de 2002, Arts. 818 a 829, e em consonância com os objetivos sociais, da empresa 
-                            
-                                ${emissaoTomador.map((tom) => {
-                return `<b>${tom.nome}${tom.nomeFantasia}, 
-                                            ${tom.tipo == 'F' ? '<b>CPF: </b>' + tom.cpf : '<b>CNPJ: </b>' + tom.cnpj}</b>
-                                            </b>estabelecida à <b>${tom.logradouro} - ${tom.complemento} - ${tom.bairro} - ${tom.ibge_descri} - ${tom.uf}</b>, `;
-            }).join('')}
-                            
-                            na qual figura como afiançado, até o limite máximo contratado, <b>R$ ${valor} - (${valorExtenso}).</b></p>
-                            </td>
-                        </tr>
-                    </table>
+                                        <p class="justify"><b>Objeto da Fiança:</b> ${objeto}</p>
+                                        <p class="justify">${modalidadeTexto}</p>
+                                        </div>
+                                    </body>
+                                    </html>
 
-                    <table border="0" width="774" align="center">
-                        <tr>
-                            <td><font size="2" color="black" face="verdana,arial,helvetica">
-                                <p class="main" class="main" style="text-align: justify;"><b>Objeto da Fiança: ${objeto}</b></p>
-                            </td>
-                        </tr>
-                    </table>
-                    
-                    <table border="0" width="774" align="center">
-                        <tr>
-                            <td>
-                                <font size="2" color="black" face="verdana,arial,helvetica">
-                                <p class="main" style="text-align: justify;">${modalidadeTexto}</p>
-                            </td>
-                        </tr>
-                    </table>
-
-                    </body>
-
-                </div>
-            </html>
           `;
 
             console.log('htmlContent:' + htmlContent); // Adicione esta linha para verificar o valor da variável htmlContent antes de passar para o Puppeteer
@@ -200,11 +153,7 @@ module.exports = {
                 args: ['--no-sandbox', '--disable-setuid-sandbox']
             });
 
-            console.log('passou do browser')
-
             const page = await browser.newPage();
-
-            console.log('adicionou o page')
 
             // Define o conteúdo da página com o HTML acima
             await page.setContent(htmlContent, { waitUntil: 'domcontentloaded' });
@@ -216,8 +165,8 @@ module.exports = {
                 margin: {
                     top: '40mm',
                     bottom: '40mm',
-                    left: '40mm',
-                    right: '40mm'
+                    left: '80mm',
+                    right: '80mm'
                 }
             });
 
