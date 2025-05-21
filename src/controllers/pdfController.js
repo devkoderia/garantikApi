@@ -191,12 +191,8 @@ module.exports = {
 
             // Inicia o browser com Puppeteer
             const browser = await puppeteer.launch({
-                executablePath: '/snap/bin/chromium',
-                args: [
-                    '--no-sandbox',
-                    '--disable-setuid-sandbox',
-                    '--disable-dev-shm-usage'
-                ]
+                headless: true,
+                args: ['--no-sandbox', '--disable-setuid-sandbox']
             });
 
             console.log('passou do browser')
