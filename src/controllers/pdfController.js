@@ -52,8 +52,6 @@ module.exports = {
             const fundoDataUrl = `data:image/jpeg;base64,${fundoBase64}`;
 
 
-            console.log(`fundoPath: ${fundoUrl}`);
-
             // Cria o HTML com os dados da emissão
 
             const htmlContent = `
