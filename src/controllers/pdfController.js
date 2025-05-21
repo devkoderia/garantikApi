@@ -187,6 +187,8 @@ module.exports = {
             </html>
           `;
 
+          console.log('htmlContent:'+ htmlContent); // Adicione esta linha para verificar o valor da variável htmlContent antes de passar para o Puppeteer
+
             // Inicia o browser com Puppeteer
             const browser = await puppeteer.launch({
                 executablePath: '/snap/bin/chromium',
@@ -196,9 +198,13 @@ module.exports = {
                     '--disable-dev-shm-usage'
                 ]
             });
+
+            console.log('passou do browser')
+
             const page = await browser.newPage();
 
-            console.log('htmlContent: ' + htmlContent);
+            console.log('adicionou o page')
+
             // Define o conteúdo da página com o HTML acima
             await page.setContent(htmlContent, { waitUntil: 'domcontentloaded' });
 
