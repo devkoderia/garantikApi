@@ -47,9 +47,12 @@ module.exports = {
             const ad_upd = emissao[0].ad_upd;
             const simbolo = emissao[0].simbolo;
 
-            const fundoPath = `https://cdn.garantik.com.br/${cliente_id}/fundo_garantia.jpg`;
+            const fundoPath = path.resolve(__dirname, `../../public/${cliente_id}/fundo_garantia.jpg`);
+            const fundoUrl = `file://${fundoPath.replace(/\\/g, '/')}`; // Compatível com Linux/Windows
 
-            console.log(`fundoPath: ${fundoPath}`);
+            console.log(`fundoPath: ${fundoUrl}`);
+
+            // Cria o HTML com os dados da emissão
 
             const htmlContent = `
             <!DOCTYPE html>
@@ -66,9 +69,9 @@ module.exports = {
                             padding: 0;
                         }
                         .container {
-                            margin: 5mm;
+                            margin: 10mm;
                             background: rgba(255, 255, 255, 0.9);
-                            padding: 5px;
+                            padding: 10px;
                         }
                         h1, h2 { text-align: center; }
                         ul { list-style-type: none; padding: 0; }
@@ -187,7 +190,7 @@ module.exports = {
             </html>
           `;
 
-          console.log('htmlContent:'+ htmlContent); // Adicione esta linha para verificar o valor da variável htmlContent antes de passar para o Puppeteer
+            console.log('htmlContent:' + htmlContent); // Adicione esta linha para verificar o valor da variável htmlContent antes de passar para o Puppeteer
 
             // Inicia o browser com Puppeteer
             const browser = await puppeteer.launch({
