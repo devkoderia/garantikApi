@@ -111,7 +111,7 @@ module.exports = {
 
                                         <div style="
                                             position: absolute;
-                                            top: 22mm;
+                                            top: 23mm;
                                             right: 30mm;
                                             font-weight: bold;
                                             font-size: 13pt;
