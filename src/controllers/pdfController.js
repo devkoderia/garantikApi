@@ -111,12 +111,12 @@ module.exports = {
 
                                         <div style="
                                             position: absolute;
-                                            top: 25mm;
+                                            top: 18mm;
                                             right: 30mm;
                                             font-weight: bold;
-                                            font-size: 14pt;
+                                            font-size: 13pt;
                                         ">
-                                            PIN <br> ${pin}
+                                            ${pin}
                                         </div>
 
                                         <table>
