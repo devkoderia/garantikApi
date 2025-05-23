@@ -116,7 +116,7 @@ module.exports = {
                                             font-weight: bold;
                                             font-size: 14pt;
                                         ">
-                                            Carta de Fiança n. ${pin}
+                                            PIN: ${pin}
                                         </div>
 
                                         <table>
