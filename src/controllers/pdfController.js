@@ -66,6 +66,7 @@ module.exports = {
             const htmlContent = `<!DOCTYPE html>
                                     <html>
                                     <head>
+                                        <title>${pin}</title>
                                         <style>
                                         @page { margin: 0mm; }
                                         body {
