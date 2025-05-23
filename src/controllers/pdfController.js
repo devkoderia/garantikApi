@@ -109,11 +109,15 @@ module.exports = {
                                         </div>
 
 
-                                        <table>
-                                            <tr>
-                                            <td class="center bold">Carta de Fiança n. ${pin}</td>
-                                            </tr>
-                                        </table>
+                                        <div style="
+                                            position: absolute;
+                                            top: 20mm;
+                                            right: 20mm;
+                                            font-weight: bold;
+                                            font-size: 14pt;
+                                        ">
+                                            Carta de Fiança n. ${pin}
+                                        </div>
 
                                         <table>
                                             <tr>
