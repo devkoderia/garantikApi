@@ -6,6 +6,8 @@ const { executeQuery, formatToReais } = require('../services/generalFunctions');
 const { listaEmissao } = require('./emissaoController');
 const { listaEmissaoFavorecido } = require('./emissaoFavorecidoController');
 const { listaEmissaoTomador } = require('./emissaoTomadorController');
+const QRCode = require('qrcode');
+
 
 module.exports = {
 
@@ -52,6 +54,11 @@ module.exports = {
             const fundoMime = 'image/jpeg';
             const fundoUrl = `data:${fundoMime};base64,${fundoBase64}`;
 
+            //QR code
+            const qrUrl = `https://secure.garantik.com.br/${cliente_id}/${pin}.pdf`;
+            const qrCodeDataUrl = await QRCode.toDataURL(qrUrl);
+
+
 
 
             // Cria o HTML com os dados da emissão
@@ -95,6 +102,11 @@ module.exports = {
                                     <body>
                                         <div class="container">
                                         <br><br><br><br><br><br><br><br>
+
+                                        <div style="position: absolute; left: 14mm; top: 20mm;">
+                                            <img src="${qrCodeDataUrl}" width="100" height="100" />
+                                        </div>
+
 
                                         <table>
                                             <tr>
@@ -141,9 +153,7 @@ module.exports = {
                                         <p class="justify">${modalidadeTexto}</p>
                                         </div>
                                     </body>
-                                    </html>
-
-          `;
+                                    </html>`;
 
             console.log('htmlContent:' + htmlContent); // Adicione esta linha para verificar o valor da variável htmlContent antes de passar para o Puppeteer
 

@@ -29,8 +29,12 @@
     "nodemon": "^2.0.4",
     "numero-por-extenso": "^1.0.8",
     "puppeteer": "^24.4.0",
+    "qrcode": "^1.5.4",
     "sql-escape-string": "^1.1.0",
     "sqlstring": "^2.3.3",
     "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/qrcode": "^1.5.5"
   }
 }
