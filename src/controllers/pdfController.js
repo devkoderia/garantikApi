@@ -103,7 +103,7 @@ module.exports = {
                                         <div class="container">
                                         <br><br><br><br><br><br><br><br>
 
-                                        <div style="position: absolute; left: 30mm; top: 10mm;">
+                                        <div style="position: absolute; left: 25mm; top: 10mm;">
                                             <img src="${qrCodeDataUrl}" width="100" height="100" />
                                         </div>
 
