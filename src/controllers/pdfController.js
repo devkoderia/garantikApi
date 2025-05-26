@@ -47,9 +47,23 @@ module.exports = {
         const ad_new = emissao[0].ad_new;
         const ad_upd = emissao[0].ad_upd;
         const simbolo = emissao[0].simbolo;
-        const htmlPdf = emissao[0].htmlPdf;
 
-        const fundoPath = path.resolve(__dirname, `../../public/${cliente_id}/fundo_garantia.jpg`);
+        var fundoPath = '';
+
+        if(tipo === 'P'){ //PROPOSTA
+            fundoPath = path.resolve(__dirname, `../../public/${cliente_id}/fundo_proposta.jpg`);    
+        }else if(tipo === 'M'){ //MINUTA
+            fundoPath = path.resolve(__dirname, `../../public/${cliente_id}/fundo_minuta.jpg`);
+        }else if(tipo === 'G'){ //GARANTIA
+            fundoPath = path.resolve(__dirname, `../../public/${cliente_id}/fundo_garantia.jpg`);
+        }else{
+            return response.json({
+                status:'erro',
+                descricao: 'Tipo de emissão inválido.'
+            });
+        }
+        
+        
         const fundoBase64 = fs.readFileSync(fundoPath, { encoding: 'base64' });
         const fundoMime = 'image/jpeg';
         const fundoUrl = `data:${fundoMime};base64,${fundoBase64}`;
@@ -63,8 +77,102 @@ module.exports = {
 
         // Cria o HTML com os dados da emissão
 
-        const htmlContent = htmlPdf
-            
+        const htmlContent = `<!DOCTYPE html>
+                            <html>
+                            <head>
+                                <title>${pin}</title>
+                                <style>
+                                @page { margin: 0mm; }
+                                body {
+                                    font-family: Arial, sans-serif;
+                                    font-size: 9pt;
+                                    background-image: url("${fundoUrl}");
+                                    background-size: cover;
+                                    background-repeat: no-repeat;
+                                    margin: 0;
+                                    padding: 0;
+                                }
+                                .container {
+                                    margin: 14mm;
+                                    background: transparent;
+                                    padding: 14px;
+                                }
+                                .center { text-align: center; }
+                                .left { text-align: left; }
+                                .right { text-align: right; }
+                                .justify { text-align: justify; }
+                                .bold { font-weight: bold; }
+                                .section-title {
+                                    background-color: #e7e7e7;
+                                    text-align: center;
+                                    font-size: 10pt;
+                                    font-weight: bold;
+                                    padding: 3px;
+                                }
+                                table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+                                td { padding: 3px; vertical-align: top; }
+                                </style>
+                            </head>
+
+                            <body>
+                                <div class="container">
+                                <br><br><br><br><br><br><br><br>
+
+                                <div style="position: absolute; left: 25mm; top: 10mm;">
+                                    <img src="${qrCodeDataUrl}" width="100" height="100" />
+                                </div>
+
+
+                                <div style="
+                                    position: absolute;
+                                    top: 23mm;
+                                    right: 30mm;
+                                    font-weight: bold;
+                                    font-size: 13pt;
+                                ">
+                                    ${pin}
+                                </div>
+
+                                <table>
+                                    <tr>
+                                    <td class="left bold">Data de emissão: ${dataEmissao}</td>
+                                    <td class="right bold">Data de início: ${dataInicio}</td>
+                                    </tr>
+                                    <tr>
+                                    <td></td>
+                                    <td class="right bold">Data de vencimento: ${dataVencimento}</td>
+                                    </tr>
+                                </table>
+
+                                ${emissaoFavorecido.map((fav) => `
+                                    <table>
+                                    <tr>
+                                        <td class="left bold">FAVORECIDO/CREDOR:</td>
+                                        <td class="left">${fav.nome}${fav.nomeFantasia}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="left">${fav.tipo === 'F' ? 'CPF:' : 'CNPJ:'}</td>
+                                        <td class="left">${fav.tipo === 'F' ? fav.cpf : fav.cnpj}</td>
+                                    </tr>
+                                    </table>
+                                `).join('')}
+
+                                <div class="section-title">VALOR ${simbolo} ${formatToReais(valor)}</div>
+                                <div class="section-title">${valorExtenso}</div>
+
+                                <p class="justify">
+                                    Declaração: <b>ALBAN FIANCAS E GARANTIAS S/A</b>, inscrita no CNPJ/MF sob o nº 05.402.543/0001-59, com sede à Avenida Paulista, 2073 - CONJ 1702 HORSA II, bairro Bela Vista, na cidade de São Paulo/Capital, abaixo assinados, declara assumir total responsabilidade como fiador, com amparo jurídico/legal e em conformidade com a Lei nº 10.406, de 10 de janeiro de 2002, Arts. 818 a 829, e em consonância com os objetivos sociais, da empresa
+                                    ${emissaoTomador.map((tom) => `
+                                    <b>${tom.nome}${tom.nomeFantasia}</b>, ${tom.tipo === 'F' ? 'CPF: ' + tom.cpf : 'CNPJ: ' + tom.cnpj}, estabelecida à <b>${tom.logradouro} - ${tom.complemento} - ${tom.bairro} - ${tom.ibge_descri} - ${tom.uf}</b>
+                                    `).join('')}
+                                    na qual figura como afiançado, até o limite máximo contratado, <b>${simbolo} ${formatToReais(valor)} - (${valorExtenso})</b>.
+                                </p>
+
+                                <p class="justify"><b>Objeto da Fiança:</b> ${objeto}</p>
+                                <p class="justify">${modalidadeTexto}</p>
+                                </div>
+                            </body>
+                            </html>`
 
         console.log('htmlContent:' + htmlContent); // Adicione esta linha para verificar o valor da variável htmlContent antes de passar para o Puppeteer
 
@@ -104,7 +212,16 @@ module.exports = {
         console.log('cliente_id:' + cliente_id); // Adicione esta linha para verificar o valor da variável dirPath   
 
         // Define o caminho completo do arquivo PDF
-        const filePath = path.join(dirPath, `${pin}.pdf`);
+        var filePath = '';
+
+        if (tipo === 'P') {
+            filePath = path.join(dirPath, `PROPOSTA-${pin}.pdf`);
+        }else if(tipo === 'M'){
+            filePath = path.join(dirPath, `MINUTA-${pin}.pdf`);
+        }else if(tipo === 'G'){
+            filePath = path.join(dirPath, `${pin}.pdf`);
+        }
+         
 
         // Salva o PDF no diretório
         fs.writeFileSync(filePath, pdfBuffer);
