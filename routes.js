@@ -1014,8 +1014,14 @@ routes.post('/emissaoConta', verificaToken, celebrate({
     })
 }), emissaoController.count)
 
-routes.post('/emissaoListaTodos', verificaToken, celebrate({
-    [Segments.BODY]: Joi.object().keys({
+routes.get('/emissaoListaUm/:emissao_id', verificaToken, celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        emissao_id: Joi.number().integer().required(),
+    })
+}), emissaoController.listaUm)
+
+routes.get('/emissaoListaTodos/:cliente_id', verificaToken, celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
         cliente_id: Joi.number().integer().required(),
     })
 }), emissaoController.listaTodos)

@@ -1,6 +1,19 @@
 const moment = require('moment-timezone');
 const { executeQuery } = require('../services/generalFunctions');
 
+async function listaFavorecido(emissao_id) {
+
+    const strsql = `select 
+        FAVORECIDO.favorecido_id,
+        FAVORECIDO.nomeFantasia        
+        from EMISSAO_FAVORECIDO
+        INNER JOIN FAVORECIDO ON FAVORECIDO.favorecido_id = EMISSAO_FAVORECIDO.favorecido_id
+        where (FAVORECIDO.deletado = 0 or FAVORECIDO.deletado is NULL) and emissao_id = ${emissao_id}`;
+
+    const resultado = await executeQuery(strsql);
+    return resultado;
+}
+
 module.exports = {
 
     async busca(request, response) {
@@ -446,5 +459,7 @@ module.exports = {
 
         await executeQuery(strsql);
         response.status(200).json({ status: 'ok' });
-    }
+    },
+
+    listaFavorecido
 };

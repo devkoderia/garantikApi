@@ -1,9 +1,22 @@
 const moment = require('moment-timezone');
 const { executeQuery } = require('../services/generalFunctions');
 
+async function listaTomador(emissao_id) {
+    const strsql = `
+        SELECT 
+            TOMADOR.tomador_id,
+            TOMADOR.nomeFantasia        
+        FROM EMISSAO_TOMADOR
+        INNER JOIN TOMADOR ON TOMADOR.tomador_id = EMISSAO_TOMADOR.tomador_id
+        WHERE (TOMADOR.deletado = 0 OR TOMADOR.deletado IS NULL) 
+        AND EMISSAO_TOMADOR.emissao_id = ${emissao_id}`;
+
+    const resultado = await executeQuery(strsql);
+    return resultado;
+}
+
 module.exports = {
-
-
+    
     async find(request, response) {
 
         var { tomador, cliente_id } = request.body
@@ -577,5 +590,7 @@ module.exports = {
 
         await executeQuery(strsql);
         response.status(200).json({ status: 'ok' });
-    }
+    },
+
+    listaTomador
 };
