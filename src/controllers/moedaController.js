@@ -39,15 +39,7 @@ module.exports = {
 
     async listaTodos(request, response) {
 
-        const strsql = `select 
-				MOEDA.moeda_id
-				,MOEDA.descricao
-				,MOEDA.simbolo
-				,MOEDA.iso
-                ,MOEDA.descricaoExtenso
-                ,MOEDA.descricaoExtensoDecimal
-				from MOEDA
-				where (MOEDA.deletado = 0 or MOEDA.deletado is null) and ativo = 1 order by descricao`;
+        const strsql = `SELECT moeda_id, descricao FROM MOEDA where ativo = 1 order by descricao`;
 
         const resultado = await executeQuery(strsql)
 

@@ -54,6 +54,10 @@ module.exports = {
                 CLIENTE.motivoSituacao,
                 CLIENTE.situacaoEspecial,
                 CLIENTE.dataSituacaoEspecial,
+                pin,
+                textoTrabalhista,
+                textoFiscal,
+                textoMulta,
                 CLIENTE.bloqueado,
                 CONVERT(VARCHAR, CLIENTE.ad_new, 103) + ' ' + CONVERT(VARCHAR, CLIENTE.ad_new, 8) as ad_new,
                 CONVERT(VARCHAR, CLIENTE.ad_upd, 103) + ' ' + CONVERT(VARCHAR, CLIENTE.ad_upd, 8) as ad_upd,
@@ -73,8 +77,7 @@ module.exports = {
                 CLIENTE.nomeFantasia,
                 CLIENTE.razaoSocial,                
                 CLIENTE.bloqueado,
-                CONVERT(VARCHAR, CLIENTE.ad_new, 103) + ' ' + CONVERT(VARCHAR, CLIENTE.ad_new, 8) as ad_new
-                
+                CONVERT(VARCHAR, CLIENTE.ad_new, 103) + ' ' + CONVERT(VARCHAR, CLIENTE.ad_new, 8) as ad_new                
             from CLIENTE
             where (CLIENTE.deletado = 0 or CLIENTE.deletado is null)
             order by CLIENTE.nomeFantasia`;
@@ -131,6 +134,10 @@ module.exports = {
             motivoSituacao,
             situacaoEspecial,
             dataSituacaoEspecial,
+            pin,
+            textoTrabalhista,
+            textoFiscal,
+            textoMulta,
             ad_usr,
         } = request.body;
 
@@ -166,6 +173,10 @@ module.exports = {
                 motivoSituacao,
                 situacaoEspecial,
                 dataSituacaoEspecial,
+                pin,
+                textoTrabalhista,
+                textoFiscal,
+                textoMulta,
                 ad_new,
                 ad_upd,
                 ad_usr,
@@ -198,6 +209,10 @@ module.exports = {
                 '${motivoSituacao}',
                 '${situacaoEspecial}',
                 '${dataSituacaoEspecial}',
+                '${pin}',
+                '${textoTrabalhista}',
+                '${textoFiscal}',
+                '${textoMulta}',
                 '${ad_new}',
                 '${ad_upd}',
                 ${ad_usr},
@@ -211,7 +226,7 @@ module.exports = {
     async update(request, response) {
 
         const { cliente_id } = request.params;
-        
+
         const {
             cnpj,
             nomeFantasia,
@@ -240,6 +255,10 @@ module.exports = {
             motivoSituacao,
             situacaoEspecial,
             dataSituacaoEspecial,
+            pin,
+            textoTrabalhista,
+            textoFiscal,
+            textoMulta,
             ad_usr,
             bloqueado
         } = request.body;
@@ -278,6 +297,10 @@ module.exports = {
                 CLIENTE.motivoSituacao = '${motivoSituacao}',
                 CLIENTE.situacaoEspecial = '${situacaoEspecial}',
                 CLIENTE.dataSituacaoEspecial = '${dataSituacaoEspecial}',
+                CLIENTE.pin = '${pin}',
+                CLIENTE.textoTrabalhista = '${textoTrabalhista}',
+                CLIENTE.textoFiscal = '${textoFiscal}',
+                CLIENTE.textoMulta = '${textoMulta}',
                 CLIENTE.bloqueado = ${bloqueado},
                 CLIENTE.ad_upd = '${ad_upd}',
                 CLIENTE.ad_usr = ${ad_usr}

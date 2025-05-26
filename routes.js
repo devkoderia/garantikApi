@@ -469,6 +469,10 @@ routes.post('/cliente', celebrate({
         motivoSituacao: Joi.string().allow(null, '').max(250),
         situacaoEspecial: Joi.string().allow(null, '').max(250),
         dataSituacaoEspecial: Joi.date().allow(null, ''),
+        pin: Joi.string().required().length(3), //exatamente 3 caracteres
+        textoTrabalhista: Joi.string().allow(null, ''),
+        textoFiscal: Joi.string().allow(null, ''),
+        textoMulta: Joi.string().allow(null, ''),
         ad_usr: Joi.number().integer().required(),
     })
 }), verificaToken, clienteController.create)
@@ -506,6 +510,10 @@ routes.put('/cliente/:cliente_id', celebrate({
         motivoSituacao: Joi.string().allow(null, '').max(250),
         situacaoEspecial: Joi.string().allow(null, '').max(250),
         dataSituacaoEspecial: Joi.date().allow(null, ''),
+        pin: Joi.string().required().length(3), //exatamente 3 caracteres
+        textoTrabalhista: Joi.string().allow(null, ''),
+        textoFiscal: Joi.string().allow(null, ''),
+        textoMulta: Joi.string().allow(null, ''),
         bloqueado: Joi.boolean().allow(null),
         ad_usr: Joi.number().integer().required(),
     })
@@ -1029,12 +1037,12 @@ routes.post('/emissao', celebrate({
         premio: Joi.number().allow(null),
         pago: Joi.boolean().allow(null),
         valorPago: Joi.number().allow(null),
-        minuta: Joi.boolean().allow(null),
-        garantia: Joi.boolean().allow(null),
         trabalhista: Joi.boolean().allow(null),
         fiscal: Joi.boolean().allow(null),
+        multa: Joi.boolean().allow(null),
         textoTrabalhista: Joi.string().allow(null, ''),
         textoFiscal: Joi.string().allow(null, ''),
+        textoMulta: Joi.string().allow(null, ''),
         ad_usr: Joi.number().integer().required(),
         observacoesCorretor: Joi.string().allow(null, ''),
         observacoesSubscritor: Joi.string().allow(null, ''),
@@ -1073,8 +1081,10 @@ routes.put('/emissao/:emissao_id', celebrate({
         garantia: Joi.boolean().allow(null),
         trabalhista: Joi.boolean().allow(null),
         fiscal: Joi.boolean().allow(null),
+        multa: Joi.boolean().allow(null),
         textoTrabalhista: Joi.string().allow(null, ''),
         textoFiscal: Joi.string().allow(null, ''),
+        textoMulta: Joi.string().allow(null, ''),
         ad_usr: Joi.number().integer().required(),
         observacoesCorretor: Joi.string().allow(null, ''),
         observacoesSubscritor: Joi.string().allow(null, ''),
@@ -1725,6 +1735,13 @@ routes.delete('/modalidade/:modalidade_id', celebrate({
 }), verificaToken, modalidadeController.destroy)
 
 
+//moeda
+//-------------------------------------------------------------------------------------------------------------
+const moedaController = require('./src/controllers/moedaController')
+
+routes.get('/moeda', verificaToken, moedaController.listaTodos)
+
+
 
 //nacionalidade_id
 //-------------------------------------------------------------------------------------------------------------
@@ -1802,6 +1819,7 @@ routes.post('/pdf/:emissao_id', verificaToken, celebrate({
     }),
     [Segments.BODY]: Joi.object().keys({
         cliente_id: Joi.number().integer().required(),
+        tipo: Joi.string().required().length(1), //P=Proposta, M=Minuta, G=Garantia
     })
 }), pdfController.index)
 

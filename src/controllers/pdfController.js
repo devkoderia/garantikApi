@@ -14,7 +14,7 @@ module.exports = {
     async index(request, response) {
 
         const { emissao_id } = request.params;
-        const { cliente_id } = request.body;
+        const { cliente_id, tipo } = request.body;
 
         const emissao = await listaEmissao(emissao_id, cliente_id);
 
@@ -143,7 +143,7 @@ module.exports = {
                                             </table>
                                         `).join('')}
 
-                                        <div class="section-title">VALOR ${simbolo} ${await formatToReais(valor)}</div>
+                                        <div class="section-title">VALOR ${simbolo} ${formatToReais(valor)}</div>
                                         <div class="section-title">${valorExtenso}</div>
 
                                         <p class="justify">
@@ -151,7 +151,7 @@ module.exports = {
                                             ${emissaoTomador.map((tom) => `
                                             <b>${tom.nome}${tom.nomeFantasia}</b>, ${tom.tipo === 'F' ? 'CPF: ' + tom.cpf : 'CNPJ: ' + tom.cnpj}, estabelecida à <b>${tom.logradouro} - ${tom.complemento} - ${tom.bairro} - ${tom.ibge_descri} - ${tom.uf}</b>
                                             `).join('')}
-                                            na qual figura como afiançado, até o limite máximo contratado, <b>R$ ${valor} - (${valorExtenso})</b>.
+                                            na qual figura como afiançado, até o limite máximo contratado, <b>${simbolo} ${formatToReais(valor)} - (${valorExtenso})</b>.
                                         </p>
 
                                         <p class="justify"><b>Objeto da Fiança:</b> ${objeto}</p>
@@ -202,6 +202,8 @@ module.exports = {
 
             // Salva o PDF no diretório
             fs.writeFileSync(filePath, pdfBuffer);
+
+
 
             return response.json({
                 status: 'sucesso',

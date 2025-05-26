@@ -53,8 +53,7 @@ module.exports = {
             MODALIDADE.cliente_id,
             MODALIDADE.descricao,
             MODALIDADE.texto,
-            MODALIDADE.status
-            
+            MODALIDADE.status            
             from MODALIDADE
             where (MODALIDADE.deletado = 0 or MODALIDADE.deletado is null) and cliente_id = ${cliente_id}`;
 
