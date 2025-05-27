@@ -3,7 +3,7 @@ const { executeQuery } = require('../services/generalFunctions');
 
 async function listaTomador(emissao_id) {
     const strsql = `
-        SELECT 
+        SELECT distinct            
             TOMADOR.tomador_id,
             TOMADOR.nomeFantasia        
         FROM EMISSAO_TOMADOR

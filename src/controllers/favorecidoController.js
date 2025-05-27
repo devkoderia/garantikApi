@@ -3,7 +3,7 @@ const { executeQuery } = require('../services/generalFunctions');
 
 async function listaFavorecido(emissao_id) {
 
-    const strsql = `select 
+    const strsql = `select distinct
         FAVORECIDO.favorecido_id,
         FAVORECIDO.nomeFantasia        
         from EMISSAO_FAVORECIDO

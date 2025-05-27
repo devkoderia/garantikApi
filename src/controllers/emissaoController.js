@@ -145,7 +145,7 @@ async function listaEmissaoUm(emissao_id) {
 
 async function listaEmissaoTodos(cliente_id) {
 
-    const strsql = `select 
+    const strsql = `select distinct
         EMISSAO.emissao_id,
         EMISSAO.cliente_id,
         EMISSAO.pin,
