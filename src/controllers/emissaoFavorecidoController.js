@@ -52,7 +52,7 @@ module.exports = {
             EMISSAO_FAVORECIDO.emissao_id = ${emissao_id} and FAVORECIDO.cliente_id = ${cliente_id}`;
 
         const resultado = await executeQuery(strsql);
-        
+
         return resultado
     },
 

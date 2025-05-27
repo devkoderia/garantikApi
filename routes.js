@@ -1002,11 +1002,33 @@ routes.delete('/documento/:documento_id', celebrate({
 
 
 
-
-
 //EMISSAO
 //-------------------------------------------------------------------------------------------------------------
 const emissaoController = require('./src/controllers/emissaoController')
+
+routes.put('/gravaGarantia/:emissao_id', verificaToken, celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        emissao_id: Joi.number().integer().required(),
+    })
+}), emissaoController.gravaGarantia)
+
+routes.put('/gravaMinuta/:emissao_id', verificaToken, celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        emissao_id: Joi.number().integer().required(),
+    })
+}), emissaoController.gravaMinuta)
+
+routes.delete('/apagaGarantia/:emissao_id', verificaToken, celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        emissao_id: Joi.number().integer().required(),
+    })
+}), emissaoController.apagaGarantia)
+
+routes.delete('/apagaMinuta/:emissao_id', verificaToken, celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        emissao_id: Joi.number().integer().required(),
+    })
+}), emissaoController.apagaMinuta)
 
 routes.post('/emissaoConta', verificaToken, celebrate({
     [Segments.BODY]: Joi.object().keys({

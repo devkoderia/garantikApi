@@ -79,6 +79,11 @@ async function listaEmissaoUm(emissao_id) {
         EMISSAO.fiscal,
         EMISSAO.textoTrabalhista,
         EMISSAO.textoFiscal,
+        EMISSAO.observacoesCorretor,
+        EMISSAO.observacoesSubscritor,
+        EMISSAO.valorComissao,
+        EMISSAO.percentualComissao,
+        EMISSAO.valorSpread,
         CONVERT(VARCHAR, EMISSAO.ad_new, 103) + ' ' + CONVERT(VARCHAR, EMISSAO.ad_new, 8) AS ad_new,
         CONVERT(VARCHAR, EMISSAO.ad_upd, 103) + ' ' + CONVERT(VARCHAR, EMISSAO.ad_upd, 8) AS ad_upd,
         EMISSAO.ad_usr,
@@ -128,13 +133,14 @@ async function listaEmissaoUm(emissao_id) {
             fiscal: rs.fiscal,
             textoTrabalhista: rs.textoTrabalhista,
             textoFiscal: rs.textoFiscal,
+            observacoesCorretor: rs.observacoesCorretor,
+            observacoesSubscritor: rs.observacoesSubscritor,
+            valorComissao: rs.valorComissao,
+            percentualComissao: rs.percentualComissao,
+            valorSpread: rs.valorSpread,
             tomadores: await listaTomador(emissao_id),
             favorecidos: await listaFavorecido(emissao_id),
-
-
         })
-
-
     }
 
     return dataBack;
@@ -144,6 +150,8 @@ async function listaEmissaoUm(emissao_id) {
 
 
 async function listaEmissaoTodos(cliente_id) {
+
+    console.log(cliente_id)
 
     const strsql = `select distinct
         EMISSAO.emissao_id,
@@ -197,9 +205,43 @@ async function listaEmissaoTodos(cliente_id) {
 
 module.exports = {
 
+    async gravaGarantia(request, response) {
+
+        const { emissao_id } = request.params;
+
+        const strsql = `update EMISSAO set garantia = 1 where emissao_id = ${emissao_id}`;
+        const resultado = await executeQuery(strsql);
+        response.status(200).send(resultado);
+    },
+
+    async gravaMinuta(request, response) {
+
+        const { emissao_id } = request.params;
+
+        const strsql = `update EMISSAO set minuta = 1 where emissao_id = ${emissao_id}`;
+        const resultado = await executeQuery(strsql);
+        response.status(200).send(resultado);
+    },
+
+    async apagaGarantia(request, response) {
+
+        const { emissao_id } = request.params;
+
+        const strsql = `update EMISSAO set garantia = 0 where emissao_id = ${emissao_id}`;
+        const resultado = await executeQuery(strsql);
+        response.status(200).send(resultado);
+    },
+
+    async apagaMinuta(request, response) {
+
+        const { emissao_id } = request.params;
+
+        const strsql = `update EMISSAO set minuta = 0 where emissao_id = ${emissao_id}`;
+        const resultado = await executeQuery(strsql);
+        response.status(200).send(resultado);
+    },
 
 
-    //----------------------------------------------------------------
 
     async count(request, response) {
 
@@ -233,7 +275,9 @@ module.exports = {
 
     async listaTodos(request, response) {
 
-        const { cliente_id } = request.body;
+        const { cliente_id } = request.params;
+
+        console.log('cliente_id: ' + cliente_id)
 
         const resultado = await listaEmissaoTodos(cliente_id)
 
@@ -528,5 +572,6 @@ module.exports = {
         response.status(200).json({ status: 'ok' });
     },
 
+    listaEmissaoUm
 
 };

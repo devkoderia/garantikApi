@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const moment = require('moment-timezone');
 const { executeQuery, formatToReais } = require('../services/generalFunctions');
-const { listaEmissao } = require('./emissaoController');
+const { listaEmissaoUm } = require('./emissaoController');
 const { listaEmissaoFavorecido } = require('./emissaoFavorecidoController');
 const { listaEmissaoTomador } = require('./emissaoTomadorController');
 const QRCode = require('qrcode');
@@ -16,9 +16,7 @@ module.exports = {
         const { emissao_id } = request.params;
         const { cliente_id, tipo } = request.body;
 
-        const emissao = await listaEmissao(emissao_id, cliente_id);
-
-
+        const emissao = await listaEmissaoUm(emissao_id)
         const emissaoFavorecido = await listaEmissaoFavorecido(emissao_id, cliente_id);
         const emissaoTomador = await listaEmissaoTomador(emissao_id, cliente_id);
 
@@ -50,27 +48,27 @@ module.exports = {
 
         var fundoPath = '';
 
-        if(tipo === 'P'){ //PROPOSTA
-            fundoPath = path.resolve(__dirname, `../../public/${cliente_id}/fundo_proposta.jpg`);    
-        }else if(tipo === 'M'){ //MINUTA
+        if (tipo === 'P') { //PROPOSTA
+            fundoPath = path.resolve(__dirname, `../../public/${cliente_id}/fundo_proposta.jpg`);
+        } else if (tipo === 'M') { //MINUTA
             fundoPath = path.resolve(__dirname, `../../public/${cliente_id}/fundo_minuta.jpg`);
-        }else if(tipo === 'G'){ //GARANTIA
+        } else if (tipo === 'G') { //GARANTIA
             fundoPath = path.resolve(__dirname, `../../public/${cliente_id}/fundo_garantia.jpg`);
-        }else{
-            return response.json({
-                status:'erro',
-                descricao: 'Tipo de emissão inválido.'
-            });
         }
-        
-        
+
         const fundoBase64 = fs.readFileSync(fundoPath, { encoding: 'base64' });
         const fundoMime = 'image/jpeg';
         const fundoUrl = `data:${fundoMime};base64,${fundoBase64}`;
 
-        //QR code
-        const qrUrl = `https://secure.garantik.com.br/${cliente_id}/${pin}.pdf`;
-        const qrCodeDataUrl = await QRCode.toDataURL(qrUrl);
+        if (tipo === 'G') { //GARANTIA
+            //QR code
+            const qrUrl = `https://secure.garantik.com.br/${cliente_id}/${pin}.pdf`;
+            const qrCodeDataUrl = await QRCode.toDataURL(qrUrl);
+        }else{
+            //QR code
+            const qrUrl = ''
+            const qrCodeDataUrl = ''
+        }
 
 
 
@@ -118,10 +116,12 @@ module.exports = {
                                 <div class="container">
                                 <br><br><br><br><br><br><br><br>
 
-                                <div style="position: absolute; left: 25mm; top: 10mm;">
-                                    <img src="${qrCodeDataUrl}" width="100" height="100" />
-                                </div>
-
+                                ${garantia === 'G' 
+                                    ? `<div style="position: absolute; left: 25mm; top: 10mm;">
+                                           <img src="${qrCodeDataUrl}" width="100" height="100" />
+                                       </div>` 
+                                    : ''
+                                }
 
                                 <div style="
                                     position: absolute;
@@ -216,12 +216,12 @@ module.exports = {
 
         if (tipo === 'P') {
             filePath = path.join(dirPath, `PROPOSTA-${pin}.pdf`);
-        }else if(tipo === 'M'){
+        } else if (tipo === 'M') {
             filePath = path.join(dirPath, `MINUTA-${pin}.pdf`);
-        }else if(tipo === 'G'){
+        } else if (tipo === 'G') {
             filePath = path.join(dirPath, `${pin}.pdf`);
         }
-         
+
 
         // Salva o PDF no diretório
         fs.writeFileSync(filePath, pdfBuffer);
@@ -234,5 +234,4 @@ module.exports = {
 
 
     },
-
 };
