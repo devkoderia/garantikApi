@@ -5,7 +5,15 @@ async function listaTomador(emissao_id) {
     const strsql = `
         SELECT distinct            
             TOMADOR.tomador_id,
-            TOMADOR.nomeFantasia        
+            TOMADOR.nomeFantasia,
+            TOMADOR.nome,
+            TOMADOR.tipoJuridico,
+            TOMADOR.cnpj,
+            TOMADOR.cpf,
+            (case 
+                when TOMADOR.tipoJuridico = 'J' then concat(TOMADOR.cnpj, ' - ', TOMADOR.nomeFantasia)
+                when TOMADOR.tipoJuridico = 'F' then concat(TOMADOR.cpf, ' - ', TOMADOR.nome)
+            end) as tomador
         FROM EMISSAO_TOMADOR
         INNER JOIN TOMADOR ON TOMADOR.tomador_id = EMISSAO_TOMADOR.tomador_id
         WHERE (TOMADOR.deletado = 0 OR TOMADOR.deletado IS NULL) 
@@ -453,7 +461,7 @@ module.exports = {
             ${bloqueado == true ? 1 : bloqueado == false ? 0 : 'NULL'}
         )`;
 
-        console.log(strsql)
+        //console.log(strsql)
         //return false
 
         await executeQuery(strsql);
@@ -586,7 +594,7 @@ module.exports = {
             ad_usr = ${ad_usr}
             where tomador_id = ${tomador_id} and cliente_id = ${cliente_id}`;
 
-        console.log(strsql);
+        //console.log(strsql);
 
         await executeQuery(strsql);
         response.status(200).json({ status: 'ok' });

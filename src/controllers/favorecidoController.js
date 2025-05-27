@@ -5,7 +5,15 @@ async function listaFavorecido(emissao_id) {
 
     const strsql = `select distinct
         FAVORECIDO.favorecido_id,
-        FAVORECIDO.nomeFantasia        
+        FAVORECIDO.nomeFantasia,
+        FAVORECIDO.tipoJuridico,
+        FAVORECIDO.cpf,
+        FAVORECIDO.cnpj,
+        FAVORECIDO.nome,
+        (case 
+            when FAVORECIDO.tipoJuridico = 'J' then concat(FAVORECIDO.cnpj, ' - ', FAVORECIDO.nomeFantasia)
+            when FAVORECIDO.tipoJuridico = 'F' then concat(FAVORECIDO.cpf, ' - ', FAVORECIDO.nome)
+        end) as favorecido
         from EMISSAO_FAVORECIDO
         INNER JOIN FAVORECIDO ON FAVORECIDO.favorecido_id = EMISSAO_FAVORECIDO.favorecido_id
         where (FAVORECIDO.deletado = 0 or FAVORECIDO.deletado is NULL) and emissao_id = ${emissao_id}`;
@@ -350,7 +358,7 @@ module.exports = {
             ${deletado}
         )`;
 
-        console.log(strsql);
+        //console.log(strsql);
 
         await executeQuery(strsql);
         response.status(200).json({ status: 'ok' });
@@ -455,7 +463,7 @@ module.exports = {
             ad_usr = ${ad_usr}
             where favorecido_id = ${favorecido_id}`;
 
-            console.log(strsql);
+            //console.log(strsql);
 
         await executeQuery(strsql);
         response.status(200).json({ status: 'ok' });

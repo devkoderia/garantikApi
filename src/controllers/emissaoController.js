@@ -395,7 +395,7 @@ module.exports = {
                     ${formatNumber(valorSpread)}
                 )`;
 
-        console.log(strsql)
+        //console.log(strsql)
 
         const resultado = await executeQuery(strsql);
         const emissao_id = resultado[0].emissao_id;
