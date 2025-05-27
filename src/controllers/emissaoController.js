@@ -50,7 +50,7 @@ async function montarPin(cliente_id) {
     return basePin + ts;
 }
 
-async function listaEmissao(emissao_id) {
+async function listaEmissaoUm(emissao_id) {
 
     const strsql = `select 
         EMISSAO.emissao_id,
@@ -141,6 +141,60 @@ async function listaEmissao(emissao_id) {
 
 }
 
+
+
+async function listaEmissaoTodos(cliente_id) {
+
+    const strsql = `select 
+        EMISSAO.emissao_id,
+        EMISSAO.cliente_id,
+        EMISSAO.pin,
+        CONVERT(VARCHAR, EMISSAO.dataEmissao, 103) AS dataEmissao,
+        ISNULL(CONVERT(VARCHAR, EMISSAO.dataVencimento, 103), '') AS dataVencimento,
+        -- Formatação condicional do valor
+        CASE 
+            WHEN MOEDA.descricao = 'Real' THEN MOEDA.simbolo + ' ' + FORMAT(EMISSAO.valor, 'N2', 'pt-BR')
+            WHEN MOEDA.descricao = 'Euro' THEN  MOEDA.simbolo + ' ' + FORMAT(EMISSAO.valor, 'N2', 'pt-BR')
+            WHEN MOEDA.descricao = 'Dólar dos Estados Unidos' THEN  MOEDA.simbolo + ' ' + FORMAT(EMISSAO.valor, 'N2', 'en-US')
+            ELSE FORMAT(EMISSAO.valor, 'N2')
+        END AS valorFormatado,
+        MODALIDADE.descricao AS modalidadeDescricao
+        FROM EMISSAO
+        INNER JOIN MODALIDADE ON MODALIDADE.modalidade_id = EMISSAO.modalidade_id
+        INNER JOIN MOEDA ON MOEDA.moeda_id = EMISSAO.moeda_id
+        WHERE 
+            (EMISSAO.deletado = 0 OR EMISSAO.deletado IS NULL) 
+            AND MOEDA.ativo = 1 
+            AND EMISSAO.cliente_id = ${cliente_id}`;
+
+    const resultado = await executeQuery(strsql);
+
+    var dataBack = []
+
+    for (let i = 0; i < resultado.length; i++) {
+
+        var rs = resultado[i];
+
+        dataBack.push({
+
+            emissao_id: rs.emissao_id,
+            cliente_id: rs.cliente_id,
+            pin: rs.pin,
+            dataEmissao: rs.dataEmissao,
+            dataInicio: rs.dataInicio,
+            dataVencimento: rs.dataVencimento,
+            valor: rs.valorFormatado,
+            modalidadeDescricao: rs.modalidadeDescricao,
+            moeda_id: rs.moeda_id,
+            tomadores: await listaTomador(rs.emissao_id),
+            favorecidos: await listaFavorecido(rs.emissao_id),
+        })
+    }
+
+    return dataBack;
+
+}
+
 module.exports = {
 
 
@@ -170,7 +224,7 @@ module.exports = {
 
         const { emissao_id } = request.params;
 
-        const resultado = await listaEmissao(emissao_id)
+        const resultado = await listaEmissaoUm(emissao_id)
 
         response.status(200).send(resultado);
 
@@ -181,47 +235,8 @@ module.exports = {
 
         const { cliente_id } = request.body;
 
-        const strsql = `SELECT 
-                EMISSAO.emissao_id,
-                EMISSAO.cliente_id,
-                EMISSAO.pin,
+        const resultado = await listaEmissaoTodos(cliente_id)
 
-                -- Concatena favorecidos
-                (
-                    SELECT STRING_AGG(FAV.nomeFantasia, ', ') 
-                    FROM EMISSAO_FAVORECIDO EF
-                    INNER JOIN FAVORECIDO FAV ON FAV.favorecido_id = EF.favorecido_id
-                    WHERE EF.emissao_id = EMISSAO.emissao_id
-                ) AS favorecidos,
-
-                -- Concatena tomadores
-                (
-                    SELECT STRING_AGG(TOM.nomeFantasia, ', ') 
-                    FROM EMISSAO_TOMADOR ET
-                    INNER JOIN TOMADOR TOM ON TOM.tomador_id = ET.tomador_id
-                    WHERE ET.emissao_id = EMISSAO.emissao_id
-                ) AS tomadores,
-
-                -- Formatação condicional do valor
-                CASE 
-                    WHEN MOEDA.descricao = 'Real' THEN MOEDA.simbolo + ' ' + FORMAT(EMISSAO.valor, 'N2', 'pt-BR')
-                    WHEN MOEDA.descricao = 'Euro' THEN  MOEDA.simbolo + ' ' + FORMAT(EMISSAO.valor, 'N2', 'pt-BR')
-                    WHEN MOEDA.descricao = 'Dólar dos Estados Unidos' THEN  MOEDA.simbolo + ' ' + FORMAT(EMISSAO.valor, 'N2', 'en-US')
-                    ELSE FORMAT(EMISSAO.valor, 'N2')
-                END AS valorFormatado,
-
-                MODALIDADE.descricao AS modalidadeDescricao,
-                CONVERT(VARCHAR, EMISSAO.ad_new, 103) + ' ' + CONVERT(VARCHAR, EMISSAO.ad_new, 8) AS ad_new
-
-            FROM EMISSAO
-            INNER JOIN MODALIDADE ON MODALIDADE.modalidade_id = EMISSAO.modalidade_id
-            INNER JOIN MOEDA ON MOEDA.moeda_id = EMISSAO.moeda_id
-            WHERE 
-                (EMISSAO.deletado = 0 OR EMISSAO.deletado IS NULL) 
-                AND MOEDA.ativo = 1 
-                AND EMISSAO.cliente_id = ${cliente_id}`;
-
-        const resultado = await executeQuery(strsql);
         response.status(200).send(resultado);
     },
 

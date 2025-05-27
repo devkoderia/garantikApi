@@ -112,6 +112,9 @@ module.exports = {
     },
 
     executeQuery: async function (strsql) {
+
+        console.log('SQL:', strsql);
+        
         try {
             const pool = await poolPromise;
             const result = await pool.request().query(strsql);
