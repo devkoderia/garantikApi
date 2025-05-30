@@ -162,22 +162,11 @@ async function pdfGera(emissao_id, cliente_id, tipo) { //tipo (P = PROPOSTA, M =
 
     console.log('htmlContent:' + htmlContent); // Adicione esta linha para verificar o valor da variável htmlContent antes de passar para o Puppeteer
 
-
-    //HOMOLOG
-    /* const browser = await puppeteer.launch({
-        headless: true,
-        executablePath: '/usr/bin/chromium-browser',
-        args: ['--no-sandbox', '--disable-setuid-sandbox']
-    }); */
-
-    //PRODUÇÃO
+    // Inicia o browser com Puppeteer
     const browser = await puppeteer.launch({
         headless: true,
-        executablePath: '/snap/bin/chromium',
         args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
-    
-    
 
     const page = await browser.newPage();
 
