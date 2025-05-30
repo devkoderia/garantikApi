@@ -162,16 +162,20 @@ async function pdfGera(emissao_id, cliente_id, tipo) { //tipo (P = PROPOSTA, M =
 
     console.log('htmlContent:' + htmlContent); // Adicione esta linha para verificar o valor da variável htmlContent antes de passar para o Puppeteer
 
-    // Inicia o browser com Puppeteer
-/*     const browser = await puppeteer.launch({
-        headless: true,
-        args: ['--no-sandbox', '--disable-setuid-sandbox']
-    }); */
 
-    const browser = await puppeteer.launch({
+    //HOMOLOG
+    /* const browser = await puppeteer.launch({
         headless: true,
         executablePath: '/usr/bin/chromium-browser',
         args: ['--no-sandbox', '--disable-setuid-sandbox']
+    }); */
+
+    //PRODUÇÃO
+    const browser = await puppeteer.launch({
+        headless: true,
+        executablePath: '/home/ubuntu/.cache/puppeteer/chrome/linux-134.0.6998.35/chrome-linux64/chrome',
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        protocolTimeout: 60000 // para evitar o "Network.enable timed out"
     });
     
 
