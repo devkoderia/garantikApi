@@ -175,8 +175,10 @@ async function pdfGera(emissao_id, cliente_id, tipo) { //tipo (P = PROPOSTA, M =
         headless: true,
         executablePath: '/home/ubuntu/.cache/puppeteer/chrome/linux-134.0.6998.35/chrome-linux64/chrome',
         args: ['--no-sandbox', '--disable-setuid-sandbox'],
-        protocolTimeout: 60000 // para evitar o "Network.enable timed out"
+        dumpio: true, // Mostra stdout/stderr do Chromium
+        protocolTimeout: 60000
     });
+    
     
 
     const page = await browser.newPage();
