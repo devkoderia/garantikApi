@@ -1009,24 +1009,36 @@ const emissaoController = require('./src/controllers/emissaoController')
 routes.put('/gravaGarantia/:emissao_id', verificaToken, celebrate({
     [Segments.PARAMS]: Joi.object().keys({
         emissao_id: Joi.number().integer().required(),
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
     })
 }), emissaoController.gravaGarantia)
 
 routes.put('/gravaMinuta/:emissao_id', verificaToken, celebrate({
     [Segments.PARAMS]: Joi.object().keys({
         emissao_id: Joi.number().integer().required(),
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
     })
 }), emissaoController.gravaMinuta)
 
 routes.delete('/apagaGarantia/:emissao_id', verificaToken, celebrate({
     [Segments.PARAMS]: Joi.object().keys({
         emissao_id: Joi.number().integer().required(),
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
     })
 }), emissaoController.apagaGarantia)
 
 routes.delete('/apagaMinuta/:emissao_id', verificaToken, celebrate({
     [Segments.PARAMS]: Joi.object().keys({
         emissao_id: Joi.number().integer().required(),
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
     })
 }), emissaoController.apagaMinuta)
 
@@ -1834,24 +1846,6 @@ routes.delete('/np/:np_id', celebrate({
         np_id: Joi.number().integer().required()
     }),
 }), verificaToken, npController.destroy)
-
-
-
-//PDF
-//-------------------------------------------------------------------------------------------------------------
-const pdfController = require('./src/controllers/pdfController')
-
-routes.post('/pdf/:emissao_id', verificaToken, celebrate({
-    [Segments.PARAMS]: Joi.object().keys({
-        emissao_id: Joi.number().integer().required(),
-    }),
-    [Segments.BODY]: Joi.object().keys({
-        cliente_id: Joi.number().integer().required(),
-        tipo: Joi.string().required().length(1), //P=Proposta, M=Minuta, G=Garantia
-    })
-}), pdfController.index)
-
-
 
 //PERFIL
 //-------------------------------------------------------------------------------------------------------------
