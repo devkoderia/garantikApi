@@ -9,7 +9,7 @@ const {
 } = require('../services/generalFunctions');
 
 const { listaEmissaoUm, listaEmissaoTodos } = require('../services/emissaoService');
-const { pdfGera } = require('./pdfController');
+const { pdfGera, apagaPdf } = require('./pdfController');
 
 function montarValorExtenso(valor, moeda_id) {
     let tipoMoeda;
@@ -51,6 +51,19 @@ async function montarPin(cliente_id) {
 
 module.exports = {
 
+    async gravaProposta(request, response) {
+        const { emissao_id } = request.params;
+        const { cliente_id } = request.body;
+
+        const strsql = `update EMISSAO set proposta = 1 where emissao_id = ${emissao_id}`;
+
+        await executeQuery(strsql);
+        await pdfGera(emissao_id, cliente_id, 'P')        
+        const resultado = await pdfGera(emissao_id, cliente_id, 'P')        
+        
+        response.status(200).send({ status: 'ok', link: resultado.link});
+    },
+
     async gravaGarantia(request, response) {
 
         const { emissao_id } = request.params;
@@ -58,9 +71,9 @@ module.exports = {
 
         const strsql = `update EMISSAO set garantia = 1 where emissao_id = ${emissao_id}`;
         await executeQuery(strsql);
-        await pdfGera(emissao_id, cliente_id, 'G')
+        const resultado = await pdfGera(emissao_id, cliente_id, 'G')
 
-        response.status(200).send({ status: 'ok'});
+        response.status(200).send({ status: 'ok', link: resultado.link});
     },
 
     async gravaMinuta(request, response) {
@@ -70,7 +83,21 @@ module.exports = {
 
         const strsql = `update EMISSAO set minuta = 1 where emissao_id = ${emissao_id}`;
         await executeQuery(strsql);
-        await pdfGera(emissao_id, cliente_id, 'M')
+
+        const resultado = await pdfGera(emissao_id, cliente_id, 'M')
+
+        response.status(200).send({ status: 'ok', link: resultado.link});
+    },
+
+    async apagaProposta(request, response) {
+        const { emissao_id } = request.params;
+        const { cliente_id } = request.body;
+
+        const strsql = `update EMISSAO set proposta = 0 where emissao_id = ${emissao_id}`;
+        await executeQuery(strsql);
+
+        //remove o arquivo da pasta
+        await apagaPdf(emissao_id, cliente_id, 'P');
 
         response.status(200).send({ status: 'ok'});
     },
@@ -82,6 +109,10 @@ module.exports = {
 
         const strsql = `update EMISSAO set garantia = 0 where emissao_id = ${emissao_id}`;
         await executeQuery(strsql);
+
+        //remove o arquivo da pasta
+        await apagaPdf(emissao_id, cliente_id, 'G');
+
         response.status(200).send({ status: 'ok'});
     },
 
@@ -92,6 +123,10 @@ module.exports = {
 
         const strsql = `update EMISSAO set minuta = 0 where emissao_id = ${emissao_id}`;
         await executeQuery(strsql);
+
+        //remove o arquivo da pasta
+        await apagaPdf(emissao_id, cliente_id, 'M');
+
         response.status(200).send({ status: 'ok'});
     },
 

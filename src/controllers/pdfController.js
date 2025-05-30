@@ -10,7 +10,7 @@ const QRCode = require('qrcode');
 
 async function pdfGera(emissao_id, cliente_id, tipo) { //tipo (P = PROPOSTA, M = MINUTA, G = GARANTIA)
 
-    const emissao = await listaEmissaoUm(emissao_id)
+    const emissao = await listaEmissaoUm(emissao_id);
     const emissaoFavorecido = await listaEmissaoFavorecido(emissao_id, cliente_id);
     const emissaoTomador = await listaEmissaoTomador(emissao_id, cliente_id);
 
@@ -215,15 +215,46 @@ async function pdfGera(emissao_id, cliente_id, tipo) { //tipo (P = PROPOSTA, M =
     console.log('filePath:' + filePath); // Adicione esta linha para verificar o valor da variável filePath
     console.log('pdfUrl:' + pdfUrl); // Adicione esta linha para verificar o valor da variável filePath
 
+    console.log('emissao_id:' + emissao_id); // Adicione esta linha para verificar o valor da variável emissao_id
+    console.log('cliente_id:' + cliente_id); // Adicione esta linha para verificar o valor da variável cliente_id
+    console.log('tipo:' + tipo); // Adicione esta linha para verificar o valor da variável tipo
+
     // Salva o PDF no diretório
     fs.writeFileSync(filePath, pdfBuffer);
 
-    return response.json({
-        status: 'ok',
-        descricao: 'PDF gerado e salvo com sucesso.',
-        file: filePath,
-        pdfUrl: pdfUrl
-    });
+    return {
+        link: pdfUrl
+    };
+    
 }
 
-module.exports = { pdfGera };
+async function apagaPdf(cliente_id, pin, tipo) {
+    try {
+        let filePath = '';
+
+        if (tipo === 'P') {
+            filePath = path.join(__dirname, `../../public/${cliente_id}/PROPOSTA-${pin}.pdf`);
+        } else if (tipo === 'M') {
+            filePath = path.join(__dirname, `../../public/${cliente_id}/MINUTA-${pin}.pdf`);
+        } else if (tipo === 'G') {
+            filePath = path.join(__dirname, `../../public/${cliente_id}/${pin}.pdf`);
+        } else {
+            throw new Error(`Tipo inválido: ${tipo}`);
+        }
+
+        if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
+            console.log(`PDF removido com sucesso: ${filePath}`);
+        } else {
+            console.log(`PDF não encontrado: ${filePath}`);
+        }
+
+        return { status: 'ok', message: 'Processo concluído', file: filePath };
+
+    } catch (error) {
+        console.error(`Erro ao apagar PDF:`, error);
+        return { status: 'erro', message: error.message };
+    }
+}
+
+module.exports = { pdfGera, apagaPdf };

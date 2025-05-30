@@ -96,8 +96,6 @@ async function listaEmissaoUm(emissao_id) {
 
 async function listaEmissaoTodos(cliente_id) {
 
-    console.log(cliente_id)
-
     const strsql = `select distinct
         EMISSAO.emissao_id,
         EMISSAO.cliente_id,

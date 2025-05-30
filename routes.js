@@ -1024,6 +1024,15 @@ routes.put('/gravaMinuta/:emissao_id', verificaToken, celebrate({
     })
 }), emissaoController.gravaMinuta)
 
+routes.put('/gravaProposta/:emissao_id', verificaToken, celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        emissao_id: Joi.number().integer().required(),
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), emissaoController.gravaProposta)
+
 routes.delete('/apagaGarantia/:emissao_id', verificaToken, celebrate({
     [Segments.PARAMS]: Joi.object().keys({
         emissao_id: Joi.number().integer().required(),
@@ -1041,6 +1050,15 @@ routes.delete('/apagaMinuta/:emissao_id', verificaToken, celebrate({
         cliente_id: Joi.number().integer().required(),
     })
 }), emissaoController.apagaMinuta)
+
+routes.delete('/apagaProposta/:emissao_id', verificaToken, celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        emissao_id: Joi.number().integer().required(),
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        cliente_id: Joi.number().integer().required(),
+    })
+}), emissaoController.apagaProposta)
 
 routes.post('/emissaoConta', verificaToken, celebrate({
     [Segments.BODY]: Joi.object().keys({
