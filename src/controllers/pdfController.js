@@ -54,11 +54,13 @@ async function pdfGera(emissao_id, cliente_id, tipo) { //tipo (P = PROPOSTA, M =
     const fundoMime = 'image/jpeg';
     const fundoUrl = `data:${fundoMime};base64,${fundoBase64}`;
 
-    if (tipo === 'G') { //GARANTIA
-        //QR code
+    let qrCodeDataUrl = '';
+
+    if (tipo === 'G') { // GARANTIA
         const qrUrl = `https://secure.garantik.com.br/${cliente_id}/${pin}.pdf`;
-        const qrCodeDataUrl = await QRCode.toDataURL(qrUrl);
+        qrCodeDataUrl = await QRCode.toDataURL(qrUrl);
     }
+
 
     // Cria o HTML com os dados da emissão
     const htmlContent = `<!DOCTYPE html>
@@ -102,12 +104,12 @@ async function pdfGera(emissao_id, cliente_id, tipo) { //tipo (P = PROPOSTA, M =
                             <div class="container">
                             <br><br><br><br><br><br><br><br>
 
-                            ${garantia === 'G' 
-                                ? `<div style="position: absolute; left: 25mm; top: 10mm;">
+                            ${garantia === 'G'
+            ? `<div style="position: absolute; left: 25mm; top: 10mm;">
                                        <img src="${qrCodeDataUrl}" width="100" height="100" />
-                                   </div>` 
-                                : ''
-                            }
+                                   </div>`
+            : ''
+        }
 
                             <div style="
                                 position: absolute;
@@ -225,7 +227,7 @@ async function pdfGera(emissao_id, cliente_id, tipo) { //tipo (P = PROPOSTA, M =
     return {
         link: pdfUrl
     };
-    
+
 }
 
 async function apagaPdf(cliente_id, pin, tipo) {
