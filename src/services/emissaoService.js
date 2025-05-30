@@ -85,6 +85,7 @@ async function listaEmissaoUm(emissao_id) {
             valorComissao: rs.valorComissao,
             percentualComissao: rs.percentualComissao,
             valorSpread: rs.valorSpread,
+            simbolo: rs.simbolo,
             tomadores: await listaTomador(emissao_id),
             favorecidos: await listaFavorecido(emissao_id),
         });
